@@ -1,5 +1,5 @@
 package com.fornari.casino;
 
 public enum Figuras {
-	espada,trebol,corazon,diamante;
+	espada,trebol,corazon,diamante,none;
 }

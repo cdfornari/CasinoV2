@@ -1,22 +1,22 @@
 package com.fornari.casino;
 
+import java.util.UUID;
+import java.util.Random;
+
 public class Carta {
 	private int valor;
 	private Figuras figura;
 	private char representacion;
 	private int puntaje;
-	private int idEmparejamiento;
+	private String idEmparejamiento;
 	private int sumaEmparejadas;
 	private boolean doblada;
+	private Carta siguiente;
 	
 	public Carta() {
-		
-	}
-	
-	public Carta(int valor, Figuras figura) {
-		this.valor = valor;
-		this.figura = figura;
-		this.idEmparejamiento = 0;
+		this.valor = new Random().nextInt(13) + 1;
+		this.figura = generarFigura();
+		this.idEmparejamiento = "000";
 		this.sumaEmparejadas = 0;
 		this.doblada = false;
 		switch(valor) {
@@ -60,11 +60,11 @@ public class Carta {
 		return this.puntaje;
 	}
 	
-	public int getIdEmparejamiento(){
+	public String getIdEmparejamiento(){
 		return this.idEmparejamiento;
 	}
 	
-	public void setIdEmparejamiento(int id) {
+	public void setIdEmparejamiento(String id) {
 		this.idEmparejamiento = id;
 	}
 	
@@ -82,5 +82,39 @@ public class Carta {
 	
 	public void setSumaEmparejadas(int suma) {
 		this.sumaEmparejadas = suma;
+	}
+	
+	public Carta getSiguiente() {
+		return this.siguiente;
+	}
+	
+	public void setSiguiente(Carta carta) {
+		this.siguiente = carta;
+	}
+	
+	public String generarIdEmparejamiento() {
+		return UUID.randomUUID().toString();
+	}
+	
+	private Figuras generarFigura(){
+		Figuras figura;
+		int valor = new Random().nextInt(4) + 1;
+		switch(valor) {
+			case 1:
+				figura = Figuras.espada;
+			break;
+			case 2:
+				figura = Figuras.trebol;
+			break;
+			case 3:
+				figura = Figuras.corazon;
+			break;
+			case 4:
+				figura = Figuras.diamante;
+			break;
+			default:
+				figura = Figuras.none;
+		}
+		return figura;
 	}
 }
