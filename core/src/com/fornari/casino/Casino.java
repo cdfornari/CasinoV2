@@ -12,14 +12,15 @@ public class Casino extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		Carta carta = new Carta();
+		img = new Texture(carta.path);
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 1, 1, 1);
+		ScreenUtils.clear(0,0,0,0);
 		batch.begin();
-		batch.draw(img, 0, 0);
+		batch.draw(img, 50, 50);
 		batch.end();
 	}
 	

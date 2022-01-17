@@ -1,6 +1,4 @@
 package com.fornari.casino;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import java.util.UUID;
 import java.util.Random;
 
@@ -13,8 +11,7 @@ public class Carta {
 	private int sumaEmparejadas;
 	private boolean doblada;
 	private Carta siguiente;
-	public Texture textura;
-	public Sprite sprite;
+	public String path;
 	
 	public Carta() {
 		this.valor = new Random().nextInt(13) + 1;
@@ -44,6 +41,34 @@ public class Carta {
 		}else {
 			this.puntaje = 0;
 		}
+		this.path = this.buildPath();
+	}
+	
+	private String buildPath() {
+		String path = "Cards/card";
+		switch(this.figura) {
+			case espada:
+				path = path + "Spades";
+			break;
+			case trebol:
+				path = path + "Clubs";
+			break;
+			case corazon:
+				path = path + "Hearts";
+			break;
+			case diamante:
+				path = path + "Diamonds";
+			break;
+			case none:
+			break;
+		}
+		if(this.valor <= 10 && this.valor != 1) {
+			path = path + this.valor;
+		}else {
+			path = path + this.representacion;
+		}
+		path = path + ".png";
+		return path;
 	}
 	
 	public int getValor(){
