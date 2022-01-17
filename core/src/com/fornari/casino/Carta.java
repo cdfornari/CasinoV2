@@ -1,5 +1,6 @@
 package com.fornari.casino;
-
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import java.util.UUID;
 import java.util.Random;
 
@@ -12,6 +13,8 @@ public class Carta {
 	private int sumaEmparejadas;
 	private boolean doblada;
 	private Carta siguiente;
+	public Texture textura;
+	public Sprite sprite;
 	
 	public Carta() {
 		this.valor = new Random().nextInt(13) + 1;
@@ -33,7 +36,6 @@ public class Carta {
 				this.representacion = 'K';
 			default:
 				this.representacion = 'N';
-				
 		}
 		if(valor == 10 && figura == Figuras.diamante) {
 			this.puntaje = 2;
