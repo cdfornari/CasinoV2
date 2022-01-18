@@ -20,7 +20,7 @@ public class Casino extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(0,0,0,0);
 		batch.begin();
-		batch.draw(img, 50, 50);
+		batch.draw(img,0,0);
 		batch.end();
 	}
 	

@@ -12,6 +12,8 @@ public class Carta {
 	private boolean doblada;
 	private Carta siguiente;
 	public String path;
+	float x;
+	float y;
 	
 	public Carta() {
 		this.valor = new Random().nextInt(13) + 1;
@@ -19,7 +21,7 @@ public class Carta {
 		this.idEmparejamiento = "000";
 		this.sumaEmparejadas = 0;
 		this.doblada = false;
-		switch(valor) {
+		switch(this.valor) {
 			case 1:
 				this.representacion = 'A';
 			break;
@@ -62,7 +64,7 @@ public class Carta {
 			case none:
 			break;
 		}
-		if(this.valor <= 10 && this.valor != 1) {
+		if(this.representacion == 'N') {
 			path = path + this.valor;
 		}else {
 			path = path + this.representacion;
