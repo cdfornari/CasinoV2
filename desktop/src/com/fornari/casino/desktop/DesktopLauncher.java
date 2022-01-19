@@ -3,13 +3,14 @@ package com.fornari.casino.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.fornari.casino.Casino;
+import com.fornari.utils.Config;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Casino";
-		config.width = 1280;
-	    config.height = 720;
+		config.width = Config.anchoPantalla;
+	    config.height = Config.altoPantalla;
 		new LwjglApplication(new Casino(), config);
 	}
 }

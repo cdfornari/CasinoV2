@@ -15,4 +15,12 @@ public class Imagen {
 	public void dibujar() {
 		this.sprite.draw(Render.batch);
 	}
+	
+	public void setSize(int ancho, int alto) {
+		sprite.setSize(ancho, alto);
+	}
+	
+	public void setTransparencia(float transparencia) {
+		sprite.setAlpha(transparencia);
+	}
 }
