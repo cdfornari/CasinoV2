@@ -1,5 +1,8 @@
 package com.fornari.casino;
 import java.util.UUID;
+
+import com.fornari.utils.Imagen;
+
 import java.util.Random;
 
 public class Carta {
@@ -11,9 +14,7 @@ public class Carta {
 	private int sumaEmparejadas;
 	private boolean doblada;
 	private Carta siguiente;
-	public String path;
-	float x;
-	float y;
+	private Imagen imagen;
 	
 	public Carta() {
 		this.valor = new Random().nextInt(13) + 1;
@@ -43,7 +44,7 @@ public class Carta {
 		}else {
 			this.puntaje = 0;
 		}
-		this.path = this.buildPath();
+		this.setImagen(new Imagen(this.buildPath()));
 	}
 	
 	private String buildPath() {
@@ -145,5 +146,13 @@ public class Carta {
 				figura = Figuras.none;
 		}
 		return figura;
+	}
+
+	public Imagen getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(Imagen imagen) {
+		this.imagen = imagen;
 	}
 }

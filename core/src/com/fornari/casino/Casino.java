@@ -1,32 +1,42 @@
 package com.fornari.casino;
-
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
+import com.fornari.screens.*;
+import com.fornari.utils.*;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 
-public class Casino extends ApplicationAdapter {
-	private SpriteBatch batch;
-	private Texture img;
+public class Casino extends Game {
+	private String userName;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		Carta carta = new Carta();
-		img = new Texture(carta.path);
+		Render.batch = new SpriteBatch();
+		this.setUserName(cargarNombre());
+		if(this.userName == "") {
+			this.setScreen(new NameScreen());
+		}else {
+			this.setScreen(new MenuScreen());
+		}
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(0,0,0,0);
-		batch.begin();
-		batch.draw(img,0,0);
-		batch.end();
+
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+		Render.batch.dispose();
+	}
+	
+	private String cargarNombre() {
+		return "";
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }
