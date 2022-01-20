@@ -33,7 +33,7 @@ public class MenuScreen implements Screen{
 		// TODO Auto-generated method stub
 		Render.batch.begin();
 		fondo.dibujar();
-		usuario.dibujar("Bienvenido, usuario: ", mitadAncho-900/2, 1025);
+		usuario.dibujar("Bienvenido, " + Config.userName, 480, 900);
 		jugarPartida.dibujar("Jugar nueva partida", mitadAncho-(int)jugarPartida.getAncho()/2, Config.altoPantalla/2-(int)jugarPartida.getAlto()/2);
 		salir.dibujar("Salir", (int)mitadAncho-(int)salir.getAncho()/2, (int)jugarPartida.getY()-(int)jugarPartida.getAlto()-espacio);
 		Render.batch.end();
