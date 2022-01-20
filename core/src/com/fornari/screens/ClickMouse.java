@@ -3,7 +3,7 @@ package com.fornari.screens;
 import com.badlogic.gdx.InputProcessor;
 import com.fornari.utils.Config;
 
-public class ClicMouse implements InputProcessor {
+public class ClickMouse implements InputProcessor {
 	int posicionX=0, posicionY=0;
 	boolean click=false;
 	

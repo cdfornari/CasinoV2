@@ -16,6 +16,7 @@ public class NameScreen implements Screen{
 	Imagen fondo;
 	Texto titulo;
 	Texto texto;
+	Skin skin;
 	TextField userInput;
 	Stage stage;
 
@@ -25,8 +26,10 @@ public class NameScreen implements Screen{
 		fondo.setSize(Config.anchoPantalla,Config.altoPantalla);
 		titulo = new Texto(Config.pathFuenteTitulo,72,Color.BLACK);
 		texto = new Texto(Config.pathFuenteTexto,52,Color.BLACK);
-		//userInput = new TextField("",new Skin(Gdx.files.internal("json/uiskin.json")));
+		skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
+		//userInput = new TextField("",skin);
 		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -35,9 +38,7 @@ public class NameScreen implements Screen{
 		fondo.dibujar();
 		titulo.dibujar("Bienvenido al juego Casino", 480, 900);
 		texto.dibujar("Ingrese su nombre", 420, 680);
-		//userInput.setPosition(420, 620);
-		//userInput.setSize(200, 40);
-		//userInput.draw(Render.batch, 100);
+		
 		Render.batch.end();
 	}
 

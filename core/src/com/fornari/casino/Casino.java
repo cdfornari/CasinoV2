@@ -14,7 +14,7 @@ public class Casino extends Game {
 		Render.batch = new SpriteBatch();
 		this.setUserName(cargarNombre());
 		if(this.userName == "") {
-			this.setScreen(new NameScreen()); //NameScreen();
+			this.setScreen(new NameScreen());
 		}else {
 			this.setScreen(new MenuScreen());
 		}
