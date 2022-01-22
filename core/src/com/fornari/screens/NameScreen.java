@@ -1,5 +1,5 @@
 package com.fornari.screens;
-
+import com.fornari.utils.Render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fornari.casino.Casino;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
-import com.fornari.utils.Render;
 import com.fornari.utils.Texto;
 
 public class NameScreen implements Screen{
@@ -50,7 +49,7 @@ public class NameScreen implements Screen{
 					Casino.ventana.setScreen(new MenuScreen());
 				}
 				else
-					System.out.println(); //TODO: mostrar msg error
+					Render.mostrarMensaje(stage,"Error","Ingresa un nombre valido","Ok");
 			}
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
