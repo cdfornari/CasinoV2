@@ -10,12 +10,14 @@ import com.fornari.utils.Render;
 import com.fornari.utils.Texto;
 
 public class MenuScreen implements Screen{
-	Imagen fondo;
-	Texto usuario,jugarPartida,salir,pos;
-	ClickMouse ClickMouse = new ClickMouse();
-	int espacio=50; //Espacio entre cada opcion del menu
-	int mitadAncho= Config.anchoPantalla/2;
-	int opcion;
+	private Imagen fondo;
+	private Texto usuario;
+	private Texto opciones[] = new Texto[3];
+	private String textos[] = {"Jugar nueva partida","Continuar partida anterior","Salir"};
+	private ClickMouse ClickMouse = new ClickMouse();
+	private int espacio; //Espacio en y entre cada opcion del menu
+	private int alto; //altura a la que comienzan las opciones del menu
+	private int opcion;
 
 
 	@Override
@@ -23,50 +25,63 @@ public class MenuScreen implements Screen{
 		fondo = new Imagen("Fondos/fondo9.jpg");
 		fondo.setSize(Config.anchoPantalla,Config.altoPantalla);
 		usuario = new Texto(Config.pathFuenteTitulo, 80, Color.GOLD);
-		jugarPartida= new Texto(Config.pathFuenteTexto,65,Color.LIGHT_GRAY);
-		salir = new Texto(Config.pathFuenteTexto,65,Color.LIGHT_GRAY);	
-		Gdx.input.setInputProcessor(ClickMouse);	
+		Gdx.input.setInputProcessor(ClickMouse);
+		for(int i = 0; i < opciones.length; i++) {
+			if(i != 1 || existeArchivo()) {
+				opciones[i] = new Texto(Config.pathFuenteTexto,56,Color.WHITE);
+			}
+		}
+		if(existeArchivo()) 
+			espacio = 150;
+		else 
+			espacio = 100;
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 		Render.batch.begin();
 		fondo.dibujar();
 		usuario.dibujar("Bienvenido, " + Config.userName, 480, 900);
-		jugarPartida.dibujar("Jugar nueva partida", mitadAncho-(int)jugarPartida.getAncho()/2, Config.altoPantalla/2-(int)jugarPartida.getAlto()/2);
-		salir.dibujar("Salir", (int)mitadAncho-(int)salir.getAncho()/2, (int)jugarPartida.getY()-(int)jugarPartida.getAlto()-espacio);
-		Render.batch.end();
-		
-		if(ClickMouse.getPosicionX()>=jugarPartida.getX() && ClickMouse.getPosicionX()<= (jugarPartida.getX()+jugarPartida.getAncho()) ) {
-			if( (ClickMouse.getPosicionY() >= (jugarPartida.getY() - jugarPartida.getAlto() ) ) && (ClickMouse.getPosicionY() <= jugarPartida.getY()) )
-				cambiarColor(1);
+		if(existeArchivo()) 
+			alto = 650;
+		else 
+			alto = 550;
+		for(int i = 0; i < opciones.length; i++) {
+			if(i != 1 || existeArchivo()) {
+				opciones[i].dibujar(textos[i],(Config.anchoPantalla/2)-(opciones[i].getAncho()/2),alto);
+				alto = alto - espacio;
 			}
-		
-		if(ClickMouse.getPosicionX()>=salir.getX() && ClickMouse.getPosicionX()<= (salir.getX()+salir.getAncho()) ) {
-			if( (ClickMouse.getPosicionY() >= (salir.getY() - salir.getAlto() ) ) && (ClickMouse.getPosicionY() <= salir.getY()) )
-				cambiarColor(2);
 		}
-		
+		Render.batch.end();
+		for(int i = 0; i < opciones.length; i++) {
+			if(i != 1 || existeArchivo())
+				if(ClickMouse.getPosicionX()>=opciones[i].getX() && ClickMouse.getPosicionX()<= opciones[i].getX() + opciones[i].getAncho()) 
+					if(ClickMouse.getPosicionY() >= opciones[i].getY() + 0.75 * opciones[i].getAlto() && ClickMouse.getPosicionY() <= opciones[i].getY() + 2.75 * opciones[i].getAlto()) {
+						opciones[i].setColor(Color.RED);
+						opcion = i + 1;
+					}
+					else
+						opciones[i].setColor(Color.WHITE);
+		}
+		for(int i = 0; i < opciones.length; i++) {
+			if(i != 1 || existeArchivo())
+				if(i+1 == opcion) 
+					opciones[i].setColor(Color.RED);
+				else
+					opciones[i].setColor(Color.WHITE);
+		}
 		if(ClickMouse.isClick())
 			if(opcion==1)
 				Casino.ventana.setScreen(new GameScreen());
-			else
+			else if(opcion == 2)
+				Casino.ventana.setScreen(new GameScreen()); //TODO: cargar archivo
+			else if(opcion == 3)
 				Gdx.app.exit();
 	}
-		
 	
-	public void cambiarColor(int opcion) {
-		this.opcion=opcion;
-		if(opcion==1) {
-			jugarPartida.setColor(Color.RED);
-			salir.setColor(Color.WHITE);
-		} else {
-			jugarPartida.setColor(Color.WHITE);
-			salir.setColor(Color.RED);
-		}
+	public boolean existeArchivo() {
+		return true;
 	}
-	
 
 	@Override
 	public void resize(int width, int height) {

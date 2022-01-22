@@ -23,15 +23,15 @@ public class Texto {
 		rectangulo = new GlyphLayout();
 	}
 	
-	public void dibujar(String texto, int x, int y) {
+	public void dibujar(String texto, float x, float y) {
 		this.fuente.draw(Render.batch, texto, x , y);
 		this.x=x;
 		this.y=y;
 		this.rectangulo.setText(fuente, texto);
 	}
 	
-	public void setColor(Color color1) {
-		this.fuente.setColor(color1);
+	public void setColor(Color color) {
+		this.fuente.setColor(color);
 	}
 	
 	public void setSize(int size) {
