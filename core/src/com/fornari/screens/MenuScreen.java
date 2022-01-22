@@ -56,7 +56,7 @@ public class MenuScreen implements Screen{
 		for(int i = 0; i < opciones.length; i++) {
 			if(i != 1 || existeArchivo())
 				if(ClickMouse.getPosicionX()>=opciones[i].getX() && ClickMouse.getPosicionX()<= opciones[i].getX() + opciones[i].getAncho()) 
-					if(ClickMouse.getPosicionY() >= opciones[i].getY() + 0.75 * opciones[i].getAlto() && ClickMouse.getPosicionY() <= opciones[i].getY() + 2.75 * opciones[i].getAlto()) {
+					if(ClickMouse.getPosicionY() >= opciones[i].getY() + 1 * opciones[i].getAlto() && ClickMouse.getPosicionY() <= opciones[i].getY() + 2.5 * opciones[i].getAlto()) {
 						opciones[i].setColor(Color.RED);
 						opcion = i + 1;
 					}
