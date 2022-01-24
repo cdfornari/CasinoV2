@@ -1,7 +1,7 @@
 package com.fornari.casino;
 
 public class Jugador {
-	private Mazo cartas;
+	private Carta[] cartas;
 	private Mazo cartasRecogidas;
 	private int clarezas;
 	private String idEmparejamiento;
@@ -13,7 +13,7 @@ public class Jugador {
 		this.idEmparejamiento = "000";
 	}
 	
-	public Mazo getCartas(){
+	public Carta[] getCartas(){
 		return this.cartas;
 	}
 	
