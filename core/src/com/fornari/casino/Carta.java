@@ -34,6 +34,7 @@ public class Carta {
 			break;
 			case 13:
 				this.representacion = 'K';
+			break;
 			default:
 				this.representacion = 'N';
 		}

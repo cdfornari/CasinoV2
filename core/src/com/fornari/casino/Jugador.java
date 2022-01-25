@@ -2,19 +2,19 @@ package com.fornari.casino;
 import java.util.ArrayList;
 
 public class Jugador {
-	private Carta[] cartas;
+	private ArrayList<Carta> cartas;
 	private ArrayList<Carta> cartasRecogidas;
 	private int clarezas;
 	private String idEmparejamiento;
 	
 	public Jugador() {
-		this.cartas = null;
+		this.cartas = new ArrayList<Carta>();
 		this.cartasRecogidas = new ArrayList<Carta>();
 		this.clarezas = 0;
 		this.idEmparejamiento = "000";
 	}
 	
-	public Carta[] getCartas(){
+	public ArrayList<Carta> getCartas(){
 		return this.cartas;
 	}
 	

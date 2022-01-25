@@ -4,19 +4,24 @@ import java.util.ArrayList;
 
 public class Mazo {
 	private Carta tope = null;
+	private int size = 0;
 	
 	public Mazo() {
 		Carta carta;
 		for(int i = 1; i <= 52; i++) {
 			do {
 				carta = new Carta();
-			}while(!this.contieneCarta(carta));
+			}while(this.contieneCarta(carta));
 			apilar(carta);
 		}
 	}
 	
 	public boolean estaVacio() {
 		return this.tope == null;
+	}
+	
+	public int getSize() {
+		return this.size;
 	}
 	
 	private void apilar(Carta carta) {
@@ -26,11 +31,14 @@ public class Mazo {
 			carta.setSiguiente(this.tope);
 			this.tope = carta;
 		}
+		this.size++;
 	}
 	
 	private void desapilar() {
-		if(!estaVacio()) 
+		if(!estaVacio()) {
 			this.tope = this.tope.getSiguiente();
+			this.size--;
+		}
 	}
 	
 	private boolean contieneCarta(Carta carta) {
@@ -43,13 +51,6 @@ public class Mazo {
 			apilar(cartaTope);
 		}
 		return false;
-	}
-	
-	public void repartir(Carta[] cartas) {
-		for(int i = 0; i < 4; i++) {
-			cartas[i] = this.tope;
-			this.desapilar();
-		}
 	}
 	
 	public void repartir(ArrayList<Carta> cartas) {

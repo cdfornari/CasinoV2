@@ -21,9 +21,10 @@ public class GameScreen implements Screen{
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
 		mazo = new Mazo();
 		jugador = new Jugador();
+		computadora = new Jugador();
 		mesa = new ArrayList<Carta>();
-		mazo.repartir(jugador.getCartas());
-		mazo.repartir(computadora.getCartas());
+		mazo.repartir(this.jugador.getCartas());
+		mazo.repartir(this.computadora.getCartas());
 		mazo.repartir(mesa);
 	}
 
