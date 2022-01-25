@@ -1,5 +1,7 @@
 package com.fornari.casino;
 
+import java.util.ArrayList;
+
 public class Mazo {
 	private Carta tope = null;
 	
@@ -46,6 +48,13 @@ public class Mazo {
 	public void repartir(Carta[] cartas) {
 		for(int i = 0; i < 4; i++) {
 			cartas[i] = this.tope;
+			this.desapilar();
+		}
+	}
+	
+	public void repartir(ArrayList<Carta> cartas) {
+		for(int i = 1; i <= 4; i++) {
+			cartas.add(this.tope);
 			this.desapilar();
 		}
 	}

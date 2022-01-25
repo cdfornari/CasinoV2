@@ -1,17 +1,30 @@
 package com.fornari.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Screen;
+import com.fornari.casino.*;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Render;
 
 public class GameScreen implements Screen{
-	Imagen fondo;
+	private Mazo mazo;
+	private Jugador jugador;
+	private Jugador computadora;
+	private ArrayList<Carta> mesa;
+	private Imagen fondo;
 	
 	@Override
 	public void show() {
 		fondo = new Imagen("Fondos/fondomesa.jpg");
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
+		mazo = new Mazo();
+		jugador = new Jugador();
+		mesa = new ArrayList<Carta>();
+		mazo.repartir(jugador.getCartas());
+		mazo.repartir(computadora.getCartas());
+		mazo.repartir(mesa);
 	}
 
 	@Override

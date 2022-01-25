@@ -1,14 +1,15 @@
 package com.fornari.casino;
+import java.util.ArrayList;
 
 public class Jugador {
 	private Carta[] cartas;
-	private Mazo cartasRecogidas;
+	private ArrayList<Carta> cartasRecogidas;
 	private int clarezas;
 	private String idEmparejamiento;
 	
 	public Jugador() {
 		this.cartas = null;
-		this.cartasRecogidas = null;
+		this.cartasRecogidas = new ArrayList<Carta>();
 		this.clarezas = 0;
 		this.idEmparejamiento = "000";
 	}
@@ -17,7 +18,7 @@ public class Jugador {
 		return this.cartas;
 	}
 	
-	public Mazo getCartasRecogidas() {
+	public ArrayList<Carta> getCartasRecogidas() {
 		return this.cartasRecogidas;
 	}
 	
