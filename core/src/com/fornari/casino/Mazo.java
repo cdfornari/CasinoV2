@@ -34,23 +34,26 @@ public class Mazo {
 		this.size++;
 	}
 	
-	private void desapilar() {
+	private Carta desapilar() {
 		if(!estaVacio()) {
+			Carta carta = this.tope;
 			this.tope = this.tope.getSiguiente();
 			this.size--;
+			return carta;
 		}
+		return null;
 	}
 	
 	private boolean contieneCarta(Carta carta) {
+		boolean contiene = false;
 		if(!estaVacio()) {
 			if(this.tope == carta)
 				return true;
-			Carta cartaTope = this.tope;
-			desapilar();
-			contieneCarta(carta);
+			Carta cartaTope = desapilar();
+			contiene = contieneCarta(carta);
 			apilar(cartaTope);
 		}
-		return false;
+		return contiene;
 	}
 	
 	public void repartir(ArrayList<Carta> cartas) {
