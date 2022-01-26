@@ -47,7 +47,7 @@ public class Mazo {
 	private boolean contieneCarta(Carta carta) {
 		boolean contiene = false;
 		if(!estaVacio()) {
-			if(this.tope == carta)
+			if(this.tope.getValor() == carta.getValor() && this.tope.getFigura() == carta.getFigura())
 				return true;
 			Carta cartaTope = desapilar();
 			contiene = contieneCarta(carta);
