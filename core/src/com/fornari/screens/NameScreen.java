@@ -26,7 +26,7 @@ public class NameScreen implements Screen{
 
 	@Override
 	public void show() {
-		fondo = new Imagen("Fondos/fondo_menu.jpg");
+		fondo = new Imagen("Fondos/fondo_menu.jpg","img");
 		fondo.setSize(Config.anchoPantalla,Config.altoPantalla);
 		titulo = new Texto(Config.pathFuenteTitulo,72,Color.BLACK);
 		texto = new Texto(Config.pathFuenteTexto,46,Color.BLACK);

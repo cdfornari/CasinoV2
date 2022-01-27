@@ -2,8 +2,12 @@ package com.fornari.screens;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fornari.casino.*;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
@@ -15,13 +19,15 @@ public class GameScreen implements Screen{
 	private Jugador jugador= new Jugador();
 	private Jugador computadora = new Jugador();
 	private ArrayList<Carta> mesa = new ArrayList<Carta>();
-	private Imagen fondo = new Imagen("Fondos/fondomesa.jpg");
+	private Imagen fondo = new Imagen("Fondos/fondomesa.jpg","img");
 	private Texto contadorMazo = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen imagenMazo = new Imagen("Cards/cardBack_red5.png");
+	private Imagen imagenMazo = new Imagen("Cards/cardBack_red5.png","img");
 	private Texto contadorRecogidasJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen recogidasJugador = new Imagen("Cards/cardBack_red5.png");
+	private Imagen recogidasJugador = new Imagen("Cards/cardBack_red5.png","img");
 	private Texto contadorRecogidasComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen recogidasComputadora = new Imagen("Cards/cardBack_red5.png");
+	private Imagen recogidasComputadora = new Imagen("Cards/cardBack_red5.png","img");
+	private Stage stage = new Stage();
+	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	
 	@Override
 	public void show() {
@@ -29,13 +35,33 @@ public class GameScreen implements Screen{
 		mazo.repartir(this.jugador.getCartas());
 		mazo.repartir(this.computadora.getCartas());
 		mazo.repartir(mesa);
-		for(int i = 0; i < 4; i++)
-			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png"));
+		for(int i = 0; i < 4; i++) 
+			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
+		for(int i = 0; i < 4; i++) 
+			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"img"));
+		for(int i = 0; i < 4; i++) {
+			final int index = i;
+			jugador.getCartas().get(i).getImagen().getBtn().setName(jugador.getCartas().get(i).getName());
+			jugador.getCartas().get(i).getImagen().getBtn().addListener(new ClickListener() {
+				private int i = index;
+				@Override
+				public void touchUp(InputEvent e, float x, float y, int point, int button) {
+					jugador.getCartas().get(i).toggleSelected();
+				}
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+					return true;
+				}
+			});
+			jugador.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 100);
+			jugador.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
+			stage.addActor(jugador.getCartas().get(i).getImagen().getBtn());
+		}
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 		Render.batch.begin();
 		fondo.dibujar();
 		imagenMazo.dibujar(300, 415);
@@ -49,11 +75,12 @@ public class GameScreen implements Screen{
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
 			xCartas += 175;
 		}
-		xCartas = 600;
-		for(int i = 0; i < jugador.getCartas().size(); i++) {
-			jugador.getCartas().get(i).getImagen().dibujar(xCartas, 100);
-			xCartas += 175;
+		for(int i = 0; i < 4; i++) {
+			if(jugador.getCartas().get(i).isSelected())
+				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 290 + seleccionada.getAlto()/2);
 		}
+		stage.act(delta);
+		stage.draw();
 		xCartas = 600;
 		for(int i = 0; i < mesa.size(); i++) {
 			mesa.get(i).getImagen().dibujar(xCartas, 415);

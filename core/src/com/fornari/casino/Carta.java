@@ -15,8 +15,11 @@ public class Carta {
 	private boolean doblada;
 	private Carta siguiente;
 	private Imagen imagen;
+	private boolean selected;
+	private String name = "";
 	
 	public Carta() {
+		this.selected = false;
 		this.valor = new Random().nextInt(13) + 1;
 		this.figura = generarFigura();
 		this.idEmparejamiento = "000";
@@ -45,33 +48,34 @@ public class Carta {
 		}else {
 			this.puntaje = 0;
 		}
-		this.setImagen(new Imagen(this.buildPath()));
+		this.setImagen(new Imagen(this.buildPath(),"btn"));
+		this.setName();
 	}
 	
-	private String buildPath() {
+	public String buildPath() {
 		String path = "Cards/card";
 		switch(this.figura) {
 			case espada:
-				path = path + "Spades";
+				path += "Spades";
 			break;
 			case trebol:
-				path = path + "Clubs";
+				path += "Clubs";
 			break;
 			case corazon:
-				path = path + "Hearts";
+				path += "Hearts";
 			break;
 			case diamante:
-				path = path + "Diamonds";
+				path += "Diamonds";
 			break;
 			case none:
 			break;
 		}
 		if(this.representacion == 'N') {
-			path = path + this.valor;
+			path += this.valor;
 		}else {
-			path = path + this.representacion;
+			path += this.representacion;
 		}
-		path = path + ".png";
+		path += ".png";
 		return path;
 	}
 	
@@ -155,5 +159,41 @@ public class Carta {
 
 	public void setImagen(Imagen imagen) {
 		this.imagen = imagen;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void toggleSelected() {
+		this.selected = !this.selected;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	private void setName() {
+		switch(this.figura) {
+			case espada:
+				this.name += "Spades";
+			break;
+			case trebol:
+				this.name += "Clubs";
+			break;
+			case corazon:
+				this.name += "Hearts";
+			break;
+			case diamante:
+				this.name += "Diamonds";
+			break;
+			case none:
+			break;
+		}
+		if(this.representacion == 'N') {
+			this.name += this.valor;
+		}else {
+			this.name += this.representacion;
+		}
 	}
 }

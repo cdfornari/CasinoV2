@@ -24,7 +24,7 @@ public class MenuScreen implements Screen{
 
 	@Override
 	public void show() {
-		fondo = new Imagen("Fondos/fondo9.jpg");
+		fondo = new Imagen("Fondos/fondo9.jpg","img");
 		fondo.setSize(Config.anchoPantalla,Config.altoPantalla);
 		usuario = new Texto(Config.pathFuenteTitulo, 80, Color.GOLD);
 		Gdx.input.setInputProcessor(ClickMouse);
