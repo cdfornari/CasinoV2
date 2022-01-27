@@ -16,7 +16,6 @@ public class Carta {
 	private Carta siguiente;
 	private Imagen imagen;
 	private boolean selected;
-	private String name = "";
 	
 	public Carta() {
 		this.selected = false;
@@ -49,7 +48,6 @@ public class Carta {
 			this.puntaje = 0;
 		}
 		this.setImagen(new Imagen(this.buildPath(),"btn"));
-		this.setName();
 	}
 	
 	public String buildPath() {
@@ -167,33 +165,5 @@ public class Carta {
 
 	public void toggleSelected() {
 		this.selected = !this.selected;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	private void setName() {
-		switch(this.figura) {
-			case espada:
-				this.name += "Spades";
-			break;
-			case trebol:
-				this.name += "Clubs";
-			break;
-			case corazon:
-				this.name += "Hearts";
-			break;
-			case diamante:
-				this.name += "Diamonds";
-			break;
-			case none:
-			break;
-		}
-		if(this.representacion == 'N') {
-			this.name += this.valor;
-		}else {
-			this.name += this.representacion;
-		}
 	}
 }

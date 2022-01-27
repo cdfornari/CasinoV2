@@ -41,7 +41,6 @@ public class GameScreen implements Screen{
 			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"img"));
 		for(int i = 0; i < 4; i++) {
 			final int index = i;
-			jugador.getCartas().get(i).getImagen().getBtn().setName(jugador.getCartas().get(i).getName());
 			jugador.getCartas().get(i).getImagen().getBtn().addListener(new ClickListener() {
 				private int i = index;
 				@Override
