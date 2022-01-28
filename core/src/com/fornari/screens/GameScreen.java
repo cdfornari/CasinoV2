@@ -7,11 +7,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fornari.casino.*;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Render;
+import com.fornari.utils.SelectMovimiento;
 import com.fornari.utils.Texto;
 
 public class GameScreen implements Screen{
@@ -44,8 +46,11 @@ public class GameScreen implements Screen{
 				private int i = index;
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
-					if(seleccionadas.size() == 0) {
-						
+					if(seleccionadas.size() == 0) 
+						Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
+					else {
+						@SuppressWarnings("unused")
+						SelectMovimiento select = new SelectMovimiento(stage);
 					}
 				}
 				@Override
@@ -64,7 +69,10 @@ public class GameScreen implements Screen{
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
 					jugador.getCartas().get(i).toggleSelected();
-					seleccionadas.add(jugador.getCartas().get(i));
+					if(jugador.getCartas().get(i).isSelected())
+						seleccionadas.add(jugador.getCartas().get(i));
+					else
+						seleccionadas.remove(seleccionadas.indexOf(jugador.getCartas().get(i)));
 				}
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
