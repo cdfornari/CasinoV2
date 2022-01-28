@@ -28,6 +28,7 @@ public class GameScreen implements Screen{
 	private Imagen recogidasComputadora = new Imagen("Cards/cardBack_red5.png","img");
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
+	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
 	
 	@Override
 	public void show() {
@@ -37,8 +38,25 @@ public class GameScreen implements Screen{
 		mazo.repartir(mesa);
 		for(int i = 0; i < 4; i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
-		for(int i = 0; i < 4; i++) 
-			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"img"));
+		for(int i = 0; i < 4; i++) {
+			final int index = i;
+			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
+				private int i = index;
+				@Override
+				public void touchUp(InputEvent e, float x, float y, int point, int button) {
+					if(seleccionadas.size() == 0) {
+						
+					}
+				}
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+					return true;
+				}
+			});
+			mesa.get(i).getImagen().getBtn().setPosition(600 + i * 175, 415);
+			mesa.get(i).getImagen().getBtn().setSize(140, 190);
+			stage.addActor(mesa.get(i).getImagen().getBtn());
+		}
 		for(int i = 0; i < 4; i++) {
 			final int index = i;
 			jugador.getCartas().get(i).getImagen().getBtn().addListener(new ClickListener() {
@@ -46,6 +64,7 @@ public class GameScreen implements Screen{
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
 					jugador.getCartas().get(i).toggleSelected();
+					seleccionadas.add(jugador.getCartas().get(i));
 				}
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -80,11 +99,6 @@ public class GameScreen implements Screen{
 		}
 		stage.act(delta);
 		stage.draw();
-		xCartas = 600;
-		for(int i = 0; i < mesa.size(); i++) {
-			mesa.get(i).getImagen().dibujar(xCartas, 415);
-			xCartas += 175;
-		}
 		Render.batch.end();
 	}
 
