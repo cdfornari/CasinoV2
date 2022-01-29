@@ -1,13 +1,13 @@
 package com.fornari.screens;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fornari.casino.*;
 import com.fornari.utils.Config;
@@ -31,26 +31,38 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
+	private boolean turno;
 	
 	@Override
 	public void show() {
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
+		if(new Random(2).nextInt() == 0)
+			this.turno = true;
+		else
+			this.turno = false;
 		mazo.repartir(this.jugador.getCartas());
 		mazo.repartir(this.computadora.getCartas());
 		mazo.repartir(mesa);
 		for(int i = 0; i < 4; i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
 		for(int i = 0; i < 4; i++) {
-			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
-				private int i = index;
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
-					if(seleccionadas.size() == 0) 
-						Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
-					else {
-						@SuppressWarnings("unused")
-						SelectMovimiento select = new SelectMovimiento(stage);
+					if(turno) {
+						if(seleccionadas.size() == 0) 
+							Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
+						else {
+							SelectMovimiento select = new SelectMovimiento(stage);
+							if(select.getMovimiento() == "recoger") {
+							
+							}else if(select.getMovimiento() == "emparejar"){
+								
+							}else if(select.getMovimiento() == "doblar") {
+								
+							}
+							turno = false;
+						}
 					}
 				}
 				@Override
@@ -68,11 +80,13 @@ public class GameScreen implements Screen{
 				private int i = index;
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
-					jugador.getCartas().get(i).toggleSelected();
-					if(jugador.getCartas().get(i).isSelected())
-						seleccionadas.add(jugador.getCartas().get(i));
-					else
-						seleccionadas.remove(seleccionadas.indexOf(jugador.getCartas().get(i)));
+					if(turno) {
+						jugador.getCartas().get(i).toggleSelected();
+						if(jugador.getCartas().get(i).isSelected())
+							seleccionadas.add(jugador.getCartas().get(i));
+						else
+							seleccionadas.remove(seleccionadas.indexOf(jugador.getCartas().get(i)));
+					}
 				}
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -104,6 +118,10 @@ public class GameScreen implements Screen{
 		for(int i = 0; i < 4; i++) {
 			if(jugador.getCartas().get(i).isSelected())
 				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 290 + seleccionada.getAlto()/2);
+		}
+		if(!turno) {
+			
+			turno = true;
 		}
 		stage.act(delta);
 		stage.draw();

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class SelectMovimiento extends Dialog{
+	private String movimiento;
 	
 	public SelectMovimiento(Stage stage) {
 		super("Selecciona", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
@@ -23,11 +24,15 @@ public class SelectMovimiento extends Dialog{
 	protected void result(Object object) {
 		super.result(object);
 		if(object.equals("recoger"))
-			System.out.print("recoger");
+			this.movimiento = "recoger";
 		else if(object.equals("emparejar"))
-			System.out.print("emparejar");
+			this.movimiento = "emparejar";
 		else if(object.equals("doblar"))
-			System.out.print("doblar");
+			this.movimiento = "doblar";
+	}
+
+	public String getMovimiento() {
+		return movimiento;
 	}
 
 }
