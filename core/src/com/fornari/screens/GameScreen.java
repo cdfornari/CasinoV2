@@ -166,8 +166,15 @@ public class GameScreen implements Screen{
 				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 290 + seleccionada.getAlto()/2);
 		}
 		if(!turno) {
-			
+			//movimientos computadora
 			turno = true;
+		}
+		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
+			mazo.repartir(this.jugador.getCartas());
+			mazo.repartir(this.computadora.getCartas());
+		}
+		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
+			//termina juego
 		}
 		stage.act(delta);
 		stage.draw();
