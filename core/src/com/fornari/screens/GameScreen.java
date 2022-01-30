@@ -43,17 +43,16 @@ public class GameScreen implements Screen{
 	private boolean turno;
 	
 	public GameScreen() {
-	/*
-		if(archivo.existeArchivo()) {
+	
+		if(Archivo.existeArchivo()) {
 			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			mazo=archivo.transformarMazo(archivo.getArbol().buscarNodoEnArbol("MAZO").getListaCarta());
 			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
 			jugador=archivo.getArbol().buscarNodoEnArbol("JUGADOR").getJugador();
 			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
-			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();	
-			System.out.println("JUGADOR :"+jugador.getCartas().get(0).getValor());
+			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();
 		}
-		*/	
+			
 	}
 	
 	static void removeAllListeners(Actor actor) {
@@ -138,10 +137,12 @@ public class GameScreen implements Screen{
 			this.turno = true;
 		else
 			this.turno = false;
-		//if(!archivo.existeArchivo()) 
+		if(!Archivo.existeArchivo()) {
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 			mazo.repartir(mesa);
+		} 
+			
 		
 		
 		updateGameState(true);
@@ -153,7 +154,7 @@ public class GameScreen implements Screen{
 				if(seleccionadas.size() == 1) {
 					jugador.lanzarCarta(mesa, seleccionadas.get(0));
 					updateGameState(false);
-					archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+					//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 				}
 				else 
 					Render.mostrarMensaje(stage, "Error", "Seleccione una y solo una carta para lanzar", "Ok");
@@ -163,8 +164,8 @@ public class GameScreen implements Screen{
 				return true;
 			}
 		});
-		stage.addActor(btnLanzar);
-		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+		
+		//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -199,6 +200,7 @@ public class GameScreen implements Screen{
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 			//termina juego
 		}
+		
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();

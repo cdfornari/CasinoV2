@@ -16,6 +16,10 @@ public class Mazo {
 		}
 	}
 	
+	public Mazo(boolean vacio) {
+		
+	}
+	
 	public boolean estaVacio() {
 		return this.tope == null;
 	}

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ import com.fornari.casino.Figuras;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
 import com.fornari.utils.Config;
+import com.fornari.utils.Imagen;
 
 public class Archivo {
 	private Arbol arbol;
@@ -31,6 +33,8 @@ public class Archivo {
 		else
 			return false;
 	}
+	
+	
 
 	public void vaciarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) {
 			try {
@@ -45,43 +49,32 @@ public class Archivo {
 		if(existeArchivo())
 			try {
 				cargarInformacion(mazo, mesa, jugador, computadora, seleccionadas);
+				
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+
 		System.out.println("PARTIDA CARGADA: ");
 		getArbol().imprimirArbol();
 	}
 	
 	public static String nombreUsuario() {
 		String linea="";
-		if(existeArchivo()) {
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new FileReader(Config.pathArchivo));
-				try {
-					while(!(linea=reader.readLine()).equals("///"))
-						System.out.println("");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					linea=reader.readLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		File file= new File(Config.pathArchivo);
+		try {
+			RandomAccessFile raf = new RandomAccessFile(file, "r");
+			if(existeArchivo()) {
+				while(!(linea=raf.readLine()).equals("///"))
+					System.out.println("");
+				linea=raf.readLine();
+				raf.seek(0);
+				return linea;
 			}
-			try {
-				reader.reset();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return linea;
 	}
 	
@@ -112,6 +105,7 @@ public class Archivo {
 		reader.readLine();
 		Config.setNombre(reader.readLine());
 		System.out.println("USUARIO: "+Config.userName);
+		
 	}
 	
 	
@@ -206,6 +200,7 @@ public class Archivo {
 			carta=crearCarta(linea,contarLinea,carta);
 			++contarLinea;
 			if(contarLinea==9) {
+				carta.setImagen(new Imagen(carta.buildPath(),"btn"));
 				listaCarta.add(carta);
 				carta=new Carta();
 				contarLinea=1;
@@ -225,7 +220,7 @@ public class Archivo {
 	}
 	
 	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
-		Mazo mazo=new Mazo();
+		Mazo mazo=new Mazo(true);
 		for(Carta carta: listaCartas) 
 			mazo.apilar(carta);
 		return mazo;

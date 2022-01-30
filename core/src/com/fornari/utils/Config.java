@@ -21,8 +21,7 @@ public class Config {
 	
 	
 	private static String getNombre(){
-		//if(Archivo.existeArchivo())
-		//return Archivo.nombreUsuario();
+	
 		return "";
 	}
 	

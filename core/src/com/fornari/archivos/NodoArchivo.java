@@ -116,6 +116,13 @@ public class NodoArchivo {
 		
 	}
 	
+	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
+		Mazo mazo=new Mazo(true);
+		for(Carta carta: listaCartas) 
+			mazo.apilar(carta);
+		return mazo;
+	}
+	
 	public void escribirEnArchivo() {
 		if(this!=null) {
 			imprimirNodo();
