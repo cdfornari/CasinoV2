@@ -30,7 +30,7 @@ public class NameScreen implements Screen{
 		fondo.setSize(Config.anchoPantalla,Config.altoPantalla);
 		titulo = new Texto(Config.pathFuenteTitulo,72,Color.BLACK);
 		texto = new Texto(Config.pathFuenteTexto,46,Color.BLACK);
-		skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
+		skin = new Skin(Gdx.files.internal(Config.pathSkin));
 		//textfield
 		userInput = new TextField("",skin);
 		userInput.setPosition(480, 480);

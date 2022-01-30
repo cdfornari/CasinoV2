@@ -5,6 +5,7 @@ public class Config {
 	public static final int altoPantalla = 1080;
 	public static final String pathFuenteTitulo = "fuentes/BalsamiqSans-Regular.ttf";
 	public static final String pathFuenteTexto = "fuentes/Montserrat-Bold.ttf";
+	public static final String pathSkin = "shade/skin/uiskin.json";
 	public static String userName = getNombre();
 	
 	private static String getNombre() {

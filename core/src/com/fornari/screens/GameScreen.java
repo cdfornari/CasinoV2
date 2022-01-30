@@ -6,9 +6,14 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.fornari.casino.*;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
@@ -31,21 +36,31 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
+	private TextButton btnLanzar = new TextButton("Lanzar cartas",new Skin(Gdx.files.internal(Config.pathSkin)));
 	private boolean turno;
 	
-	@Override
-	public void show() {
-		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
-		if(new Random(2).nextInt() == 0)
-			this.turno = true;
-		else
-			this.turno = false;
-		mazo.repartir(this.jugador.getCartas());
-		mazo.repartir(this.computadora.getCartas());
-		mazo.repartir(mesa);
-		for(int i = 0; i < 4; i++) 
+	static void removeAllListeners(Actor actor) {
+        Array<EventListener> listeners = new Array<>(actor.getListeners());
+        for (EventListener listener : listeners)
+            actor.removeListener(listener);
+    }
+	
+	public void updateGameState(boolean firstTime) {
+		if(!firstTime) {
+			seleccionadas.clear();
+			jugador.unselectAll();
+			for(int i = 0; i < mesa.size(); i++) {
+				removeAllListeners(mesa.get(i).getImagen().getBtn());
+				mesa.get(i).getImagen().getBtn().remove();
+			}
+			for(int i = 0; i < jugador.getCartas().size(); i++) {
+				removeAllListeners(jugador.getCartas().get(i).getImagen().getBtn());
+				jugador.getCartas().get(i).getImagen().getBtn().remove();
+			}
+		}
+		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < mesa.size(); i++) {
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
@@ -74,7 +89,7 @@ public class GameScreen implements Screen{
 			mesa.get(i).getImagen().getBtn().setSize(140, 190);
 			stage.addActor(mesa.get(i).getImagen().getBtn());
 		}
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < jugador.getCartas().size(); i++) {
 			final int index = i;
 			jugador.getCartas().get(i).getImagen().getBtn().addListener(new ClickListener() {
 				private int i = index;
@@ -97,6 +112,37 @@ public class GameScreen implements Screen{
 			jugador.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
 			stage.addActor(jugador.getCartas().get(i).getImagen().getBtn());
 		}
+	}
+	
+	@Override
+	public void show() {
+		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
+		if(new Random(2).nextInt() == 0)
+			this.turno = true;
+		else
+			this.turno = false;
+		mazo.repartir(this.jugador.getCartas());
+		mazo.repartir(this.computadora.getCartas());
+		mazo.repartir(mesa);
+		updateGameState(true);
+		btnLanzar.setPosition(300,170);
+		btnLanzar.setSize(250,50);
+		btnLanzar.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				if(seleccionadas.size() == 1) {
+					jugador.lanzarCarta(mesa, seleccionadas.get(0));
+					updateGameState(false);
+				}
+				else 
+					Render.mostrarMensaje(stage, "Error", "Seleccione una y solo una carta para lanzar", "Ok");
+			}
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+		});
+		stage.addActor(btnLanzar);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -115,7 +161,7 @@ public class GameScreen implements Screen{
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
 			xCartas += 175;
 		}
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < jugador.getCartas().size(); i++) {
 			if(jugador.getCartas().get(i).isSelected())
 				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 290 + seleccionada.getAlto()/2);
 		}

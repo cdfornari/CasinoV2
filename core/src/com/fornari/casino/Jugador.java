@@ -38,6 +38,13 @@ public class Jugador {
 		this.idEmparejamiento = id;
 	}
 	
+	public void unselectAll() {
+		for(int i = 0; i < cartas.size(); i++) {
+			if(cartas.get(i).isSelected())
+				cartas.get(i).toggleSelected();
+		}
+	}
+	
 	public int contarPuntaje() {
 		return 0;
 	}
@@ -46,8 +53,9 @@ public class Jugador {
 		
 	}
 	
-	public void lanzarCarta(Mazo mesa, Carta cartaJugador) {
-		
+	public void lanzarCarta(ArrayList<Carta> mesa, Carta cartaJugador) {
+		cartas.remove(cartas.indexOf(cartaJugador));
+		mesa.add(cartaJugador);
 	}
 	
 	public void recogerCarta(Mazo mesa, Carta cartaARecoger, Carta cartaJugador) {
