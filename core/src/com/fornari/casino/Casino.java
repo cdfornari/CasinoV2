@@ -14,7 +14,7 @@ public class Casino extends Game {
 		ventana = this;
 		Render.batch = new SpriteBatch();
 		this.setUserName(cargarNombre());
-		Config.userName=cargarNombre();
+		Config.userName=Archivo.nombreUsuario();
 		if(this.userName == "") {
 			this.setScreen(new NameScreen());
 		}else {

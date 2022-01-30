@@ -21,7 +21,6 @@ public class Config {
 	
 	
 	private static String getNombre(){
-	
 		return "";
 	}
 	

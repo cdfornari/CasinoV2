@@ -1,6 +1,5 @@
 package com.fornari.screens;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -39,11 +38,11 @@ public class GameScreen implements Screen{
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
 	private TextButton btnLanzar = new TextButton("Lanzar cartas",new Skin(Gdx.files.internal(Config.pathSkin)));
-	private Archivo archivo=new Archivo();
 	private boolean turno;
+	private Archivo archivo=new Archivo();
 	
 	public GameScreen() {
-	
+		
 		if(Archivo.existeArchivo()) {
 			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			mazo=archivo.transformarMazo(archivo.getArbol().buscarNodoEnArbol("MAZO").getListaCarta());
@@ -52,7 +51,6 @@ public class GameScreen implements Screen{
 			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
 			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();
 		}
-			
 	}
 	
 	static void removeAllListeners(Actor actor) {
@@ -141,9 +139,7 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 			mazo.repartir(mesa);
-		} 
-			
-		
+		}
 		
 		updateGameState(true);
 		btnLanzar.setPosition(300,170);
@@ -153,8 +149,8 @@ public class GameScreen implements Screen{
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
 				if(seleccionadas.size() == 1) {
 					jugador.lanzarCarta(mesa, seleccionadas.get(0));
+					archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 					updateGameState(false);
-					//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 				}
 				else 
 					Render.mostrarMensaje(stage, "Error", "Seleccione una y solo una carta para lanzar", "Ok");
@@ -164,8 +160,7 @@ public class GameScreen implements Screen{
 				return true;
 			}
 		});
-		
-		//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+		stage.addActor(btnLanzar);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -200,7 +195,6 @@ public class GameScreen implements Screen{
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 			//termina juego
 		}
-		
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();

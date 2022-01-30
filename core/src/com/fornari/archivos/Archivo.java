@@ -62,8 +62,8 @@ public class Archivo {
 		String linea="";
 		File file= new File(Config.pathArchivo);
 		try {
-			RandomAccessFile raf = new RandomAccessFile(file, "r");
 			if(existeArchivo()) {
+				RandomAccessFile raf = new RandomAccessFile(file, "r");
 				while(!(linea=raf.readLine()).equals("///"))
 					System.out.println("");
 				linea=raf.readLine();
