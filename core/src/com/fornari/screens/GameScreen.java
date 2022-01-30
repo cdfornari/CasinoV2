@@ -1,5 +1,6 @@
 package com.fornari.screens;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.fornari.archivos.Archivo;
 import com.fornari.casino.*;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
@@ -37,7 +39,22 @@ public class GameScreen implements Screen{
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
 	private TextButton btnLanzar = new TextButton("Lanzar cartas",new Skin(Gdx.files.internal(Config.pathSkin)));
+	private Archivo archivo=new Archivo();
 	private boolean turno;
+	
+	public GameScreen() {
+	/*
+		if(archivo.existeArchivo()) {
+			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			mazo=archivo.transformarMazo(archivo.getArbol().buscarNodoEnArbol("MAZO").getListaCarta());
+			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
+			jugador=archivo.getArbol().buscarNodoEnArbol("JUGADOR").getJugador();
+			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
+			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();	
+			System.out.println("JUGADOR :"+jugador.getCartas().get(0).getValor());
+		}
+		*/	
+	}
 	
 	static void removeAllListeners(Actor actor) {
         Array<EventListener> listeners = new Array<>(actor.getListeners());
@@ -121,9 +138,12 @@ public class GameScreen implements Screen{
 			this.turno = true;
 		else
 			this.turno = false;
-		mazo.repartir(this.jugador.getCartas());
-		mazo.repartir(this.computadora.getCartas());
-		mazo.repartir(mesa);
+		//if(!archivo.existeArchivo()) 
+			mazo.repartir(this.jugador.getCartas());
+			mazo.repartir(this.computadora.getCartas());
+			mazo.repartir(mesa);
+		
+		
 		updateGameState(true);
 		btnLanzar.setPosition(300,170);
 		btnLanzar.setSize(250,50);
@@ -133,6 +153,7 @@ public class GameScreen implements Screen{
 				if(seleccionadas.size() == 1) {
 					jugador.lanzarCarta(mesa, seleccionadas.get(0));
 					updateGameState(false);
+					archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 				}
 				else 
 					Render.mostrarMensaje(stage, "Error", "Seleccione una y solo una carta para lanzar", "Ok");
@@ -143,6 +164,7 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnLanzar);
+		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -167,6 +189,7 @@ public class GameScreen implements Screen{
 		}
 		if(!turno) {
 			//movimientos computadora
+			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			turno = true;
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {

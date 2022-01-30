@@ -1,0 +1,181 @@
+package com.fornari.archivos;
+
+import java.util.ArrayList;
+
+import com.fornari.casino.Carta;
+import com.fornari.casino.Jugador;
+import com.fornari.casino.Mazo;
+public class NodoArchivo {
+	private int clave; 
+	private String texto;
+	private ArrayList<Carta> listaCarta;
+	private Jugador jugador;
+	private NodoArchivo hijoIzquierdo=null;
+	private NodoArchivo hijoDerecho=null;
+	private int contador=0;
+	
+	public NodoArchivo(Mazo mazo, String texto, int clave) {
+		this.clave=clave;
+		this.texto=texto;
+		listaCarta=new ArrayList<Carta>();
+		this.listaCarta=transformarAListaArray(mazo, this.listaCarta);
+		jugador=null;
+	}
+	
+	public NodoArchivo() {
+		
+	}
+	
+	public NodoArchivo(ArrayList<Carta> listaCarta, String texto,int clave) {
+		this.clave=clave;
+		this.texto=texto;
+		this.listaCarta=listaCarta;
+		jugador=null;
+	}
+
+	public NodoArchivo(Jugador jugador, String texto, int clave) {
+		this.clave=clave;
+		this.texto=texto;
+		this.listaCarta=null;
+		this.jugador=jugador;
+	}
+	
+	public static ArrayList<Carta> transformarAListaArray(Mazo mazo, ArrayList<Carta> listaCarta) {
+		Carta carta;
+		if(!mazo.estaVacio()) {
+			carta=mazo.getTope(); 
+			mazo.desapilar();
+			listaCarta.add(carta);
+			listaCarta=transformarAListaArray(mazo, listaCarta);
+			mazo.apilar(carta);
+		}
+		return listaCarta;
+	}
+	
+	
+	public void insertarNodo(NodoArchivo nodo) { //Crear una clase especial que recoja clave, texto, etc.
+		if(clave>nodo.getClave()) {
+			if(hijoIzquierdo!=null)
+				hijoIzquierdo.insertarNodo(nodo);
+			else
+				hijoIzquierdo=nodo;
+		} else if(clave<nodo.getClave()) {
+			if(hijoDerecho!=null)
+				hijoDerecho.insertarNodo(nodo);
+			else
+				hijoDerecho=nodo;
+		}
+	}
+	
+	public NodoArchivo buscarNodo(String textoBuscar) {
+		NodoArchivo nodoBuscar=null;
+		if(this!=null) {
+			if(this.texto==textoBuscar)
+				return this;
+			if(hijoIzquierdo!=null)
+				nodoBuscar=hijoIzquierdo.buscarNodo(textoBuscar);
+			if(nodoBuscar!=null && nodoBuscar.getTexto()==textoBuscar)
+				return nodoBuscar;
+			if(hijoDerecho!=null)
+				nodoBuscar=hijoDerecho.buscarNodo(textoBuscar);
+		}
+		return nodoBuscar;
+
+	}
+
+	public int contarNodos() { //Cuenta las nodos que hay actualmente en el arbol
+		int x=0;
+		return x;
+	}
+	
+	
+	public void eliminarNodos() { //Elimina todo el arbol
+		if(this!=null) {
+			hijoIzquierdo.eliminarNodos();
+			hijoIzquierdo=null;
+			hijoDerecho.eliminarNodos();
+			hijoDerecho=null;
+		}
+	}
+	
+	public void imprimirNodo() {
+		if(jugador==null) {
+			System.out.println("NODO: "+texto);
+			for(Carta cartas: this.listaCarta)
+				System.out.println("CARTA "+cartas.getValor() +"FIGURA: "+cartas.getFigura());
+			System.out.println("\n\n");
+		}
+		else {
+			System.out.println("NODO: "+this.texto);
+			for(Carta cartas: this.jugador.getCartas())
+				System.out.println("CARTA "+cartas.getValor() +"FIGURA: "+cartas.getFigura());
+			System.out.println("CLAREZAS:"+jugador.getClarezas());
+			System.out.println("ID:"+jugador.getIdEmparejamiento());
+			System.out.println("\n\n");
+		}
+		
+	}
+	
+	public void escribirEnArchivo() {
+		if(this!=null) {
+			imprimirNodo();
+			if(hijoIzquierdo!=null)
+				hijoIzquierdo.escribirEnArchivo();
+			if(hijoDerecho!=null)
+				hijoDerecho.escribirEnArchivo();
+		}
+	}
+
+	
+	
+	//Getters y Setters
+	
+	public int getClave() {
+		return clave;
+	}
+
+	public void setClave(int clave) {
+		this.clave = clave;
+	}
+
+	public String getTexto() {
+		return texto;
+	}
+
+	public void setTexto(String texto) {
+		this.texto = texto;
+	}
+
+	public ArrayList<Carta> getListaCarta() {
+		return listaCarta;
+	}
+
+	public void setListaCarta(ArrayList<Carta> listaCarta) {
+		this.listaCarta = listaCarta;
+	}
+	
+	public Jugador getJugador() {
+		return jugador;
+	}
+
+	public void setJugador(Jugador jugador) {
+		this.jugador = jugador;
+	}
+
+	public NodoArchivo getHijoIzquierdo() {
+		return hijoIzquierdo;
+	}
+
+	public void setHijoIzquierdo(NodoArchivo hijoIzquierdo) {
+		this.hijoIzquierdo = hijoIzquierdo;
+	}
+
+	public NodoArchivo getHijoDerecho() {
+		return hijoDerecho;
+	}
+
+	public void setHijoDerecho(NodoArchivo hijoDerecho) {
+		this.hijoDerecho = hijoDerecho;
+	}
+
+}

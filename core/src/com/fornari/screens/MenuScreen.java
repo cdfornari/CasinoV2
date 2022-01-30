@@ -1,5 +1,7 @@
 package com.fornari.screens;
 
+import java.nio.file.Paths;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -104,7 +106,10 @@ public class MenuScreen implements Screen{
 	}
 	
 	public boolean existeArchivo() {
-		return true;
+		if(Paths.get(Config.pathArchivo).toFile().exists())
+			return true;
+		else
+			return false;
 	}
 
 	@Override

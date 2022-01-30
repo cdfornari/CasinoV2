@@ -166,4 +166,34 @@ public class Carta {
 	public void toggleSelected() {
 		this.selected = !this.selected;
 	}
+
+	public int getSumaEmparejadas() {
+		return sumaEmparejadas;
+	}
+
+	public void setValor(int valor) {
+		this.valor = valor;
+	}
+
+	public void setFigura(Figuras figura) {
+		this.figura = figura;
+	}
+
+	public void setRepresentacion(char representacion) {
+		this.representacion = representacion;
+	}
+
+	public void setPuntaje(int puntaje) {
+		this.puntaje = puntaje;
+	}
+
+	public void setDoblada(boolean doblada) {
+		this.doblada = doblada;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	
 }
