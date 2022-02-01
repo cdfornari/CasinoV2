@@ -16,6 +16,10 @@ public class Mazo {
 		}
 	}
 	
+	public Mazo(boolean vacio) {
+		
+	}
+	
 	public boolean estaVacio() {
 		return this.tope == null;
 	}
@@ -24,7 +28,7 @@ public class Mazo {
 		return this.size;
 	}
 	
-	private void apilar(Carta carta) {
+	public void apilar(Carta carta) {
 		if(estaVacio())
 			this.tope = carta;
 		else {
@@ -34,7 +38,7 @@ public class Mazo {
 		this.size++;
 	}
 	
-	private Carta desapilar() {
+	public Carta desapilar() {
 		if(!estaVacio()) {
 			Carta carta = this.tope;
 			this.tope = this.tope.getSiguiente();
@@ -62,4 +66,18 @@ public class Mazo {
 			this.desapilar();
 		}
 	}
+
+	public Carta getTope() {
+		return tope;
+	}
+
+	public void setTope(Carta tope) {
+		this.tope = tope;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+	
 }
