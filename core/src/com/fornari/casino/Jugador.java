@@ -249,16 +249,41 @@ public class Jugador {
 		return true;
 	}
 	
-	public void recogerCarta(Mazo mesa, Carta cartaARecoger, Carta cartaJugador) { //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
+	public void recogerCarta(
+			ArrayList<Carta> mesa,
+			ArrayList<Carta> cartasRecogerMesa,
+			ArrayList<Carta> cartasJugador) { //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
 		
+		for(Carta carta : cartasJugador) {
+			this.cartas.remove(carta);
+		}
+		for (Carta carta: cartasRecogerMesa) {
+			mesa.remove(carta);
+		}
+		this.cartasRecogidas.addAll(cartasRecogerMesa);
+		this.cartasRecogidas.addAll(cartasJugador);
 	}
 	
-	public void emparejarCarta(Mazo mesa, Carta cartaAEmparejar, Carta cartaJugador) {
-		
+	public void emparejarCarta(ArrayList<Carta> mesa, 
+			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador) {
+		cartasAEmparejar.add(cartaJugador);
+		this.cartas.remove(cartaJugador);
+		for(Carta carta: cartasAEmparejar) {
+			if (!mesa.contains(carta)) {
+				mesa.add(carta);
+			}
+		}
 	}
 	
-	public void doblarCarta(Mazo mesa, Carta cartaADoblar, Carta cartaJugador) {
-		
+	public void doblarCarta(ArrayList<Carta> mesa, 
+			ArrayList<Carta> cartasADoblar, Carta cartaJugador) {
+		cartasADoblar.add(cartaJugador);
+		this.cartas.remove(cartaJugador);
+		for(Carta carta: cartasADoblar) {
+			if (!mesa.contains(carta)) {
+				mesa.add(carta);
+			}
+		}
 	}
 
 }
