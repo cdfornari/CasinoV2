@@ -115,19 +115,28 @@ public class GameScreen implements Screen{
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
-
+										if(jugador.validarCartasRecoger(seleccionadas, jugador.getCartas().get(index))) {
+											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+										}else 
+											Render.mostrarMensaje(stage, "Error", "No puede recoger", "Ok");
 									}
 								}else if(select.getMovimiento() == "emparejar"){
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
-										
+										if(jugador.validarCartasEmparejar(seleccionadas, jugador.getCartas().get(index))) {
+											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+										}else 
+											Render.mostrarMensaje(stage, "Error", "No puede emparejar", "Ok");
 									}
 								}else if(select.getMovimiento() == "doblar") {
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
-										
+										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
+											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+										}else 
+											Render.mostrarMensaje(stage, "Error", "No puede emparejar", "Ok");
 									}
 								}
 							}

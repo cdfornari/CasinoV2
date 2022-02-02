@@ -71,7 +71,7 @@ public class Jugador {
 		return x;
 	}
 	
-	public boolean validarCartasRecoger(ArrayList<Carta> cartasARecoger, Carta cartaJugador, Jugador jugador) {
+	public boolean validarCartasRecoger(ArrayList<Carta> cartasARecoger, Carta cartaJugador) {
 		boolean figuraSeleccionada=true, doblada=false;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0, sumaEsperada;
 		Carta cartaConId=null;
@@ -115,7 +115,7 @@ public class Jugador {
 						return false;
 					if(cartaJugador.getValor()!=sumaNoEmparejadas) //La carta no es de igual valor a la suma
 						return false;
-					if(!jugador.getIdEmparejamiento().equals("000") && contarCartas(cartaJugador, jugador)<2) //No tienes para recoger tu emparejamiento activo
+					if(!this.getIdEmparejamiento().equals("000") && contarCartas(cartaJugador, this)<2) //No tienes para recoger tu emparejamiento activo
 						return false;
 			    }else if(!id1.equals("000") && !id2.equals("000") && !id1.equals(id2) ) //No puedes porque son de emparejamiento distintos
 				   return false;
@@ -131,8 +131,8 @@ public class Jugador {
 			    		return false;
 			    	if(sumaTotal!= cartaJugador.getValor()) //No es la carta correcta para recoger
 			    		return false;
-			    	if(!jugador.getIdEmparejamiento().equals("000") && !cartaConId.getIdEmparejamiento().equals(jugador.getIdEmparejamiento())) { //No tiene carta para recoger su emparejamiento activo
-						if(contarCartas(cartaJugador, jugador)<2)
+			    	if(!this.getIdEmparejamiento().equals("000") && !cartaConId.getIdEmparejamiento().equals(this.getIdEmparejamiento())) { //No tiene carta para recoger su emparejamiento activo
+						if(contarCartas(cartaJugador, this)<2)
 							return false;
 			    	}
 			    }
@@ -141,7 +141,7 @@ public class Jugador {
 		return true;
 	}
 	
-	public boolean validarCartasEmparejar(ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador jugador) {
+	public boolean validarCartasEmparejar(ArrayList<Carta> cartasAEmparejar, Carta cartaJugador) {
 		boolean figuraSeleccionada=true;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0;
 		Carta cartaConId=null;
@@ -149,7 +149,7 @@ public class Jugador {
 		Carta cartaVerificar = new Carta();
 		
 		if(cartaJugador.getValor()<=10) figuraSeleccionada=false;
-		if(!jugador.getIdEmparejamiento().equals("000")) //No puedes hacer otro emparejamiento porque ya tienes uno
+		if(!this.getIdEmparejamiento().equals("000")) //No puedes hacer otro emparejamiento porque ya tienes uno
 			return false;
 		if(figuraSeleccionada) { //Emparejar figuras
 			for(Carta carta: cartasAEmparejar) {
@@ -163,7 +163,7 @@ public class Jugador {
 			if(contarFiguras==3 || contarFiguras==1) //No se pueden emparejar 3 o 2 figuras
 				return false;
 			cartaVerificar.setValor(cartaJugador.getValor());
-			if(contarCartas(cartaVerificar, jugador)<2) //No tiene carta para recoger emparejamiento
+			if(contarCartas(cartaVerificar, this)<2) //No tiene carta para recoger emparejamiento
 	    		return false;
 		} else { //Recoger numeros
 			for(Carta carta: cartasAEmparejar) {
@@ -189,7 +189,7 @@ public class Jugador {
 			if(id1.equals("000") && id2.equals("000")) {
 				if((sumaNoEmparejadas + cartaJugador.getValor())>10) //La suma no puede exceder de 10
 					return false;
-				if(contarCartas(cartaVerificar, jugador)==0) //No tiene carta para recoger emparejamiento
+				if(contarCartas(cartaVerificar, this)==0) //No tiene carta para recoger emparejamiento
 		    		return false;
 		    }else if(!id1.equals("000") && !id2.equals("000") && !id1.equals(id2) ) //No puedes porque son de emparejamiento distintos
 			   return false;
@@ -199,7 +199,7 @@ public class Jugador {
 		    		return false;
 		    	if(sumaTotal>10) //No puede ser mayor de 10
 		    		return false;
-		    	if(contarCartas(cartaVerificar, jugador)==0) //No tiene carta para recoger emparejamiento
+		    	if(contarCartas(cartaVerificar, this)==0) //No tiene carta para recoger emparejamiento
 		    		return false;
 		    }
 	
@@ -208,61 +208,78 @@ public class Jugador {
 		return true;
 	}
 	
-	public boolean validarCartaDoblarse(Carta cartaADoblar, Carta cartaJugador, Jugador jugador) {
-		Carta cartaVerificar = new Carta();
-		if(cartaADoblar.getIdEmparejamiento().equals("000")) {
-			if(cartaADoblar.getValor()!=cartaJugador.getValor()) //Ambas cartas deben ser iguales
-				return false;
-			else 
-				cartaVerificar.setValor(cartaADoblar.getValor());
-		} else {
-			if(cartaJugador.getValor()!=cartaADoblar.getsumaEmparejadas())
-				return false;
-			else
-				cartaVerificar.setValor(cartaADoblar.getsumaEmparejadas());
+	public boolean validarCartaDoblarse(ArrayList<Carta> cartasADoblar, Carta cartaJugador) {
+		int suma = 0;
+		for(Carta carta: cartasADoblar)
+			suma += carta.getValor();
+		if(suma == cartaJugador.getValor()) 
+			return true;
+		else {
+			for(int i = 0; i < cartasADoblar.size(); i++) { //buscar alguna combinacion valida
+				suma = cartaJugador.getValor();
+				for(Carta carta: cartasADoblar) {
+					if(cartasADoblar.indexOf(carta) != i)
+						suma += carta.getValor();
+				}
+				if(suma == cartasADoblar.get(i).getValor())
+					return true;
 			}
-		if(!jugador.getIdEmparejamiento().equals("000") && !cartaADoblar.getIdEmparejamiento().equals(jugador.getIdEmparejamiento()))  //No puedes doblar otro emparjeamiento
-				return false;
-		if(contarCartas(cartaVerificar, jugador)<2) //Debe tener 2 para doblar 1 para hacerlo y otra para recogerlo.
-			return false;
-		
-	  return true;
+		}
+		return false;
 	}
 	
 	public void recogerCarta(
 			ArrayList<Carta> mesa,
 			ArrayList<Carta> cartasRecogerMesa,
-			ArrayList<Carta> cartasJugador) { //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
-		
-		for(Carta carta : cartasJugador) {
-			this.cartas.remove(carta);
-		}
-		for (Carta carta: cartasRecogerMesa) {
-			mesa.remove(carta);
-		}
+			Carta cartaJugador) 
+	{ //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
+		this.cartas.remove(cartaJugador);
+		mesa.removeAll(cartasRecogerMesa);
 		this.cartasRecogidas.addAll(cartasRecogerMesa);
-		this.cartasRecogidas.addAll(cartasJugador);
+		this.cartasRecogidas.add(cartaJugador);
 	}
 	
 	public void emparejarCarta(ArrayList<Carta> mesa, 
-			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador) {
+			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador) 
+	{
+		String id = "";
+		for (Carta carta: cartasAEmparejar) {
+			if(carta.getIdEmparejamiento() != "000") {
+				id = carta.getIdEmparejamiento();
+				break;
+			}
+		}
+		if(id == "")
+			id = cartaJugador.generarIdEmparejamiento();
 		cartasAEmparejar.add(cartaJugador);
 		this.cartas.remove(cartaJugador);
 		for(Carta carta: cartasAEmparejar) {
-			if (!mesa.contains(carta)) {
+			carta.setIdEmparejamiento(id);
+			if (!mesa.contains(carta))
 				mesa.add(carta);
-			}
 		}
 	}
 	
 	public void doblarCarta(ArrayList<Carta> mesa, 
-			ArrayList<Carta> cartasADoblar, Carta cartaJugador) {
+			ArrayList<Carta> cartasADoblar, Carta cartaJugador) 
+	{
+		String id = "";
+		for (Carta carta: cartasADoblar) {
+			if(carta.getIdEmparejamiento() != "000") {
+				id = carta.getIdEmparejamiento();
+				break;
+			}
+		}
+		if(id == "")
+			id = cartaJugador.generarIdEmparejamiento();
 		cartasADoblar.add(cartaJugador);
 		this.cartas.remove(cartaJugador);
 		for(Carta carta: cartasADoblar) {
-			if (!mesa.contains(carta)) {
+			carta.setIdEmparejamiento(id);
+			if(!carta.isDoblada())
+				carta.toggleDoblada();
+			if (!mesa.contains(carta))
 				mesa.add(carta);
-			}
 		}
 	}
 

@@ -7,6 +7,7 @@ hs_err_pid*
 
 ## Custom
 /core/assets/ARCHIVO.txt
+/desktop/ARCHIVO.txt
 
 ## Robovm
 /ios/robovm-build/
