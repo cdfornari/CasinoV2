@@ -71,9 +71,9 @@ public class Jugador {
 		return x;
 	}
 	
-	public boolean multiplesCartasRecogerse(ArrayList<Carta> cartasARecoger, Carta cartaJugador, Jugador jugador) {
+	public boolean validarCartasRecoger(ArrayList<Carta> cartasARecoger, Carta cartaJugador, Jugador jugador) {
 		boolean figuraSeleccionada=true, doblada=false;
-		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0;
+		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0, sumaEsperada;
 		Carta cartaConId=null;
 		String id1="",id2="";
 		
@@ -99,7 +99,7 @@ public class Jugador {
 							id1=carta.getIdEmparejamiento();
 						else if(id2.equals("") && !id1.equals(carta.getIdEmparejamiento()))
 							id2=carta.getIdEmparejamiento();
-						if(cartasARecoger.size()>1)
+						if(cartasARecoger.size()!=1)
 							sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
 						else
 							sumaEmparejadas=carta.getsumaEmparejadas();
@@ -109,6 +109,7 @@ public class Jugador {
 					} else
 					sumaNoEmparejadas+=carta.getValor(); //Sumo las no emparejadas para la suma final
 				}
+				
 				if(id1.equals("000") && id2.equals("000")) { //Si no hay emparejamientos
 					if(sumaNoEmparejadas>10) //La suma no puede exceder de 10
 						return false;
@@ -119,10 +120,12 @@ public class Jugador {
 			    }else if(!id1.equals("000") && !id2.equals("000") && !id1.equals(id2) ) //No puedes porque son de emparejamiento distintos
 				   return false;
 			    else {
-			    	if(doblada && cartasARecoger.size()>1)  //Si esta doblada, se espera la suma *2
-			    		sumaEmparejadas=sumaEmparejadas/2;
-			    	if(cartaConId.getsumaEmparejadas()!=sumaEmparejadas) //No esta todas las cartas
+			    	sumaEsperada=cartaConId.getsumaEmparejadas();
+					if(doblada) sumaEsperada=sumaEsperada*2;
+			    	if(sumaEsperada!=sumaEmparejadas) //Deben estar seleccionadas todas las cartas del emparejamiento
 			    		return false;
+			    	if(doblada)
+			    		sumaEmparejadas=sumaEmparejadas/2;
 			    	sumaTotal=sumaNoEmparejadas+sumaEmparejadas;
 			    	if(sumaTotal>10) //No puede ser mayor de 10
 			    		return false;
@@ -138,7 +141,7 @@ public class Jugador {
 		return true;
 	}
 	
-	public boolean multiplesCartasEmparejarse(ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador jugador) {
+	public boolean validarCartasEmparejar(ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador jugador) {
 		boolean figuraSeleccionada=true;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0;
 		Carta cartaConId=null;
@@ -157,7 +160,7 @@ public class Jugador {
 				else
 					++contarFiguras;
 			}
-			if(contarFiguras==3 || contarFiguras==1) //No se pueden emparejar 3 y 1 figuras
+			if(contarFiguras==3 || contarFiguras==1) //No se pueden emparejar 3 o 2 figuras
 				return false;
 			cartaVerificar.setValor(cartaJugador.getValor());
 			if(contarCartas(cartaVerificar, jugador)<2) //No tiene carta para recoger emparejamiento
@@ -171,13 +174,13 @@ public class Jugador {
 						id1=carta.getIdEmparejamiento();
 					else if(id2.equals("") && !id1.equals(carta.getIdEmparejamiento()))
 						id2=carta.getIdEmparejamiento();
-					if(cartasAEmparejar.size()>1)
+					if(cartasAEmparejar.size()!=1)
 						sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
 					else
 						sumaEmparejadas=carta.getsumaEmparejadas(); //Sumo todas las emparejadas
 					cartaConId=carta; //Obtengo una carta que tenga el id para conseguir sumaEmparejadas
 				} else
-				sumaNoEmparejadas=carta.getValor(); //Sumo las no emparejadas para la suma
+					sumaNoEmparejadas+=carta.getValor(); //Sumo las no emparejadas para la suma
 				if(carta.isDoblada()) //No puedes sumar a un emparejamiento protegido
 					return false;
 			}
@@ -194,7 +197,6 @@ public class Jugador {
 		    	cartaVerificar.setValor(sumaTotal);
 		    	if(cartaConId.getsumaEmparejadas()!=sumaEmparejadas) //No esta todas las cartas
 		    		return false;
-		    	
 		    	if(sumaTotal>10) //No puede ser mayor de 10
 		    		return false;
 		    	if(contarCartas(cartaVerificar, jugador)==0) //No tiene carta para recoger emparejamiento
@@ -206,9 +208,9 @@ public class Jugador {
 		return true;
 	}
 	
-	public boolean cartaPuedeDoblarse(Carta cartaADoblar, Carta cartaJugador, Jugador jugador) {
+	public boolean validarCartaDoblarse(Carta cartaADoblar, Carta cartaJugador, Jugador jugador) {
 		Carta cartaVerificar = new Carta();
-		if(jugador.getIdEmparejamiento().equals("000")) {
+		if(cartaADoblar.getIdEmparejamiento().equals("000")) {
 			if(cartaADoblar.getValor()!=cartaJugador.getValor()) //Ambas cartas deben ser iguales
 				return false;
 			else 
@@ -221,11 +223,10 @@ public class Jugador {
 			}
 		if(!jugador.getIdEmparejamiento().equals("000") && !cartaADoblar.getIdEmparejamiento().equals(jugador.getIdEmparejamiento()))  //No puedes doblar otro emparjeamiento
 				return false;
-		
 		if(contarCartas(cartaVerificar, jugador)<2) //Debe tener 2 para doblar 1 para hacerlo y otra para recogerlo.
 			return false;
 		
-		return true;
+	  return true;
 	}
 	
 	public void recogerCarta(
