@@ -59,7 +59,7 @@ public class Archivo {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			getArbol().imprimirArbol();
+			//getArbol().imprimirArbol();
 	}
 	
 	public void cargarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) {
@@ -71,8 +71,8 @@ public class Archivo {
 				e1.printStackTrace();
 			}
 
-		System.out.println("PARTIDA CARGADA: ");
-		getArbol().imprimirArbol();
+		//System.out.println("PARTIDA CARGADA: ");
+		//getArbol().imprimirArbol();
 	}
 	
 	public static String nombreUsuario() {
@@ -122,8 +122,6 @@ public class Archivo {
 		getArbol().insertarArbol(new NodoArchivo(cargarMazo(reader), "SELECCIONADAS", 5));
 		reader.readLine();
 		Config.setNombre(reader.readLine());
-		System.out.println("USUARIO: "+Config.userName);
-		
 	}
 	
 	
@@ -158,7 +156,8 @@ public class Archivo {
 			writer.write(escribirBoolean(carta.isDoblada())+"\n");
 			writer.write(escribirBoolean(carta.isSelected())+"\n");
 			vaciarTipoMazo(mazo, writer);
-		}
+			mazo.apilar(carta);
+		} else
 		writer.write('/'+"\n");
 	}
 	
