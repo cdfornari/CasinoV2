@@ -35,11 +35,12 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
-	private boolean turno;
+	private boolean turno, nuevaPartida;
 	private Archivo archivo=new Archivo();
 	
-	public GameScreen() {
-		if(Archivo.existeArchivo()) {
+	public GameScreen(boolean nuevaPartida) {
+		this.nuevaPartida=nuevaPartida;
+		if(Archivo.existeArchivo() && !nuevaPartida) {
 			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			mazo=archivo.getArbol().buscarNodoEnArbol("MAZO").getMazo();
 			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
@@ -126,6 +127,7 @@ public class GameScreen implements Screen{
 									else {
 										if(jugador.validarCartasEmparejar(seleccionadas, jugador.getCartas().get(index))) {
 											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede emparejar", "Ok");
 									}
@@ -169,11 +171,12 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
-		if(!Archivo.existeArchivo()){ //Solo se reparte a la mesa cuando no se haya jugado antes
+		if(nuevaPartida){ //Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
 			updateGameState(true);
 		}else
 			updateGameState(false);
+		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
 	}
 
