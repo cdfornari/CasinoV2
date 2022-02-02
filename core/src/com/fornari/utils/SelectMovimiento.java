@@ -11,6 +11,7 @@ public class SelectMovimiento extends Dialog{
 	public SelectMovimiento(Stage stage) {
 		super("Selecciona", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
 		this.text("Que movimiento deseas realizar?");
+		this.button("Lanzar","lanzar");
 		this.button("Recoger","recoger");
 		this.button("Emparejar","emparejar");
 		this.button("Doblar","doblar");
@@ -23,7 +24,9 @@ public class SelectMovimiento extends Dialog{
 	@Override
 	protected void result(Object object) {
 		super.result(object);
-		if(object.equals("recoger"))
+		if(object.equals("lanzar"))
+			this.movimiento = "lanzar";
+		else if(object.equals("recoger"))
 			this.movimiento = "recoger";
 		else if(object.equals("emparejar"))
 			this.movimiento = "emparejar";
@@ -32,7 +35,7 @@ public class SelectMovimiento extends Dialog{
 	}
 
 	public String getMovimiento() {
-		return movimiento;
+		return this.movimiento;
 	}
 
 }

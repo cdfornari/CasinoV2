@@ -53,9 +53,9 @@ public class Jugador {
 		
 	}
 	
-	public void lanzarCarta(ArrayList<Carta> mesa, Carta cartaJugador) {
-		cartas.remove(cartas.indexOf(cartaJugador));
-		mesa.add(cartaJugador);
+	public void lanzarCarta(ArrayList<Carta> mesa, int i) {
+		mesa.add(cartas.get(i));
+		cartas.remove(cartas.get(i));
 	}
 	
 	
