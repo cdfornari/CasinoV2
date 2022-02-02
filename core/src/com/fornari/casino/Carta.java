@@ -175,10 +175,6 @@ public class Carta {
 		return sumaEmparejadas;
 	}
 
-	public void setValor(int valor) {
-		this.valor = valor;
-	}
-
 	public void setFigura(Figuras figura) {
 		this.figura = figura;
 	}

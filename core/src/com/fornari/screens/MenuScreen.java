@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.fornari.archivos.Archivo;
 import com.fornari.casino.Casino;
 import com.fornari.utils.ClickMouse;
 import com.fornari.utils.Config;
@@ -97,8 +98,11 @@ public class MenuScreen implements Screen{
 					opciones[i].setColor(Color.WHITE);
 		}
 		if(ClickMouse.isClick() || ClickMouse.isEnter())
-			if(opcion==1)
+			if(opcion==1) {
+				if(Archivo.existeArchivo())
+					Archivo.borrar();
 				Casino.ventana.setScreen(new GameScreen());
+			}
 			else if(opcion == 2)
 				Casino.ventana.setScreen(new GameScreen()); //TODO: cargar archivo
 			else if(opcion == 3)

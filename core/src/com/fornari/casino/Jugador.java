@@ -71,21 +71,6 @@ public class Jugador {
 		return x;
 	}
 	
-	public boolean cartaPuedeRecogerse(Carta cartaARecoger, Carta cartaJugador, Jugador jugador) {
-		if(cartaARecoger.getIdEmparejamiento().equals("000")) {
-			if(cartaARecoger.getValor()!=cartaJugador.getValor()) //Las cartas no son del mismo valor
-				return false;
-		} else {
-			if(cartaARecoger.getsumaEmparejadas()!=cartaJugador.getValor()) //La carta no es de igual valor a la suma de emparejadas
-				return false;
-		}
-		if(!jugador.getIdEmparejamiento().equals("000") && !cartaARecoger.getIdEmparejamiento().equals(jugador.getIdEmparejamiento())) {
-			if(contarCartas(cartaJugador, jugador)<2) //Debe tener otra para recoger su emparejamiento
-				return false;
-		}
-		return true;
-	}
-	
 	public boolean multiplesCartasRecogerse(ArrayList<Carta> cartasARecoger, Carta cartaJugador, Jugador jugador) {
 		boolean figuraSeleccionada=true, doblada=false;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0;
@@ -114,12 +99,15 @@ public class Jugador {
 							id1=carta.getIdEmparejamiento();
 						else if(id2.equals("") && !id1.equals(carta.getIdEmparejamiento()))
 							id2=carta.getIdEmparejamiento();
-						++sumaEmparejadas; //Sumo todas las emparejadas
+						if(cartasARecoger.size()>1)
+							sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
+						else
+							sumaEmparejadas=carta.getsumaEmparejadas();
 						cartaConId=carta; //Obtengo una carta que tenga el id para conseguir sumaEmparejadas
 						if(carta.isDoblada()) //Veo si esta doblado el emparejamiento
 							doblada=true;
 					} else
-					++sumaNoEmparejadas; //Sumo las no emparejadas para la suma final
+					sumaNoEmparejadas+=carta.getValor(); //Sumo las no emparejadas para la suma final
 				}
 				if(id1.equals("000") && id2.equals("000")) { //Si no hay emparejamientos
 					if(sumaNoEmparejadas>10) //La suma no puede exceder de 10
@@ -131,7 +119,7 @@ public class Jugador {
 			    }else if(!id1.equals("000") && !id2.equals("000") && !id1.equals(id2) ) //No puedes porque son de emparejamiento distintos
 				   return false;
 			    else {
-			    	if(doblada)  //Si esta doblada, se espera la suma *2
+			    	if(doblada && cartasARecoger.size()>1)  //Si esta doblada, se espera la suma *2
 			    		sumaEmparejadas=sumaEmparejadas/2;
 			    	if(cartaConId.getsumaEmparejadas()!=sumaEmparejadas) //No esta todas las cartas
 			    		return false;
@@ -147,27 +135,6 @@ public class Jugador {
 			    }
 		
 		}
-		return true;
-	}
-	
-	public boolean cartaPuedeEmparejarse(Carta cartaEmparejar, Carta cartaJugador, Jugador jugador) {
-		Carta cartaVerificar = new Carta();
-		int suma=0;
-		if(!cartaEmparejar.getIdEmparejamiento().equals("000"))
-			suma=cartaEmparejar.getsumaEmparejadas()+cartaJugador.getValor();
-		else
-			suma=cartaEmparejar.getValor()+cartaJugador.getValor();
-		cartaVerificar.setValor(suma);
-		if(cartaEmparejar.getValor()>10 || cartaJugador.getValor()>10) //No se puede emparejar 2 figuras
-			return false;
-		if(!jugador.getIdEmparejamiento().equals("000")) //No puede emparejar porque ya tienes uno activo
-			return false;
-		if(cartaEmparejar.isDoblada()) //No puedes sumar a una doblada
-			return false;
-		if((cartaEmparejar.getValor() + cartaJugador.getValor())>10 || (cartaEmparejar.getsumaEmparejadas() + cartaJugador.getValor())  >10) //La suma pasaria de 10
-			return false;
-		if(contarCartas(cartaVerificar, jugador)==0) //No tiene carta para recoger el emparejamiento
-			return false;
 		return true;
 	}
 	
@@ -190,8 +157,11 @@ public class Jugador {
 				else
 					++contarFiguras;
 			}
-			if(contarFiguras==3) //No se pueden emparejar 3 figuras
+			if(contarFiguras==3 || contarFiguras==1) //No se pueden emparejar 3 y 1 figuras
 				return false;
+			cartaVerificar.setValor(cartaJugador.getValor());
+			if(contarCartas(cartaVerificar, jugador)<2) //No tiene carta para recoger emparejamiento
+	    		return false;
 		} else { //Recoger numeros
 			for(Carta carta: cartasAEmparejar) {
 				if(carta.getValor()>10) //No se puede usar un numero para emparejar una figura
@@ -201,21 +171,30 @@ public class Jugador {
 						id1=carta.getIdEmparejamiento();
 					else if(id2.equals("") && !id1.equals(carta.getIdEmparejamiento()))
 						id2=carta.getIdEmparejamiento();
-					++sumaEmparejadas; //Sumo todas las emparejadas
+					if(cartasAEmparejar.size()>1)
+						sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
+					else
+						sumaEmparejadas=carta.getsumaEmparejadas(); //Sumo todas las emparejadas
 					cartaConId=carta; //Obtengo una carta que tenga el id para conseguir sumaEmparejadas
 				} else
-				++sumaNoEmparejadas; //Sumo las no emparejadas para la suma
+				sumaNoEmparejadas=carta.getValor(); //Sumo las no emparejadas para la suma
+				if(carta.isDoblada()) //No puedes sumar a un emparejamiento protegido
+					return false;
 			}
+			sumaTotal=sumaNoEmparejadas+sumaEmparejadas+cartaJugador.getValor();
+	    	cartaVerificar.setValor(sumaNoEmparejadas + cartaJugador.getValor());
 			if(id1.equals("000") && id2.equals("000")) {
 				if((sumaNoEmparejadas + cartaJugador.getValor())>10) //La suma no puede exceder de 10
 					return false;
+				if(contarCartas(cartaVerificar, jugador)==0) //No tiene carta para recoger emparejamiento
+		    		return false;
 		    }else if(!id1.equals("000") && !id2.equals("000") && !id1.equals(id2) ) //No puedes porque son de emparejamiento distintos
 			   return false;
 		    else {
+		    	cartaVerificar.setValor(sumaTotal);
 		    	if(cartaConId.getsumaEmparejadas()!=sumaEmparejadas) //No esta todas las cartas
 		    		return false;
-		    	sumaTotal=sumaNoEmparejadas+sumaEmparejadas;
-		    	cartaVerificar.setValor(sumaTotal);
+		    	
 		    	if(sumaTotal>10) //No puede ser mayor de 10
 		    		return false;
 		    	if(contarCartas(cartaVerificar, jugador)==0) //No tiene carta para recoger emparejamiento
