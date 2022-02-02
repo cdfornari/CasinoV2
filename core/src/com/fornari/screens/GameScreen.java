@@ -104,21 +104,26 @@ public class GameScreen implements Screen{
 							@Override 
 							public void touchUp(InputEvent e, float x, float y, int point, int button) {
 								if(select.getMovimiento() == "lanzar") {
-									if(seleccionadas.size() == 0) {
+									if(seleccionadas.size() == 0 && jugador.getIdEmparejamiento().equals("000")) {
 										jugador.lanzarCarta(mesa, index);
 										archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 										updateGameState(false);
 										turno = false;
 									}
-									else 
-										Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");							
+									else {
+										if(!jugador.getIdEmparejamiento().equals("000"))
+										Render.mostrarMensaje(stage, "Error", "Tiene un emparejamiento activo", "Ok");	
+										else if(seleccionadas.size()!=0)
+											Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");	
+
+									}
 								}else if(select.getMovimiento() == "recoger") {
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartasRecoger(seleccionadas, jugador.getCartas().get(index))) {
 											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index));
-											updateGameState(false);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede recoger", "Ok");
 									}
@@ -138,6 +143,7 @@ public class GameScreen implements Screen{
 									else {
 										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
 											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede emparejar", "Ok");
 									}
