@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -33,7 +34,24 @@ public class Archivo {
 			return false;
 	}
 	
+	public static void borrar() {
+		try {
+			Files.deleteIfExists(Paths.get(Config.pathArchivo));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	
+	public static void borrarArchivo() {
+		File file=new File(Config.pathArchivo);
+		
+		if(file.delete())
+			System.out.println("BORRADO");
+		else
+			System.out.println("NO BORRADO");
+	}
 
 	public void vaciarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) {
 			try {
@@ -110,9 +128,7 @@ public class Archivo {
 	
 	
 	public void modificarMazo(Mazo mazo,ArrayList<Carta> mesa, ArrayList<Carta> seleccionadas ) {
-		ArrayList<Carta> lista=new ArrayList<Carta>();
-		NodoArchivo.transformarAListaArray(mazo, lista);
-		getArbol().buscarNodoEnArbol("MAZO").setListaCarta(lista);
+		getArbol().buscarNodoEnArbol("MAZO").setMazo(mazo);
 		getArbol().buscarNodoEnArbol("MESA").setListaCarta(mesa);
 		getArbol().buscarNodoEnArbol("SELECCIONADAS").setListaCarta(seleccionadas);
 	}
@@ -127,6 +143,23 @@ public class Archivo {
 	public int escribirBoolean(boolean boleano) {
 		if(boleano) return 1;
 		else return 0;
+	}
+	
+	public void vaciarTipoMazo(Mazo mazo, BufferedWriter writer) throws IOException {
+		Carta carta=null;
+		if(!mazo.estaVacio()) {
+			carta=mazo.desapilar();
+			writer.write(carta.getValor()+"\n");
+			writer.write(carta.getFigura()+"\n");
+			writer.write(carta.getRepresentacion()+"\n");
+			writer.write(carta.getPuntaje()+"\n");
+			writer.write(carta.getIdEmparejamiento()+"\n");
+			writer.write(carta.getsumaEmparejadas()+"\n");
+			writer.write(escribirBoolean(carta.isDoblada())+"\n");
+			writer.write(escribirBoolean(carta.isSelected())+"\n");
+			vaciarTipoMazo(mazo, writer);
+		}
+		writer.write('/'+"\n");
 	}
 	
 	public void vaciarMazo(ArrayList<Carta> listaCartas, BufferedWriter writer) throws IOException {
@@ -156,8 +189,12 @@ public class Archivo {
 		NodoArchivo nodo=new NodoArchivo();
 		for(String nodosArbol: this.nombresNodos) {
 			nodo=getArbol().buscarNodoEnArbol(nodosArbol);
-			if(nodo.getJugador()==null) 
-				vaciarMazo(nodo.getListaCarta(), writer);
+			if(nodo.getJugador()==null) {
+				if(nodo.getMazo()==null)
+					vaciarMazo(nodo.getListaCarta(), writer);
+				else
+					vaciarTipoMazo(nodo.getMazo(),writer);
+			}
 			 else
 				 vaciarJugador(nodo.getJugador(),writer);
 		}

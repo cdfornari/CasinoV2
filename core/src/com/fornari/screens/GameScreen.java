@@ -41,7 +41,7 @@ public class GameScreen implements Screen{
 	public GameScreen() {
 		if(Archivo.existeArchivo()) {
 			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
-			mazo=archivo.transformarMazo(archivo.getArbol().buscarNodoEnArbol("MAZO").getListaCarta());
+			mazo=archivo.getArbol().buscarNodoEnArbol("MAZO").getMazo();
 			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
 			jugador=archivo.getArbol().buscarNodoEnArbol("JUGADOR").getJugador();
 			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
@@ -156,11 +156,17 @@ public class GameScreen implements Screen{
 			this.turno = true;
 		else
 			this.turno = false;
-		if(!Archivo.existeArchivo()) {
+		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
-			mazo.repartir(mesa);
 		}
+    boolean firstTime;
+		if(!Archivo.existeArchivo()){ //Solo se reparte a la mesa cuando no se haya jugado antes
+			mazo.repartir(mesa);
+      firstTime = true;
+    }else
+			firstTime=false;
+		updateGameState(firstTime);
 		updateGameState(true);
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -196,6 +202,8 @@ public class GameScreen implements Screen{
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 			//termina juego
 		}
+		
+		
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();

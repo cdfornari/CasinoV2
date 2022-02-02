@@ -38,6 +38,16 @@ public class Mazo {
 		this.size++;
 	}
 	
+	public void imprimir() {
+		Carta carta;
+		if(!estaVacio()) {
+			carta=desapilar();
+			System.out.println("CARTA "+carta.getValor() +"FIGURA: "+carta.getFigura());
+			imprimir();
+			apilar(carta);
+		}
+	}
+	
 	public Carta desapilar() {
 		if(!estaVacio()) {
 			Carta carta = this.tope;

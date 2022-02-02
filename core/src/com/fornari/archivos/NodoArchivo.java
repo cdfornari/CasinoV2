@@ -9,20 +9,20 @@ public class NodoArchivo {
 	private int clave; 
 	private String texto;
 	private ArrayList<Carta> listaCarta;
+	private Mazo mazo=null;
 	private Jugador jugador;
 	private NodoArchivo hijoIzquierdo=null;
 	private NodoArchivo hijoDerecho=null;
 	
-	public NodoArchivo(Mazo mazo, String texto, int clave) {
-		this.clave=clave;
-		this.texto=texto;
-		listaCarta=new ArrayList<Carta>();
-		this.listaCarta=transformarAListaArray(mazo, this.listaCarta);
-		jugador=null;
-	}
-	
 	public NodoArchivo() {
 		
+	}
+	
+	public NodoArchivo(Mazo mazo, String texto, int clave) {
+		this.mazo=mazo;
+		this.texto=texto;
+		this.clave=clave;
+		jugador=null;
 	}
 	
 	public NodoArchivo(ArrayList<Carta> listaCarta, String texto,int clave) {
@@ -39,16 +39,21 @@ public class NodoArchivo {
 		this.jugador=jugador;
 	}
 	
-	public static ArrayList<Carta> transformarAListaArray(Mazo mazo, ArrayList<Carta> listaCarta) {
-		Carta carta;
+	public static void transformar(Mazo mazo, ArrayList<Carta> listaCarta) {
+		Carta carta=null;
 		if(!mazo.estaVacio()) {
-			carta=mazo.getTope(); 
-			mazo.desapilar();
+			carta=mazo.desapilar(); 
 			listaCarta.add(carta);
-			listaCarta=transformarAListaArray(mazo, listaCarta);
+			transformar(mazo, listaCarta);
 			mazo.apilar(carta);
 		}
-		return listaCarta;
+	}
+	
+	public static ArrayList<Carta> transformarAListaArray(Mazo mazo, ArrayList<Carta> listaCarta) {
+		Carta carta;
+		ArrayList<Carta> lista=new ArrayList<>();
+		transformar(mazo, lista);
+		return lista;
 	}
 	
 	
@@ -100,9 +105,12 @@ public class NodoArchivo {
 	public void imprimirNodo() {
 		if(jugador==null) {
 			System.out.println("NODO: "+texto);
-			for(Carta cartas: this.listaCarta)
-				System.out.println("CARTA "+cartas.getValor() +"FIGURA: "+cartas.getFigura());
-			System.out.println("\n\n");
+			if(mazo==null) {
+				for(Carta cartas: this.listaCarta)
+					System.out.println("CARTA "+cartas.getValor() +"FIGURA: "+cartas.getFigura());
+				System.out.println("\n\n");
+			} else 
+				mazo.imprimir(); //Imprimir
 		}
 		else {
 			System.out.println("NODO: "+this.texto);
@@ -112,7 +120,6 @@ public class NodoArchivo {
 			System.out.println("ID:"+jugador.getIdEmparejamiento());
 			System.out.println("\n\n");
 		}
-		
 	}
 	
 	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
@@ -184,4 +191,13 @@ public class NodoArchivo {
 		this.hijoDerecho = hijoDerecho;
 	}
 
+	public Mazo getMazo() {
+		return mazo;
+	}
+
+	public void setMazo(Mazo mazo) {
+		this.mazo = mazo;
+	}
+
+	
 }
