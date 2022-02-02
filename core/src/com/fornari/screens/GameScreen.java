@@ -107,6 +107,7 @@ public class GameScreen implements Screen{
 										jugador.lanzarCarta(mesa, index);
 										archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 										updateGameState(false);
+										turno = false;
 									}
 									else 
 										Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");							
@@ -129,7 +130,6 @@ public class GameScreen implements Screen{
 										
 									}
 								}
-								turno = false;
 							}
 							@Override
 							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -160,14 +160,11 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
-    boolean firstTime;
 		if(!Archivo.existeArchivo()){ //Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
-      firstTime = true;
-    }else
-			firstTime=false;
-		updateGameState(firstTime);
-		updateGameState(true);
+			updateGameState(true);
+		}else
+			updateGameState(false);
 		Gdx.input.setInputProcessor(stage);
 	}
 

@@ -6,20 +6,17 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Casino extends Game {
-	private String userName;
 	public static Casino ventana;
 	
 	@Override
 	public void create () {
 		ventana = this;
 		Render.batch = new SpriteBatch();
-		this.setUserName(cargarNombre());
-		Config.userName=Archivo.nombreUsuario();
-		if(this.userName == "") {
+		Config.userName = Archivo.nombreUsuario();
+		if(Config.userName == "")
 			this.setScreen(new NameScreen());
-		}else {
+		else 
 			this.setScreen(new MenuScreen());
-		}
 	}
 
 	@Override
@@ -32,15 +29,4 @@ public class Casino extends Game {
 		Render.batch.dispose();
 	}
 	
-	private String cargarNombre() {
-		return Archivo.nombreUsuario();
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 }

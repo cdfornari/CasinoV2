@@ -50,7 +50,6 @@ public class NodoArchivo {
 	}
 	
 	public static ArrayList<Carta> transformarAListaArray(Mazo mazo, ArrayList<Carta> listaCarta) {
-		Carta carta;
 		ArrayList<Carta> lista=new ArrayList<>();
 		transformar(mazo, lista);
 		return lista;
