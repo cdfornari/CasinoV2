@@ -1,4 +1,5 @@
 package com.fornari.casino;
+import com.fornari.archivos.Archivo;
 import com.fornari.screens.*;
 import com.fornari.utils.*;
 import com.badlogic.gdx.Game;
@@ -13,6 +14,7 @@ public class Casino extends Game {
 		ventana = this;
 		Render.batch = new SpriteBatch();
 		this.setUserName(cargarNombre());
+		Config.userName=Archivo.nombreUsuario();
 		if(this.userName == "") {
 			this.setScreen(new NameScreen());
 		}else {
@@ -31,7 +33,7 @@ public class Casino extends Game {
 	}
 	
 	private String cargarNombre() {
-		return "";
+		return Archivo.nombreUsuario();
 	}
 
 	public String getUserName() {

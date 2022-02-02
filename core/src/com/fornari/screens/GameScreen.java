@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.fornari.archivos.Archivo;
 import com.fornari.casino.*;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
@@ -38,6 +39,19 @@ public class GameScreen implements Screen{
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
 	private TextButton btnLanzar = new TextButton("Lanzar cartas",new Skin(Gdx.files.internal(Config.pathSkin)));
 	private boolean turno;
+	private Archivo archivo=new Archivo();
+	
+	public GameScreen() {
+		
+		if(Archivo.existeArchivo()) {
+			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			mazo=archivo.transformarMazo(archivo.getArbol().buscarNodoEnArbol("MAZO").getListaCarta());
+			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
+			jugador=archivo.getArbol().buscarNodoEnArbol("JUGADOR").getJugador();
+			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
+			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();
+		}
+	}
 	
 	static void removeAllListeners(Actor actor) {
         Array<EventListener> listeners = new Array<>(actor.getListeners());
@@ -121,9 +135,12 @@ public class GameScreen implements Screen{
 			this.turno = true;
 		else
 			this.turno = false;
-		mazo.repartir(this.jugador.getCartas());
-		mazo.repartir(this.computadora.getCartas());
-		mazo.repartir(mesa);
+		if(!Archivo.existeArchivo()) {
+			mazo.repartir(this.jugador.getCartas());
+			mazo.repartir(this.computadora.getCartas());
+			mazo.repartir(mesa);
+		}
+		
 		updateGameState(true);
 		btnLanzar.setPosition(300,170);
 		btnLanzar.setSize(250,50);
@@ -132,6 +149,7 @@ public class GameScreen implements Screen{
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
 				if(seleccionadas.size() == 1) {
 					jugador.lanzarCarta(mesa, seleccionadas.get(0));
+					archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 					updateGameState(false);
 				}
 				else 
@@ -167,6 +185,7 @@ public class GameScreen implements Screen{
 		}
 		if(!turno) {
 			//movimientos computadora
+			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			turno = true;
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {

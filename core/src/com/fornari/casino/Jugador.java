@@ -286,4 +286,18 @@ public class Jugador {
 		}
 	}
 
+	public void setCartas(ArrayList<Carta> cartas) {
+		this.cartas = cartas;
+	}
+
+	public void setCartasRecogidas(ArrayList<Carta> cartasRecogidas) {
+		this.cartasRecogidas = cartasRecogidas;
+	}
+
+	public void setClarezas(int clarezas) {
+		this.clarezas = clarezas;
+	}
+
+	
+
 }
