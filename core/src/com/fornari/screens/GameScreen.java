@@ -10,8 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.fornari.archivos.Archivo;
@@ -37,13 +35,10 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
-	private TextButton btnLanzar = new TextButton("Lanzar cartas",new Skin(Gdx.files.internal(Config.pathSkin)));
 	private boolean turno;
-	private boolean firstTime=true;
 	private Archivo archivo=new Archivo();
 	
 	public GameScreen() {
-		
 		if(Archivo.existeArchivo()) {
 			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			mazo=archivo.getArbol().buscarNodoEnArbol("MAZO").getMazo();
@@ -76,23 +71,16 @@ public class GameScreen implements Screen{
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
 		for(int i = 0; i < mesa.size(); i++) {
+			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
 					if(turno) {
-						if(seleccionadas.size() == 0) 
-							Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
-						else {
-							SelectMovimiento select = new SelectMovimiento(stage);
-							if(select.getMovimiento() == "recoger") {
-							
-							}else if(select.getMovimiento() == "emparejar"){
-								
-							}else if(select.getMovimiento() == "doblar") {
-								
-							}
-							turno = false;
-						}
+						mesa.get(index).toggleSelected();
+						if(mesa.get(index).isSelected())
+							seleccionadas.add(mesa.get(index));
+						else
+							seleccionadas.remove(seleccionadas.indexOf(mesa.get(index)));
 					}
 				}
 				@Override
@@ -107,16 +95,48 @@ public class GameScreen implements Screen{
 		for(int i = 0; i < jugador.getCartas().size(); i++) {
 			final int index = i;
 			jugador.getCartas().get(i).getImagen().getBtn().addListener(new ClickListener() {
-				private int i = index;
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
 					if(turno) {
-						jugador.getCartas().get(i).toggleSelected();
-						if(jugador.getCartas().get(i).isSelected())
-							seleccionadas.add(jugador.getCartas().get(i));
-						else
-							seleccionadas.remove(seleccionadas.indexOf(jugador.getCartas().get(i)));
-					}
+						final SelectMovimiento select = new SelectMovimiento(stage);
+						select.addListener(new ClickListener() {
+							@Override 
+							public void touchUp(InputEvent e, float x, float y, int point, int button) {
+								if(select.getMovimiento() == "lanzar") {
+									if(seleccionadas.size() == 0) {
+										jugador.lanzarCarta(mesa, index);
+										archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+										updateGameState(false);
+									}
+									else 
+										Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");							
+								}else if(select.getMovimiento() == "recoger") {
+									if(seleccionadas.size() == 0) 
+										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
+									else {
+
+									}
+								}else if(select.getMovimiento() == "emparejar"){
+									if(seleccionadas.size() == 0) 
+										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
+									else {
+										
+									}
+								}else if(select.getMovimiento() == "doblar") {
+									if(seleccionadas.size() == 0) 
+										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
+									else {
+										
+									}
+								}
+								turno = false;
+							}
+							@Override
+							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+								return true;
+							}
+						});
+					}	
 				}
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -140,33 +160,14 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
-		if(!Archivo.existeArchivo()) //Solo se reparte a la mesa cuando no se haya jugado antes
+    boolean firstTime;
+		if(!Archivo.existeArchivo()){ //Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
-		else
+      firstTime = true;
+    }else
 			firstTime=false;
-		
 		updateGameState(firstTime);
-		btnLanzar.setPosition(300,170);
-		btnLanzar.setSize(250,50);
-		btnLanzar.addListener(new ClickListener() {
-			@Override
-			public void touchUp(InputEvent e, float x, float y, int point, int button) {
-				if(seleccionadas.size() == 1) {
-					jugador.lanzarCarta(mesa, seleccionadas.get(0));
-					seleccionadas.remove(0);
-					updateGameState(false);
-					System.out.println("PROBLEMA ");
-					archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
-				}
-				else 
-					Render.mostrarMensaje(stage, "Error", "Seleccione una y solo una carta para lanzar", "Ok");
-			}
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
-				return true;
-			}
-		});
-		stage.addActor(btnLanzar);
+		updateGameState(true);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -185,9 +186,9 @@ public class GameScreen implements Screen{
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
 			xCartas += 175;
 		}
-		for(int i = 0; i < jugador.getCartas().size(); i++) {
-			if(jugador.getCartas().get(i).isSelected())
-				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 290 + seleccionada.getAlto()/2);
+		for(int i = 0; i < mesa.size(); i++) {
+			if(mesa.get(i).isSelected())
+				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 605 + seleccionada.getAlto()/2);
 		}
 		if(!turno) {
 			//movimientos computadora

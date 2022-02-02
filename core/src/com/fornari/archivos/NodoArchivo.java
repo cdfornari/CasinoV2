@@ -13,7 +13,6 @@ public class NodoArchivo {
 	private Jugador jugador;
 	private NodoArchivo hijoIzquierdo=null;
 	private NodoArchivo hijoDerecho=null;
-	private int contador=0;
 	
 	public NodoArchivo() {
 		

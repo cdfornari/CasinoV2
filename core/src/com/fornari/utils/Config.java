@@ -1,15 +1,5 @@
 package com.fornari.utils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URI;
-
-import com.fornari.archivos.Archivo;
-import com.fornari.casino.Casino;
-import com.fornari.screens.MenuScreen;
-
 public class Config {
 	public static final int anchoPantalla = 1920;
 	public static final int altoPantalla = 1080;

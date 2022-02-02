@@ -3,7 +3,6 @@ package com.fornari.archivos;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -266,16 +265,15 @@ public class Archivo {
 	
 
 	public Figuras retornaFigura(String texto) {
-		Figuras figura = null;
 		if(texto.equals("espada"))
-			return figura.espada;
+			return Figuras.espada;
 		if(texto.equals("trebol"))
-			return figura.trebol;
+			return Figuras.trebol;
 		if(texto.equals("corazon"))
-			return figura.corazon;
+			return Figuras.corazon;
 		if(texto.equals("diamante"))
-			return figura.diamante;
-		return figura.none;
+			return Figuras.diamante;
+		return Figuras.none;
 	}
 
 	public Arbol getArbol() {

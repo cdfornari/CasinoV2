@@ -166,10 +166,6 @@ public class Carta {
 	public void toggleSelected() {
 		this.selected = !this.selected;
 	}
-
-	public void setValor(int valor) {
-		this.valor = valor;
-	}
 	
 	public int getSumaEmparejadas() {
 		return sumaEmparejadas;
