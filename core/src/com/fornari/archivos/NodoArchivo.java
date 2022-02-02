@@ -12,7 +12,6 @@ public class NodoArchivo {
 	private Jugador jugador;
 	private NodoArchivo hijoIzquierdo=null;
 	private NodoArchivo hijoDerecho=null;
-	private int contador=0;
 	
 	public NodoArchivo(Mazo mazo, String texto, int clave) {
 		this.clave=clave;
