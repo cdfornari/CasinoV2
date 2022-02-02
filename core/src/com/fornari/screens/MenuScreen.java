@@ -99,12 +99,10 @@ public class MenuScreen implements Screen{
 		}
 		if(ClickMouse.isClick() || ClickMouse.isEnter())
 			if(opcion==1) {
-				if(Archivo.existeArchivo())
-					Archivo.borrar();
-				Casino.ventana.setScreen(new GameScreen());
+				Casino.ventana.setScreen(new GameScreen(true));
 			}
 			else if(opcion == 2)
-				Casino.ventana.setScreen(new GameScreen()); //TODO: cargar archivo
+				Casino.ventana.setScreen(new GameScreen(false)); //TODO: cargar archivo
 			else if(opcion == 3)
 				Gdx.app.exit();
 	}
