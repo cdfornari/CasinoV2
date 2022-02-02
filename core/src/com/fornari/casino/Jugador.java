@@ -75,7 +75,7 @@ public class Jugador {
 		boolean figuraSeleccionada=true, doblada=false;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0, sumaEsperada;
 		Carta cartaConId=null;
-		String id1="",id2="";
+		String id1="000",id2="000";
 		
 		if(cartaJugador.getValor()<=10) 
 			figuraSeleccionada=false;
@@ -95,9 +95,9 @@ public class Jugador {
 					if(carta.getValor()>10) //No se puede usar un numero para recoger una figura
 						return false;
 					if(!carta.getIdEmparejamiento().equals("000")) {
-						if(id1.equals(""))
+						if(id1.equals("000"))
 							id1=carta.getIdEmparejamiento();
-						else if(id2.equals("") && !id1.equals(carta.getIdEmparejamiento()))
+						else if(id2.equals("000") && !id1.equals(carta.getIdEmparejamiento()))
 							id2=carta.getIdEmparejamiento();
 						if(cartasARecoger.size()!=1)
 							sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
@@ -109,7 +109,6 @@ public class Jugador {
 					} else
 					sumaNoEmparejadas+=carta.getValor(); //Sumo las no emparejadas para la suma final
 				}
-				
 				if(id1.equals("000") && id2.equals("000")) { //Si no hay emparejamientos
 					if(sumaNoEmparejadas>10) //La suma no puede exceder de 10
 						return false;
@@ -121,6 +120,7 @@ public class Jugador {
 				   return false;
 			    else {
 			    	sumaEsperada=cartaConId.getsumaEmparejadas();
+			    	System.out.println("SUMA ESPERADA: "+sumaEsperada);
 					if(doblada) sumaEsperada=sumaEsperada*2;
 			    	if(sumaEsperada!=sumaEmparejadas) //Deben estar seleccionadas todas las cartas del emparejamiento
 			    		return false;
@@ -145,7 +145,7 @@ public class Jugador {
 		boolean figuraSeleccionada=true;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0;
 		Carta cartaConId=null;
-		String id1="",id2="";
+		String id1="000",id2="000";
 		Carta cartaVerificar = new Carta();
 		
 		if(cartaJugador.getValor()<=10) figuraSeleccionada=false;
@@ -170,9 +170,9 @@ public class Jugador {
 				if(carta.getValor()>10) //No se puede usar un numero para emparejar una figura
 					return false;
 				if(!carta.getIdEmparejamiento().equals("000")) {
-					if(id1.equals(""))
+					if(id1.equals("000"))
 						id1=carta.getIdEmparejamiento();
-					else if(id2.equals("") && !id1.equals(carta.getIdEmparejamiento()))
+					else if(id2.equals("000") && !id1.equals(carta.getIdEmparejamiento()))
 						id2=carta.getIdEmparejamiento();
 					if(cartasAEmparejar.size()!=1)
 						sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas

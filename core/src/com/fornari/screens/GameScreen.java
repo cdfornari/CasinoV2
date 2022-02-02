@@ -65,10 +65,8 @@ public class GameScreen implements Screen{
 				mesa.get(i).getImagen().getBtn().remove();
 			}
 			for(int i = 0; i < jugador.getCartas().size(); i++) {
-				System.out.println("Cantidad CARTAS: "+jugador.getCartas().size());
 				removeAllListeners(jugador.getCartas().get(i).getImagen().getBtn());
 				jugador.getCartas().get(i).getImagen().getBtn().remove();
-				System.out.println("Cantidad CARTAS: "+jugador.getCartas().size()+"CARTA: "+jugador.getCartas().get(i).getValor());
 			}
 		}
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
