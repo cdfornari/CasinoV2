@@ -58,7 +58,6 @@ public class Jugador {
 		cartas.remove(cartas.get(i));
 	}
 	
-	
 	//Funciones de validacion
 	
 	public int contarCartas(Carta cartaBuscar, Jugador jugador) {
@@ -136,7 +135,6 @@ public class Jugador {
 							return false;
 			    	}
 			    }
-		
 		}
 		return true;
 	}
@@ -215,15 +213,18 @@ public class Jugador {
 		if(suma == cartaJugador.getValor()) 
 			return true;
 		else {
-			for(int i = 0; i < cartasADoblar.size(); i++) { //buscar alguna combinacion valida
-				suma = cartaJugador.getValor();
-				for(Carta carta: cartasADoblar) {
-					if(cartasADoblar.indexOf(carta) != i)
-						suma += carta.getValor();
-				}
-				if(suma == cartasADoblar.get(i).getValor())
-					return true;
+			suma = 0;
+			int maximo = 0;
+			for (Carta carta: cartasADoblar) {
+				if(carta.getValor() > maximo) 
+					maximo = carta.getValor();
 			}
+			for (Carta carta: cartasADoblar) {
+				if(carta.getValor() < maximo) 
+					suma += carta.getValor();
+			}
+			if(suma == maximo)
+				return true;
 		}
 		return false;
 	}
@@ -253,6 +254,12 @@ public class Jugador {
 	public void emparejarCarta(ArrayList<Carta> mesa, 
 			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador computadora) 
 	{
+		int suma = cartaJugador.getValor();
+		for (Carta carta: cartasAEmparejar)
+			suma += carta.getValor();
+		cartaJugador.setSumaEmparejadas(suma);
+		for (Carta carta: cartasAEmparejar)
+			carta.setSumaEmparejadas(suma);
 		String id = "000";
 		for (Carta carta: cartasAEmparejar) {
 			if(carta.getIdEmparejamiento() != "000") {
@@ -275,6 +282,14 @@ public class Jugador {
 	public void doblarCarta(ArrayList<Carta> mesa, 
 			ArrayList<Carta> cartasADoblar, Carta cartaJugador, Jugador computadora) 
 	{
+		int maximo = 0;
+		for (Carta carta: cartasADoblar) {
+			if(carta.getValor() > maximo) 
+				maximo = carta.getValor();
+		}
+		cartaJugador.setSumaEmparejadas(maximo);
+		for (Carta carta: cartasADoblar)
+			carta.setSumaEmparejadas(maximo);
 		String id = "000";
 		for (Carta carta: cartasADoblar) {
 			if(carta.getIdEmparejamiento() != "000") {
@@ -307,7 +322,5 @@ public class Jugador {
 	public void setClarezas(int clarezas) {
 		this.clarezas = clarezas;
 	}
-
-	
 
 }
