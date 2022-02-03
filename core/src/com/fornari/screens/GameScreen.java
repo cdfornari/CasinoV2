@@ -50,25 +50,27 @@ public class GameScreen implements Screen{
 		}
 	}
 	
-	static void removeAllListeners(Actor actor) {
+	private void removeAllListeners(Actor actor) {
         Array<EventListener> listeners = new Array<>(actor.getListeners());
         for (EventListener listener : listeners)
             actor.removeListener(listener);
     }
 	
-	public void updateGameState(boolean firstTime) {
-		if(!firstTime) {
-			seleccionadas.clear();
-			jugador.unselectAll();
-			for(int i = 0; i < mesa.size(); i++) {
-				removeAllListeners(mesa.get(i).getImagen().getBtn());
-				mesa.get(i).getImagen().getBtn().remove();
-			}
-			for(int i = 0; i < jugador.getCartas().size(); i++) {
-				removeAllListeners(jugador.getCartas().get(i).getImagen().getBtn());
-				jugador.getCartas().get(i).getImagen().getBtn().remove();
-			}
+	private void clearActors() {
+		jugador.unselectAll();
+		for(int i = 0; i < mesa.size(); i++) {
+			removeAllListeners(mesa.get(i).getImagen().getBtn());
+			mesa.get(i).getImagen().getBtn().remove();
+			if(mesa.get(i).isSelected())
+				mesa.get(i).toggleSelected();
 		}
+		for(int i = 0; i < jugador.getCartas().size(); i++) {
+			removeAllListeners(jugador.getCartas().get(i).getImagen().getBtn());
+			jugador.getCartas().get(i).getImagen().getBtn().remove();
+		}
+	}
+	public void updateGameState() {
+		seleccionadas.clear();
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
 		for(int i = 0; i < mesa.size(); i++) {
@@ -104,11 +106,15 @@ public class GameScreen implements Screen{
 							@Override 
 							public void touchUp(InputEvent e, float x, float y, int point, int button) {
 								if(select.getMovimiento() == "lanzar") {
-									if(seleccionadas.size() == 0 && jugador.getIdEmparejamiento().equals("000")) {
-										jugador.lanzarCarta(mesa, index);
-										archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
-										updateGameState(false);
-										turno = false;
+									if(seleccionadas.size() == 0) {
+										if(jugador.getIdEmparejamiento() == "000") {
+											clearActors();
+											jugador.lanzarCarta(mesa, index);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											updateGameState();
+											turno = false;
+										}else
+											Render.mostrarMensaje(stage, "Error", "No puedes lanzar con un emparejamiento activo", "Ok");
 									}
 									else {
 										if(!jugador.getIdEmparejamiento().equals("000"))
@@ -122,8 +128,11 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartasRecoger(seleccionadas, jugador.getCartas().get(index))) {
-											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+											clearActors();
+											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											updateGameState();
+											turno = false;
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede recoger", "Ok");
 									}
@@ -132,8 +141,11 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartasEmparejar(seleccionadas, jugador.getCartas().get(index))) {
-											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+											clearActors();
+											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											updateGameState();
+											turno = false;
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede emparejar", "Ok");
 									}
@@ -142,10 +154,13 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
-											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index));
+											clearActors();
+											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											updateGameState();
+											turno = false;
 										}else 
-											Render.mostrarMensaje(stage, "Error", "No puede emparejar", "Ok");
+											Render.mostrarMensaje(stage, "Error", "No puede doblar", "Ok");
 									}
 								}
 							}
@@ -178,11 +193,9 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
-		if(nuevaPartida){ //Solo se reparte a la mesa cuando no se haya jugado antes
+		if(nuevaPartida)//Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
-			updateGameState(true);
-		}else
-			updateGameState(false);
+		updateGameState();
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -196,7 +209,7 @@ public class GameScreen implements Screen{
 		recogidasJugador.dibujar(1450,100);
 		contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		recogidasComputadora.dibujar(1450,750);
-		contadorRecogidasComputadora.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
+		contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		int xCartas = 600;
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
@@ -218,8 +231,6 @@ public class GameScreen implements Screen{
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 			//termina juego
 		}
-		
-		
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();

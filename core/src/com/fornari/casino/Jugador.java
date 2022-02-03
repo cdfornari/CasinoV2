@@ -58,7 +58,6 @@ public class Jugador {
 		cartas.remove(cartas.get(i));
 	}
 	
-	
 	//Funciones de validacion
 	
 	public int contarCartas(Carta cartaBuscar, Jugador jugador) {
@@ -136,7 +135,6 @@ public class Jugador {
 							return false;
 			    	}
 			    }
-		
 		}
 		return true;
 	}
@@ -215,72 +213,102 @@ public class Jugador {
 		if(suma == cartaJugador.getValor()) 
 			return true;
 		else {
-			for(int i = 0; i < cartasADoblar.size(); i++) { //buscar alguna combinacion valida
-				suma = cartaJugador.getValor();
-				for(Carta carta: cartasADoblar) {
-					if(cartasADoblar.indexOf(carta) != i)
-						suma += carta.getValor();
-				}
-				if(suma == cartasADoblar.get(i).getValor())
-					return true;
+			suma = 0;
+			int maximo = 0;
+			for (Carta carta: cartasADoblar) {
+				if(carta.getValor() > maximo) 
+					maximo = carta.getValor();
 			}
+			for (Carta carta: cartasADoblar) {
+				if(carta.getValor() < maximo) 
+					suma += carta.getValor();
+			}
+			if(suma == maximo)
+				return true;
 		}
 		return false;
 	}
 	
-	public void recogerCarta(
-			ArrayList<Carta> mesa,
-			ArrayList<Carta> cartasRecogerMesa,
-			Carta cartaJugador) 
+	public void recogerCarta(ArrayList<Carta> mesa,
+			ArrayList<Carta> cartasRecogerMesa, Carta cartaJugador, Jugador computadora) 
 	{ //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
+		String id = "000";
+		for (Carta carta: cartasRecogerMesa) {
+			if(carta.getIdEmparejamiento() != "000") {
+				id = carta.getIdEmparejamiento();
+				break;
+			}
+		}
+		if(id != "000" && id == this.idEmparejamiento)
+			this.idEmparejamiento = "000";
+		if(id != "000" && id == computadora.getIdEmparejamiento())
+			computadora.setIdEmparejamiento("000");
 		this.cartas.remove(cartaJugador);
 		mesa.removeAll(cartasRecogerMesa);
 		this.cartasRecogidas.addAll(cartasRecogerMesa);
 		this.cartasRecogidas.add(cartaJugador);
+		if(mesa.size() == 0)
+			this.clarezas++;
 	}
 	
 	public void emparejarCarta(ArrayList<Carta> mesa, 
-			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador) 
+			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador computadora) 
 	{
-		String id = "";
+		int suma = cartaJugador.getValor();
+		for (Carta carta: cartasAEmparejar)
+			suma += carta.getValor();
+		cartaJugador.setSumaEmparejadas(suma);
+		for (Carta carta: cartasAEmparejar)
+			carta.setSumaEmparejadas(suma);
+		String id = "000";
 		for (Carta carta: cartasAEmparejar) {
 			if(carta.getIdEmparejamiento() != "000") {
 				id = carta.getIdEmparejamiento();
 				break;
 			}
 		}
-		if(id == "")
+		if(id == "000")
 			id = cartaJugador.generarIdEmparejamiento();
-		cartasAEmparejar.add(cartaJugador);
-		this.cartas.remove(cartaJugador);
-		for(Carta carta: cartasAEmparejar) {
+		this.idEmparejamiento = id;
+		if(id != "000" && id == computadora.getIdEmparejamiento())
+			computadora.setIdEmparejamiento("000");
+		cartaJugador.setIdEmparejamiento(id);
+		mesa.add(cartaJugador);
+		for(Carta carta: cartasAEmparejar) 
 			carta.setIdEmparejamiento(id);
-			if (!mesa.contains(carta))
-				mesa.add(carta);
-		}
+		this.cartas.remove(cartaJugador);
 	}
 	
 	public void doblarCarta(ArrayList<Carta> mesa, 
-			ArrayList<Carta> cartasADoblar, Carta cartaJugador) 
+			ArrayList<Carta> cartasADoblar, Carta cartaJugador, Jugador computadora) 
 	{
-		String id = "";
+		int maximo = 0;
+		for (Carta carta: cartasADoblar) {
+			if(carta.getValor() > maximo) 
+				maximo = carta.getValor();
+		}
+		cartaJugador.setSumaEmparejadas(maximo);
+		for (Carta carta: cartasADoblar)
+			carta.setSumaEmparejadas(maximo);
+		String id = "000";
 		for (Carta carta: cartasADoblar) {
 			if(carta.getIdEmparejamiento() != "000") {
 				id = carta.getIdEmparejamiento();
 				break;
 			}
 		}
-		if(id == "")
+		if(id == "000")
 			id = cartaJugador.generarIdEmparejamiento();
-		cartasADoblar.add(cartaJugador);
-		this.cartas.remove(cartaJugador);
+		if(id != "000" && id == computadora.getIdEmparejamiento())
+			computadora.setIdEmparejamiento("000");
+		this.idEmparejamiento = id;
+		mesa.add(cartaJugador);
 		for(Carta carta: cartasADoblar) {
 			carta.setIdEmparejamiento(id);
 			if(!carta.isDoblada())
 				carta.toggleDoblada();
-			if (!mesa.contains(carta))
-				mesa.add(carta);
 		}
+		this.cartas.remove(cartaJugador);
 	}
 
 	public void setCartas(ArrayList<Carta> cartas) {
@@ -294,7 +322,5 @@ public class Jugador {
 	public void setClarezas(int clarezas) {
 		this.clarezas = clarezas;
 	}
-
-	
 
 }
