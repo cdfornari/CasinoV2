@@ -35,11 +35,12 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
-	private boolean turno;
+	private boolean turno, nuevaPartida;
 	private Archivo archivo=new Archivo();
 	
-	public GameScreen() {
-		if(Archivo.existeArchivo()) {
+	public GameScreen(boolean nuevaPartida) {
+		this.nuevaPartida=nuevaPartida;
+		if(Archivo.existeArchivo() && !nuevaPartida) {
 			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			mazo=archivo.getArbol().buscarNodoEnArbol("MAZO").getMazo();
 			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
@@ -115,8 +116,13 @@ public class GameScreen implements Screen{
 										}else
 											Render.mostrarMensaje(stage, "Error", "No puedes lanzar con un emparejamiento activo", "Ok");
 									}
-									else 
-										Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");							
+									else {
+										if(!jugador.getIdEmparejamiento().equals("000"))
+										Render.mostrarMensaje(stage, "Error", "Tiene un emparejamiento activo", "Ok");	
+										else if(seleccionadas.size()!=0)
+											Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");	
+
+									}
 								}else if(select.getMovimiento() == "recoger") {
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
@@ -187,9 +193,10 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
-		if(!Archivo.existeArchivo()) //Solo se reparte a la mesa cuando no se haya jugado antes
+		if(nuevaPartida)//Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
 		updateGameState();
+		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
 	}
 

@@ -108,7 +108,6 @@ public class Jugador {
 					} else
 					sumaNoEmparejadas+=carta.getValor(); //Sumo las no emparejadas para la suma final
 				}
-				
 				if(id1.equals("000") && id2.equals("000")) { //Si no hay emparejamientos
 					if(sumaNoEmparejadas>10) //La suma no puede exceder de 10
 						return false;
@@ -120,6 +119,7 @@ public class Jugador {
 				   return false;
 			    else {
 			    	sumaEsperada=cartaConId.getsumaEmparejadas();
+			    	System.out.println("SUMA ESPERADA: "+sumaEsperada);
 					if(doblada) sumaEsperada=sumaEsperada*2;
 			    	if(sumaEsperada!=sumaEmparejadas) //Deben estar seleccionadas todas las cartas del emparejamiento
 			    		return false;
