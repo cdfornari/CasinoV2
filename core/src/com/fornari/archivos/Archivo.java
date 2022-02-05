@@ -146,7 +146,7 @@ public class Archivo {
 	public void vaciarTipoMazo(Mazo mazo, BufferedWriter writer) throws IOException {
 		Carta carta=null;
 		if(!mazo.estaVacio()) {
-			carta=mazo.desapilar();
+			carta=mazo.deleteTope();
 			writer.write(carta.getValor()+"\n");
 			writer.write(carta.getFigura()+"\n");
 			writer.write(carta.getRepresentacion()+"\n");
@@ -156,7 +156,7 @@ public class Archivo {
 			writer.write(escribirBoolean(carta.isDoblada())+"\n");
 			writer.write(escribirBoolean(carta.isSelected())+"\n");
 			vaciarTipoMazo(mazo, writer);
-			mazo.apilar(carta);
+			mazo.setTope(carta);
 		} else
 		writer.write('/'+"\n");
 	}
@@ -258,7 +258,7 @@ public class Archivo {
 	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
 		Mazo mazo=new Mazo(true);
 		for(Carta carta: listaCartas) 
-			mazo.apilar(carta);
+			mazo.setTope(carta);
 		return mazo;
 	}
 	

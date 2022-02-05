@@ -42,10 +42,10 @@ public class NodoArchivo {
 	public static void transformar(Mazo mazo, ArrayList<Carta> listaCarta) {
 		Carta carta=null;
 		if(!mazo.estaVacio()) {
-			carta=mazo.desapilar(); 
+			carta=mazo.deleteTope(); 
 			listaCarta.add(carta);
 			transformar(mazo, listaCarta);
-			mazo.apilar(carta);
+			mazo.setTope(carta);
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class NodoArchivo {
 	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
 		Mazo mazo=new Mazo(true);
 		for(Carta carta: listaCartas) 
-			mazo.apilar(carta);
+			mazo.setTope(carta);
 		return mazo;
 	}
 	
@@ -138,8 +138,6 @@ public class NodoArchivo {
 		}
 	}
 
-	
-	
 	//Getters y Setters
 	
 	public int getClave() {
