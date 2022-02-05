@@ -1,5 +1,8 @@
 package com.fornari.screens;
 import com.fornari.utils.Render;
+
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -9,7 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.fornari.archivos.Archivo;
+import com.fornari.casino.Carta;
 import com.fornari.casino.Casino;
+import com.fornari.casino.Jugador;
+import com.fornari.casino.Mazo;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Texto;
@@ -23,6 +30,7 @@ public class NameScreen implements Screen{
 	private TextField userInput;
 	private Stage stage;
 	private TextButton btnContinuar;
+	private Archivo archivo=new Archivo();
 
 	@Override
 	public void show() {
@@ -47,6 +55,8 @@ public class NameScreen implements Screen{
 				if(userInput.getText().length() > 0) {
 					Config.setNombre(userInput.getText());
 					Casino.ventana.setScreen(new MenuScreen());
+					archivo.vaciarArchivo(new Mazo(), new ArrayList<Carta>(), new Jugador(), new Jugador(), new ArrayList<Carta>());
+					
 				}
 				else
 					Render.mostrarMensaje(stage,"Error","Ingresa un nombre valido","Ok");
