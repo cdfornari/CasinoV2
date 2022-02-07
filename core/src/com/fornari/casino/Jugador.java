@@ -45,8 +45,23 @@ public class Jugador {
 		}
 	}
 	
-	public int contarPuntaje() {
-		return 0;
+	public PuntajeJugador contarPuntaje() {
+		PuntajeJugador puntaje = new PuntajeJugador(cartasRecogidas.size(), clarezas);
+		for(Carta c : cartasRecogidas) {
+			if (c.getValor() == 1) {
+				puntaje.sumarPuntaje(1);
+			}
+			if (c.getFigura() == Figuras.espada) {
+				puntaje.addEspada();
+				if (c.getValor() == 2) {
+					puntaje.sumarPuntaje(1);
+				}
+			}
+			else if (c.getFigura() == Figuras.diamante && c.getValor() == 10) {
+				puntaje.sumarPuntaje(2);
+			}
+		}
+		return puntaje;
 	}
 	
 	public void asignarCartasSobrantes() {

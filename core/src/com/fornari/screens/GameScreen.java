@@ -229,7 +229,20 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.computadora.getCartas());
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
-			//termina juego
+			PuntajeJugador puntJugador = jugador.contarPuntaje();
+			PuntajeJugador puntCompu = computadora.contarPuntaje();
+			if (puntJugador.tiene26() && puntCompu.tiene26()) {
+				PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
+				elegido.sumarPuntaje(3);
+			}
+			String mensaje;
+			if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
+				mensaje = puntJugador.getMensajeGanador(false);
+			} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
+				mensaje = puntCompu.getMensajeGanador(true);
+			} else {
+				mensaje = "Hubo un empate";
+			}
 		}
 		stage.act(delta);
 		stage.draw();
