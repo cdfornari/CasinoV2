@@ -11,17 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.fornari.archivos.Archivo;
 import com.fornari.casino.*;
-import com.fornari.utils.ClickMouse;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Render;
@@ -51,6 +46,7 @@ public class GameScreen implements Screen{
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
+	private boolean ultimoEnRecoger;
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
@@ -85,9 +81,6 @@ public class GameScreen implements Screen{
 		});
 	}
 
-	
-	
-	
 	public GameScreen(boolean nuevaPartida) {
 		this.nuevaPartida=nuevaPartida;
 		if(Archivo.existeArchivo() && !nuevaPartida) {
@@ -183,6 +176,7 @@ public class GameScreen implements Screen{
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 											updateGameState();
 											turno = false;
+											ultimoEnRecoger = true;
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede recoger", "Ok");
 									}
@@ -261,7 +255,6 @@ public class GameScreen implements Screen{
 		Render.batch.begin();
 		fondo.dibujar();
 		
-		
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
 		recogidasJugador.dibujar(1450,100);
@@ -291,7 +284,10 @@ public class GameScreen implements Screen{
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 			if(mesa.size() > 0) {
-				
+				if(ultimoEnRecoger)
+					jugador.asignarCartasSobrantes(mesa);
+				else
+					computadora.asignarCartasSobrantes(mesa);
 			}
 			PuntajeJugador puntJugador = jugador.contarPuntaje();
 			PuntajeJugador puntCompu = computadora.contarPuntaje();

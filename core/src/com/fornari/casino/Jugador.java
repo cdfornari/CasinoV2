@@ -55,7 +55,7 @@ public class Jugador {
 		return puntaje;
 	}
 	
-	public void asignarCartasSobrantes() {
+	public void asignarCartasSobrantes(ArrayList<Carta> mesa) {
 		
 	}
 	
