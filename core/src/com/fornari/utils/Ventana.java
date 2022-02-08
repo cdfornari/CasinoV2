@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.fornari.casino.Carta;
 import com.fornari.casino.Jugador;
+import com.fornari.screens.GameScreen;
 
 public class Ventana {
 	final int ancho=140;
@@ -29,6 +30,7 @@ public class Ventana {
 	public void asignarCartas(ArrayList<Carta> listaCartas) {
 		int x=1,y=1;
 		for(int i=1; i<=listaCartas.size(); i++) {
+			GameScreen.removeAllListeners(listaCartas.get(i-1).getImagen().getBtn());
 			this.window.add(listaCartas.get(i-1).getImagen().getBtn()).width(ancho).height(alto).space(espacio);
 			if(i % 11 == 0) {
 				this.window.row();

@@ -6,11 +6,13 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -44,25 +46,27 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
-	private boolean turno, nuevaPartida;
+	private boolean turno, nuevaPartida,mostrarRecogidas=true;
 	private Archivo archivo=new Archivo();
 	private Texto puntajeJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto puntajeComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
+	Skin skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
+		mostrarRecogidas=false;
 		ventanaRecogidas.getBtn().setPosition(x, y);
 		ventanaRecogidas.getBtn().setSize(140, 190);
 		stage.addActor(ventanaRecogidas.getBtn());
 		ventanaRecogidas.getBtn().addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				
 				ventana=new Ventana(recogidas, tipoJugador);
 				ventana.setPosition(Config.anchoPantalla/2, Config.altoPantalla/2);
-				
 				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
 				btnCerrar.setSize(500, 500);
 				ventana.getWindow().add(btnCerrar).spaceTop(30).row();
@@ -70,6 +74,7 @@ public class GameScreen implements Screen{
 					@Override
 					public void touchUp(InputEvent e, float x, float y, int point, int button) {
 						stage.getRoot().removeActor(ventana.getWindow());
+						mostrarRecogidas=true;
 					}
 					@Override
 					public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -100,7 +105,7 @@ public class GameScreen implements Screen{
 		}
 	}
 	
-	private void removeAllListeners(Actor actor) {
+	public static void removeAllListeners(Actor actor) {
         Array<EventListener> listeners = new Array<>(actor.getListeners());
         for (EventListener listener : listeners)
             actor.removeListener(listener);
@@ -234,6 +239,7 @@ public class GameScreen implements Screen{
 	
 	@Override
 	public void show() {
+		
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
 		if(new Random(2).nextInt() == 0)
 			this.turno = true;
@@ -252,6 +258,7 @@ public class GameScreen implements Screen{
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
 		
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+
 		Gdx.input.setInputProcessor(stage);
 		
 	}
@@ -260,17 +267,15 @@ public class GameScreen implements Screen{
 	public void render(float delta) {
 		Render.batch.begin();
 		fondo.dibujar();
+
+		recogidasJugador.dibujar(1450,100);
+		recogidasComputadora.dibujar(1450,750);
 		
 		
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
-		recogidasJugador.dibujar(1450,100);
-		contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		
-		recogidasComputadora.dibujar(1450,750);
-		contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
-		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
-		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
+		
 		int xCartas = 600;
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
@@ -308,11 +313,18 @@ public class GameScreen implements Screen{
 				mensaje = "Hubo un empate";
 			}
 			Casino.ventana.setScreen(new EndScreen(mensaje));
+			
+			if(mostrarRecogidas) {
+				puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
+				puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
+			}
 		}
-		
 		stage.act(delta);
 		stage.draw();
+		
+		
 		Render.batch.end();
+		
 	}
 
 	@Override
