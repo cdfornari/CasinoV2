@@ -69,11 +69,11 @@ public class GameScreen implements Screen{
 				ventana.setPosition(Config.anchoPantalla/2, Config.altoPantalla/2);
 				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
 				btnCerrar.setSize(500, 500);
-				ventana.getWindow().add(btnCerrar).spaceTop(30).row();
+				ventana.getDialog().getContentTable().add(btnCerrar).spaceTop(30).row();
 				btnCerrar.addListener(new ClickListener() {
 					@Override
 					public void touchUp(InputEvent e, float x, float y, int point, int button) {
-						stage.getRoot().removeActor(ventana.getWindow());
+						stage.getRoot().removeActor(ventana.getDialog());
 						mostrarRecogidas=true;
 					}
 					@Override
@@ -81,7 +81,7 @@ public class GameScreen implements Screen{
 						return true;
 					}
 				});
-				stage.addActor(ventana.getWindow());
+				stage.addActor(ventana.getDialog());
 			}
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -240,7 +240,8 @@ public class GameScreen implements Screen{
 	@Override
 	public void show() {
 		
-		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
+		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
+		
 		if(new Random(2).nextInt() == 0)
 			this.turno = true;
 		else
@@ -256,76 +257,70 @@ public class GameScreen implements Screen{
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
-		
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
-
 		Gdx.input.setInputProcessor(stage);
 		
 	}
 
 	@Override
 	public void render(float delta) {
-		Render.batch.begin();
-		fondo.dibujar();
-
-		recogidasJugador.dibujar(1450,100);
-		recogidasComputadora.dibujar(1450,750);
-		
-		
-		imagenMazo.dibujar(300, 415);
-		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
-		
-		
-		int xCartas = 600;
-		for(int i = 0; i < computadora.getCartas().size(); i++) {
-			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
-			xCartas += 175;
-		}
-		for(int i = 0; i < mesa.size(); i++) {
-			if(mesa.get(i).isSelected())
-				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 605 + seleccionada.getAlto()/2);
-		}
-		if(!turno) {
-			//movimientos computadora
-			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
-			turno = true;
-		}
-		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
-			mazo.repartir(this.jugador.getCartas());
-			mazo.repartir(this.computadora.getCartas());
-		}
-		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
-			if(mesa.size() > 0) {
-				
-			}
-			PuntajeJugador puntJugador = jugador.contarPuntaje();
-			PuntajeJugador puntCompu = computadora.contarPuntaje();
-			if (puntJugador.tiene26() && puntCompu.tiene26()) {
-				PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
-				elegido.sumarPuntaje(3);
-			}
-			String mensaje = "";
-			if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
-				mensaje = puntJugador.getMensajeGanador(false);
-			} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
-				mensaje = puntCompu.getMensajeGanador(true);
-			} else {
-				mensaje = "Hubo un empate";
-			}
-			Casino.ventana.setScreen(new EndScreen(mensaje));
+			Render.batch.begin();
+			fondo.dibujar();
+			imagenMazo.dibujar(300, 415);
+			contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
+			recogidasJugador.dibujar(1450,100);
+			recogidasComputadora.dibujar(1450,750);
+			puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
 			
-			if(mostrarRecogidas) {
-				puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
-				puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
+			contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
+			puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
+			int xCartas = 600;
+			for(int i = 0; i < computadora.getCartas().size(); i++) {
+				computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
+				xCartas += 175;
 			}
+			for(int i = 0; i < mesa.size(); i++) {
+				if(mesa.get(i).isSelected())
+					seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 605 + seleccionada.getAlto()/2);
+			}
+			if(!turno) {
+				//movimientos computadora
+				//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+				turno = true;
+			}
+			if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
+				mazo.repartir(this.jugador.getCartas());
+				mazo.repartir(this.computadora.getCartas());
+			}
+			if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
+				if(mesa.size() > 0) {
+					
+				}
+				PuntajeJugador puntJugador = jugador.contarPuntaje();
+				PuntajeJugador puntCompu = computadora.contarPuntaje();
+				if (puntJugador.tiene26() && puntCompu.tiene26()) {
+					PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
+					elegido.sumarPuntaje(3);
+				}
+				String mensaje = "";
+				if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
+					mensaje = puntJugador.getMensajeGanador(false);
+				} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
+					mensaje = puntCompu.getMensajeGanador(true);
+				} else {
+					mensaje = "Hubo un empate";
+				}
+				Casino.ventana.setScreen(new EndScreen(mensaje));
+			}
+			stage.act(delta);
+			stage.draw();
+			
+			Render.batch.end();
+			
+			Render.batch.begin();
+			
+			Render.batch.end();
 		}
-		stage.act(delta);
-		stage.draw();
-		
-		
-		Render.batch.end();
-		
-	}
 
 	@Override
 	public void resize(int width, int height) {
