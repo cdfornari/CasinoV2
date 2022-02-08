@@ -37,6 +37,8 @@ public class GameScreen implements Screen{
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
 	private boolean turno, nuevaPartida;
 	private Archivo archivo=new Archivo();
+	private Texto puntajeJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
+	private Texto puntajeComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	
 	public GameScreen(boolean nuevaPartida) {
 		this.nuevaPartida=nuevaPartida;
@@ -210,6 +212,8 @@ public class GameScreen implements Screen{
 		contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		recogidasComputadora.dibujar(1450,750);
 		contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
+		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
+		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
 		int xCartas = 600;
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
@@ -229,13 +233,16 @@ public class GameScreen implements Screen{
 			mazo.repartir(this.computadora.getCartas());
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
+			if(mesa.size() > 0) {
+				
+			}
 			PuntajeJugador puntJugador = jugador.contarPuntaje();
 			PuntajeJugador puntCompu = computadora.contarPuntaje();
 			if (puntJugador.tiene26() && puntCompu.tiene26()) {
 				PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
 				elegido.sumarPuntaje(3);
 			}
-			String mensaje;
+			String mensaje = "";
 			if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
 				mensaje = puntJugador.getMensajeGanador(false);
 			} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
@@ -243,6 +250,7 @@ public class GameScreen implements Screen{
 			} else {
 				mensaje = "Hubo un empate";
 			}
+			Casino.ventana.setScreen(new EndScreen(mensaje));
 		}
 		stage.act(delta);
 		stage.draw();
