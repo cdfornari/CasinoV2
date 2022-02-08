@@ -1,11 +1,9 @@
 package com.fornari.screens;
 
 import java.nio.file.Paths;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.fornari.archivos.Archivo;
 import com.fornari.casino.Casino;
 import com.fornari.utils.ClickMouse;
 import com.fornari.utils.Config;
@@ -141,7 +139,6 @@ public class MenuScreen implements Screen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public float getTiempo() {
