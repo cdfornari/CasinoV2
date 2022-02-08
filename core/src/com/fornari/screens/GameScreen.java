@@ -10,15 +10,24 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.fornari.archivos.Archivo;
 import com.fornari.casino.*;
+import com.fornari.utils.ClickMouse;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Render;
 import com.fornari.utils.SelectMovimiento;
 import com.fornari.utils.Texto;
+import com.fornari.utils.Ventana;
 
 public class GameScreen implements Screen{
 	private Mazo mazo = new Mazo();
@@ -39,6 +48,45 @@ public class GameScreen implements Screen{
 	private Archivo archivo=new Archivo();
 	private Texto puntajeJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto puntajeComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
+	private Ventana ventana;
+	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
+	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
+	
+	//Funcion para crear la ventana emergente de recogidas
+	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
+		ventanaRecogidas.getBtn().setPosition(x, y);
+		ventanaRecogidas.getBtn().setSize(140, 190);
+		stage.addActor(ventanaRecogidas.getBtn());
+		ventanaRecogidas.getBtn().addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				ventana=new Ventana(recogidas, tipoJugador);
+				ventana.setPosition(Config.anchoPantalla/2, Config.altoPantalla/2);
+				
+				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
+				btnCerrar.setSize(500, 500);
+				ventana.getWindow().add(btnCerrar).spaceTop(30).row();
+				btnCerrar.addListener(new ClickListener() {
+					@Override
+					public void touchUp(InputEvent e, float x, float y, int point, int button) {
+						stage.getRoot().removeActor(ventana.getWindow());
+					}
+					@Override
+					public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+						return true;
+					}
+				});
+				stage.addActor(ventana.getWindow());
+			}
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+		});
+	}
+
+	
+	
 	
 	public GameScreen(boolean nuevaPartida) {
 		this.nuevaPartida=nuevaPartida;
@@ -197,19 +245,28 @@ public class GameScreen implements Screen{
 		}
 		if(nuevaPartida)//Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
+		
 		updateGameState();
+		//Creando las ventanas emergentes recogidas
+		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
+		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
+		
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
+		
 	}
 
 	@Override
 	public void render(float delta) {
 		Render.batch.begin();
 		fondo.dibujar();
+		
+		
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
 		recogidasJugador.dibujar(1450,100);
 		contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
+		
 		recogidasComputadora.dibujar(1450,750);
 		contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
@@ -252,6 +309,7 @@ public class GameScreen implements Screen{
 			}
 			Casino.ventana.setScreen(new EndScreen(mensaje));
 		}
+		
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();

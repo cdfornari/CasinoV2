@@ -2,10 +2,12 @@ package com.fornari.utils;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.fornari.screens.GameScreen;
 import com.fornari.screens.MenuScreen;
 
 public class ClickMouse implements InputProcessor {
 	private MenuScreen app;
+	private GameScreen game;
 	private int posicionX=0, posicionY=0;
 	private boolean click=false;
 	private boolean abajo = false;
@@ -14,6 +16,10 @@ public class ClickMouse implements InputProcessor {
 	
 	public ClickMouse(MenuScreen app) {
 		this.app = app;
+	}
+	
+	public ClickMouse(GameScreen app) {
+		this.game = app;
 	}
 
 	@Override
