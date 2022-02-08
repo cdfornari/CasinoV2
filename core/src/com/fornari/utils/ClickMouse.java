@@ -7,7 +7,6 @@ import com.fornari.screens.MenuScreen;
 
 public class ClickMouse implements InputProcessor {
 	private MenuScreen app;
-	private GameScreen game;
 	private int posicionX=0, posicionY=0;
 	private boolean click=false;
 	private boolean abajo = false;
@@ -19,7 +18,6 @@ public class ClickMouse implements InputProcessor {
 	}
 	
 	public ClickMouse(GameScreen app) {
-		this.game = app;
 	}
 
 	@Override

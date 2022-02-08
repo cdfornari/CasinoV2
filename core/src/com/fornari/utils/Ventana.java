@@ -4,13 +4,8 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.fornari.casino.Carta;
-import com.fornari.casino.Jugador;
 import com.fornari.screens.GameScreen;
 
 public class Ventana {
@@ -19,12 +14,9 @@ public class Ventana {
 	final int espacio=20;
 	
 	Skin skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
-	private Window window;
-	private String jugador="";
 	private Dialog dialog;
 	
 	public Ventana(ArrayList<Carta> listaCartas, String jugador) {
-		this.jugador=jugador;
 		this.dialog=new Dialog("Cartas recogidas de "+jugador,skin);
 		asignarCartas(listaCartas);
 	}

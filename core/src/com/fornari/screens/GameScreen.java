@@ -6,7 +6,6 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -46,6 +45,7 @@ public class GameScreen implements Screen{
 	private Texto puntajeComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
+	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
 	Skin skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
 	private boolean ultimoEnRecoger;
 	
