@@ -9,7 +9,7 @@ public class SelectMovimiento extends Dialog{
 	private String movimiento;
 	
 	public SelectMovimiento(Stage stage) {
-		super("Selecciona", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
+		super("Selecciona", new Skin(Gdx.files.internal(Config.pathSkin)));
 		this.text("Que movimiento deseas realizar?");
 		this.button("Lanzar","lanzar");
 		this.button("Recoger","recoger");

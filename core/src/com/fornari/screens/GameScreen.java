@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -46,8 +47,8 @@ public class GameScreen implements Screen{
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
-	Skin skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
 	private boolean ultimoEnRecoger;
+	private Imagen btnSalir = new Imagen("btn-salir.png","btn");
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
@@ -60,7 +61,7 @@ public class GameScreen implements Screen{
 				mostrarRecogidas=false;
 				ventana=new Ventana(recogidas, tipoJugador);
 				ventana.setPosition(Config.anchoPantalla/2, Config.altoPantalla/2);
-				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
+				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal(Config.pathSkin)));
 				btnCerrar.setSize(500, 500);
 				ventana.getDialog().getContentTable().add(btnCerrar).spaceTop(30).row();
 				btnCerrar.addListener(new ClickListener() {
@@ -230,9 +231,29 @@ public class GameScreen implements Screen{
 	
 	@Override
 	public void show() {
-		
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
-		
+		btnSalir.getBtn().setPosition(100, 100);
+		btnSalir.getBtn().setSize(100,100);
+		btnSalir.getBtn().addListener(new ClickListener() {
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				Dialog dialog = new Dialog("Salir",new Skin(Gdx.files.internal(Config.pathSkin))){
+					protected void result(Object object) {
+						if((Boolean)object)
+							Gdx.app.exit();
+					}
+				};
+				dialog.text("Seguro quiere salir?");
+				dialog.button("Si",true);
+				dialog.button("No",false);
+				dialog.scaleBy(0.5f);
+				dialog.layout();
+				dialog.show(stage);
+			}
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+		});
+		stage.addActor(btnSalir.getBtn());
 		if(new Random(2).nextInt() == 0)
 			this.turno = true;
 		else
@@ -250,7 +271,6 @@ public class GameScreen implements Screen{
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
-		
 	}
 
 	@Override
