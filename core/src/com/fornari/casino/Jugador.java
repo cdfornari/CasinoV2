@@ -1,8 +1,6 @@
 package com.fornari.casino;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-
 public class Jugador {
 	private ArrayList<Carta> cartas;
 	private ArrayList<Carta> cartasRecogidas;
@@ -373,5 +371,312 @@ public class Jugador {
 	public void setClarezas(int clarezas) {
 		this.clarezas = clarezas;
 	}
-
+	
+	public void decidirMovimiento(ArrayList<Carta> mesa, Jugador jugador) {
+		ArrayList<Carta> cartasSeleccionadas = new ArrayList<Carta>();
+		//buscar 10 de diamantes
+		for(Carta cartaMesa: mesa) {
+			if(cartaMesa.getValor() == 10 && cartaMesa.getFigura() == Figuras.diamante) {
+				for(Carta carta: this.cartas) {
+					if(carta.getValor() == 10) {
+						cartasSeleccionadas.add(cartaMesa);
+						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+						break;
+					}
+				}
+				break;
+			}
+		}
+		cartasSeleccionadas.clear();
+		for(Carta carta: this.cartas) {
+			if(carta.getValor() == 10 && carta.getFigura() == Figuras.diamante) {
+				for(Carta cartaMesa: mesa) {
+					if(cartaMesa.getValor() == 10) {
+						cartasSeleccionadas.add(cartaMesa);
+						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+						break;
+					}
+				}
+				break;
+			}
+		}
+		cartasSeleccionadas.clear();
+		//buscar 2 de espadas
+		for(Carta cartaMesa: mesa) {
+			if(cartaMesa.getValor() == 2 && cartaMesa.getFigura() == Figuras.espada) {
+				for(Carta carta: this.cartas) {
+					if(carta.getValor() == 2) {
+						cartasSeleccionadas.add(cartaMesa);
+						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+					}
+				}
+				break;
+			}
+		}
+		cartasSeleccionadas.clear();
+		for(Carta carta: this.cartas) {
+			if(carta.getValor() == 2 && carta.getFigura() == Figuras.espada) {
+				for(Carta cartaMesa: mesa) {
+					if(cartaMesa.getValor() == 2) {
+						cartasSeleccionadas.add(cartaMesa);
+						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+					}
+				}
+				break;
+			}
+		}
+		cartasSeleccionadas.clear();
+		//buscar un as
+		for(Carta cartaMesa: mesa) {
+			if(cartaMesa.getValor() == 1) {
+				for(Carta carta: this.cartas) {
+					if(carta.getValor() == 1) {
+						cartasSeleccionadas.add(cartaMesa);
+						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//buscar una espada
+		for(Carta cartaMesa: mesa) {
+			if(cartaMesa.getFigura() == Figuras.espada) {
+				int valor = cartaMesa.getValor();
+				for(Carta carta: this.cartas) {
+					if(carta.getValor() == valor) {
+						cartasSeleccionadas.add(cartaMesa);
+						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//recoger emparejamiento
+		if(!this.idEmparejamiento.equals("000")) {
+			int suma = 0;
+			for(Carta cartaMesa: mesa)
+				if(cartaMesa.getIdEmparejamiento().equals(this.idEmparejamiento)) {
+					cartasSeleccionadas.add(cartaMesa);
+					suma += cartaMesa.getValor();
+				}
+			//emparejamiento doblado
+			if(cartasSeleccionadas.get(0).isDoblada()) {
+				int maximo = 0;
+				for(Carta carta: cartasSeleccionadas)
+					if(carta.getValor() > maximo)
+						maximo = carta.getValor();
+				suma = maximo;
+			}
+			for(Carta carta: this.cartas)
+				if(carta.getValor() == suma) {
+					if(this.validarCartasRecoger(cartasSeleccionadas, carta)) {
+						this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+						return;
+					}
+				}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede recoger una carta
+		for(Carta carta: this.cartas) {
+			for(Carta cartaMesa: mesa) {
+				if(carta.getValor() == cartaMesa.getValor()) {
+					cartasSeleccionadas.add(cartaMesa);
+					if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
+						this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+						return;
+					}else
+						cartasSeleccionadas.clear();
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede recoger 2 cartas
+		for(Carta cartaMesa: mesa) {
+			for(Carta cartaMesa2: mesa) {
+				if(!cartaMesa.equals(cartaMesa2) && cartaMesa.getValor() <= 10 && cartaMesa2.getValor() <= 10) {
+					int suma = cartaMesa.getValor() + cartaMesa2.getValor();
+					for(Carta carta: this.cartas) {
+						if(carta.getValor() == suma) {
+							cartasSeleccionadas.add(cartaMesa);
+							cartasSeleccionadas.add(cartaMesa2);
+							if(this.validarCartasRecoger(cartasSeleccionadas, carta)) {
+								this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+								return;
+							}else
+								cartasSeleccionadas.clear();
+						}
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede recoger 3 cartas
+		for(Carta cartaMesa: mesa) {
+			for(Carta cartaMesa2: mesa) {
+				for(Carta cartaMesa3: mesa) {
+					if(!cartaMesa.equals(cartaMesa2) && !cartaMesa.equals(cartaMesa3) && !cartaMesa2.equals(cartaMesa3) &&
+						cartaMesa.getValor() <= 10 && cartaMesa2.getValor() <= 10 && cartaMesa3.getValor() <= 10) {
+						int suma = cartaMesa.getValor() + cartaMesa2.getValor() + cartaMesa3.getValor();
+						for(Carta carta: this.cartas) {
+							if(carta.getValor() == suma) {
+								cartasSeleccionadas.add(cartaMesa);
+								cartasSeleccionadas.add(cartaMesa2);
+								cartasSeleccionadas.add(cartaMesa3);
+								if(this.validarCartasRecoger(cartasSeleccionadas, carta)) {
+									this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+									return;
+								}else
+									cartasSeleccionadas.clear();
+							}
+						}
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede robar emparejamiento
+		if(!jugador.getIdEmparejamiento().equals("000")) {
+			int suma = 0;
+			for(Carta cartaMesa: mesa)
+				if(cartaMesa.getIdEmparejamiento().equals(jugador.getIdEmparejamiento())) {
+					cartasSeleccionadas.add(cartaMesa);
+					suma += cartaMesa.getValor();
+				}
+			//emparejamiento doblado
+			if(cartasSeleccionadas.get(0).isDoblada()) {
+				int maximo = 0;
+				for(Carta carta: cartasSeleccionadas)
+					if(carta.getValor() > maximo)
+						maximo = carta.getValor();
+				suma = maximo;
+			}
+			for(Carta carta: this.cartas)
+				if(carta.getValor() == suma) {
+					if(this.validarCartasRecoger(cartasSeleccionadas, carta)) {
+						this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
+						return;
+					}
+				}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede sumar a un emparejamiento
+		if(!jugador.getIdEmparejamiento().equals("000")) {
+			boolean doblado = false;
+			for(Carta cartaMesa: mesa) {
+				if(cartaMesa.getIdEmparejamiento().equals(jugador.getIdEmparejamiento())) {
+					if(cartaMesa.isDoblada()) {
+						doblado = true;
+						break;
+					}
+					cartasSeleccionadas.add(cartaMesa);
+				}
+			}
+			if(!doblado) {
+				for(Carta carta: this.cartas) {
+					if(this.validarCartasEmparejar(cartasSeleccionadas, carta)) {
+						this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
+						return;
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede emparejar una carta
+		for(Carta cartaMesa: mesa) {
+			for(Carta carta: this.cartas) {
+				cartasSeleccionadas.add(cartaMesa);
+				if(this.validarCartasEmparejar(cartasSeleccionadas, carta)) {
+					this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
+					return;
+				}
+				else
+					cartasSeleccionadas.clear();
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede emparejar 2 cartas
+		for(Carta cartaMesa: mesa) {
+			for(Carta cartaMesa2: mesa) {
+				if(!cartaMesa.equals(cartaMesa2) && cartaMesa.getValor() <= 10 && cartaMesa2.getValor() <= 10) {
+					for(Carta carta: this.cartas) {
+						cartasSeleccionadas.add(cartaMesa);
+						cartasSeleccionadas.add(cartaMesa2);
+						if(this.validarCartasEmparejar(cartasSeleccionadas, carta)) {
+							this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+						else
+							cartasSeleccionadas.clear();
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear si puede emparejar 3 cartas
+		for(Carta cartaMesa: mesa) {
+			for(Carta cartaMesa2: mesa) {
+				for(Carta cartaMesa3: mesa) {
+					if(!cartaMesa.equals(cartaMesa2) && !cartaMesa.equals(cartaMesa3) && !cartaMesa2.equals(cartaMesa3)) {
+						for(Carta carta: this.cartas) {
+							cartasSeleccionadas.add(cartaMesa);
+							cartasSeleccionadas.add(cartaMesa2);
+							cartasSeleccionadas.add(cartaMesa3);
+							if(this.validarCartasEmparejar(cartasSeleccionadas, carta)) {
+								this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
+								return;
+							}
+							else
+								cartasSeleccionadas.clear();
+						}
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//chequear que puede doblar su emparejamiento
+		if(!this.idEmparejamiento.equals("000")) {
+			int suma = 0;
+			boolean doblado = false;
+			for(Carta cartaMesa: mesa)
+				if(cartaMesa.getIdEmparejamiento().equals(this.idEmparejamiento)) {
+					if(cartaMesa.isDoblada()) {
+						doblado = true;
+						break;
+					}
+					cartasSeleccionadas.add(cartaMesa);
+					suma += cartaMesa.getValor();
+				}
+			if(!doblado && suma <= 10) {
+				for(Carta carta: this.cartas) {
+					if(carta.getValor() == suma) {
+						if(this.validarCartaDoblarse(cartasSeleccionadas, carta)) {
+							this.doblarCarta(mesa, cartasSeleccionadas, carta, jugador);
+							return;
+						}
+					}
+				}
+			}
+		}
+		cartasSeleccionadas.clear();
+		//lanzar
+		this.lanzarCarta(mesa, 0);
+	}
 }

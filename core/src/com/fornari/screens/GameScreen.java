@@ -142,11 +142,9 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-	
-			
-			//Funcion para imprimir emparejadas en la mesa
-			if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
-				espacio=35;
+		//Funcion para imprimir emparejadas en la mesa
+		if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
+			espacio=35;
 		else if (i!=0 && !mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && !mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000") )   //Son de emparejamientos distintos
 			espacio=35;
 		else if (i!=0 && mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000")) //La carta a poner no esta emparejada, pero la anterior si lo esta
@@ -316,10 +314,10 @@ public class GameScreen implements Screen{
 				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 605 + seleccionada.getAlto()/2);
 		}
 		if(!turno) {
-			//movimientos computadora
-			//clearActors();
-			//updateGameState();
-			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			clearActors();
+			computadora.decidirMovimiento(mesa,jugador);
+			updateGameState();
+			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			turno = true;
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
