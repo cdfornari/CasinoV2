@@ -49,6 +49,10 @@ public class GameScreen implements Screen{
 	Skin skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
 	private boolean ultimoEnRecoger;
 	
+	private int loteCartas=0, maxCartas=3, contadorCartasMostrar=0;
+	private Imagen flechaDerecha= new Imagen("Fondos/fled.png","btn");
+	private Imagen flechaIzquierda= new Imagen("Fondos/flecha.png","btn");
+	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
 		ventanaRecogidas.getBtn().setPosition(x, y);
@@ -101,12 +105,21 @@ public class GameScreen implements Screen{
             actor.removeListener(listener);
     }
 	
-	private void clearActors() {
+	private void clearSeleccionada() {
+		contadorCartasMostrar=0;
+		for(int i = 0; i < mesa.size(); i++) {
+				seleccionada.dibujar("", mesa.get(i).getImagen().getBtn().getX()+50, mesa.get(i).getImagen().getBtn().getY()+220);
+				if(contadorCartasMostrar==maxCartas) break;
+				++contadorCartasMostrar;
+		}
+	}
+	
+	private void clearActors(boolean eliminarIsSelected) {
 		jugador.unselectAll();
 		for(int i = 0; i < mesa.size(); i++) {
 			removeAllListeners(mesa.get(i).getImagen().getBtn());
 			mesa.get(i).getImagen().getBtn().remove();
-			if(mesa.get(i).isSelected())
+			if(mesa.get(i).isSelected() && eliminarIsSelected)
 				mesa.get(i).toggleSelected();
 		}
 		for(int i = 0; i < jugador.getCartas().size(); i++) {
@@ -115,25 +128,24 @@ public class GameScreen implements Screen{
 		}
 	}
 	public void updateGameState() {
-		int espacio=0, ancho=140;
+		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
 		
-		seleccionadas.clear();
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
 		
 		Jugador.ordenarEmparejamientos(mesa); //Ordena el mazo para que las cartas emparejadas queden de forma adyacente en la lista
 		
-		for(int i = 0; i < mesa.size(); i++) {
+		for(int i = loteCartas; i < mesa.size(); i++) {
 			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
 				@Override
 				public void touchUp(InputEvent e, float x, float y, int point, int button) {
 					if(turno) {
 						mesa.get(index).toggleSelected();
-						if(mesa.get(index).isSelected())
+						if(mesa.get(index).isSelected() && !seleccionadas.contains(mesa.get(index)))
 							seleccionadas.add(mesa.get(index));
-						else
-							seleccionadas.remove(seleccionadas.indexOf(mesa.get(index)));
+						else 
+							seleccionadas.remove(mesa.get(index));	
 					}
 				}
 				@Override
@@ -152,12 +164,15 @@ public class GameScreen implements Screen{
 			espacio=35;
 		else
 			espacio=0;
-		if(i!=0)
-			mesa.get(i).getImagen().getBtn().setPosition(mesa.get(i-1).getImagen().getBtn().getX()+ancho+espacio, 415); //Obtengo la posicion de la carta anterior. Si es emparejada le agrego un espacio
+		if(i!=0 && (contadorCartasMostrar!=0) ) 
+			mesa.get(i).getImagen().getBtn().setPosition(mesa.get(i-1).getImagen().getBtn().getX()+ancho+espacio, 415);
 		else
-			mesa.get(i).getImagen().getBtn().setPosition(600 + i *(ancho+espacio), 415);
+			mesa.get(i).getImagen().getBtn().setPosition(600 + 0 *(ancho+espacio), 415); //Cambiar 0 por i
 		mesa.get(i).getImagen().getBtn().setSize(140, 190);
 		stage.addActor(mesa.get(i).getImagen().getBtn());	
+		
+		if(contadorCartasMostrar==maxCartas) break;
+		++contadorCartasMostrar;
 			
 		}
 		for(int i = 0; i < jugador.getCartas().size(); i++) {
@@ -173,7 +188,7 @@ public class GameScreen implements Screen{
 								if(select.getMovimiento() == "lanzar") {
 									if(seleccionadas.size() == 0) {
 										if(jugador.getIdEmparejamiento() == "000") {
-											clearActors();
+											clearActors(true);
 											jugador.lanzarCarta(mesa, index);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 											updateGameState();
@@ -193,7 +208,7 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartasRecoger(seleccionadas, jugador.getCartas().get(index))) {
-											clearActors();
+											clearActors(true);
 											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 											updateGameState();
@@ -207,7 +222,7 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartasEmparejar(seleccionadas, jugador.getCartas().get(index))) {
-											clearActors();
+											clearActors(true);
 											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 											updateGameState();
@@ -220,7 +235,7 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
 										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
-											clearActors();
+											clearActors(true);
 											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 											updateGameState();
@@ -229,6 +244,8 @@ public class GameScreen implements Screen{
 											Render.mostrarMensaje(stage, "Error", "No puede doblar", "Ok");
 									}
 								}
+								if(turno==false)
+									seleccionadas.clear();
 							}
 							@Override
 							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -236,6 +253,7 @@ public class GameScreen implements Screen{
 							}
 						});
 					}	
+					
 				}
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -248,10 +266,58 @@ public class GameScreen implements Screen{
 		}
 	}
 	
+	public void botonesMoverMesa() {
+		flechaDerecha.getBtn().setSize(120, 120);
+		flechaDerecha.getBtn().setPosition(940, 300);
+		flechaIzquierda.getBtn().setSize(120, 120);
+		flechaIzquierda.getBtn().setPosition(810, 300);
+		
+		stage.addActor(flechaDerecha.getBtn());
+		stage.addActor(flechaIzquierda.getBtn());
+		
+		flechaIzquierda.getBtn().addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent e, float x, float y, int point, int button) { //NOTA: El clear actors limpia los isSelected
+				if(loteCartas-maxCartas-1>=0)
+					loteCartas=loteCartas-maxCartas-1;
+				clearActors(false);
+				clearSeleccionada();
+				updateGameState();
+			}
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+		});
+		
+		flechaDerecha.getBtn().addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				if(loteCartas+maxCartas+1<mesa.size())
+					loteCartas+=maxCartas+1;
+				clearSeleccionada();
+				clearActors(false);
+				updateGameState();
+			}
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+		});
+		
+	}
+	
 	@Override
 	public void show() {
 		
+		mazo.repartir(mesa);
+		mazo.repartir(mesa);
+		mazo.repartir(mesa);
+		
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
+		
+		//Creando los botones para mostrar los lotes de cartas
+		botonesMoverMesa();
 		
 		if(new Random(2).nextInt() == 0)
 			this.turno = true;
@@ -288,10 +354,16 @@ public class GameScreen implements Screen{
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
 			xCartas += 175;
 		}
-		for(int i = 0; i < mesa.size(); i++) {
-			if(mesa.get(i).isSelected())
-				seleccionada.dibujar("*", ((600 + i * 175) + (140/2) - (seleccionada.getAncho()/2)), 605 + seleccionada.getAlto()/2);
+		
+		contadorCartasMostrar=0;
+		for(int i = loteCartas; i < mesa.size(); i++) {
+			if(mesa.get(i).isSelected()) 
+				seleccionada.dibujar("*", mesa.get(i).getImagen().getBtn().getX()+50, mesa.get(i).getImagen().getBtn().getY()+220);
+			if(contadorCartasMostrar==maxCartas) break;
+			++contadorCartasMostrar;
 		}
+		
+		
 		if(!turno) {
 			//movimientos computadora
 			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);

@@ -247,9 +247,9 @@ public class Jugador {
 				break;
 			}
 		}
-		if(id != "000" && id == this.idEmparejamiento)
+		if(!id.equals("000") && id.equals(this.idEmparejamiento))
 			this.idEmparejamiento = "000";
-		if(id != "000" && id == computadora.getIdEmparejamiento())
+		if(!id.equals("000") && id.equals(computadora.getIdEmparejamiento()))
 			computadora.setIdEmparejamiento("000");
 		this.cartas.remove(cartaJugador);
 		mesa.removeAll(cartasRecogerMesa);
@@ -300,14 +300,14 @@ public class Jugador {
 			carta.setSumaEmparejadas(maximo);
 		String id = "000";
 		for (Carta carta: cartasADoblar) {
-			if(carta.getIdEmparejamiento() != "000") {
+			if(!carta.getIdEmparejamiento().equals("000")) {
 				id = carta.getIdEmparejamiento();
 				break;
 			}
 		}
-		if(id == "000")
+		if(id.equals("000"))
 			id = cartaJugador.generarIdEmparejamiento();
-		if(id != "000" && id == computadora.getIdEmparejamiento())
+		if(!id.equals("000") && id.equals(computadora.getIdEmparejamiento()))
 			computadora.setIdEmparejamiento("000");
 		this.idEmparejamiento = id;
 		mesa.add(cartaJugador);
