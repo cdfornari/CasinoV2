@@ -100,7 +100,7 @@ public class MenuScreen implements Screen{
 				Casino.ventana.setScreen(new GameScreen(true));
 			}
 			else if(opcion == 2)
-				Casino.ventana.setScreen(new GameScreen(false)); //TODO: cargar archivo
+				Casino.ventana.setScreen(new GameScreen(false)); 
 			else if(opcion == 3)
 				Gdx.app.exit();
 	}

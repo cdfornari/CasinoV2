@@ -41,9 +41,8 @@ public class PuntajeJugador {
 	}
 	
 	public String getMensajeGanador(boolean esCompu) {
-		if (esCompu) {
+		if (esCompu) 
 			return "Ha ganado la computadora con un puntaje de " + puntaje;
-		}
 		return "Ha ganado el jugador con un puntaje de " + puntaje;
 	}
 } 

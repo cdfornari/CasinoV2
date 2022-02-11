@@ -30,8 +30,8 @@ public class Imagen {
 	}
 	
 	public void dibujar(float x, float y) {
-		this.sprite.draw(Render.batch);
 		sprite.setPosition(x, y);
+		this.sprite.draw(Render.batch);
 	}
 	
 	public void setSize(int ancho, int alto) {

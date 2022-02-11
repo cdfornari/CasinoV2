@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -46,8 +47,8 @@ public class GameScreen implements Screen{
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
-	Skin skin = new Skin(Gdx.files.internal("shade/skin/uiskin.json"));
 	private boolean ultimoEnRecoger;
+	private Imagen btnSalir = new Imagen("btn-salir.png","btn");
 	
 	private int loteCartas=0, maxCartas=3, contadorCartasMostrar=0;
 	private Imagen flechaDerecha= new Imagen("Fondos/fled.png","btn");
@@ -64,7 +65,7 @@ public class GameScreen implements Screen{
 				mostrarRecogidas=false;
 				ventana=new Ventana(recogidas, tipoJugador);
 				ventana.setPosition(Config.anchoPantalla/2, Config.altoPantalla/2);
-				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal("shade/skin/uiskin.json")));
+				Button btnCerrar = new TextButton("CERRAR", new Skin(Gdx.files.internal(Config.pathSkin)));
 				btnCerrar.setSize(500, 500);
 				ventana.getDialog().getContentTable().add(btnCerrar).spaceTop(30).row();
 				btnCerrar.addListener(new ClickListener() {
@@ -144,11 +145,9 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-	
-			
-			//Funcion para imprimir emparejadas en la mesa
-			if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
-				espacio=35;
+		//Funcion para imprimir emparejadas en la mesa
+		if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
+			espacio=35;
 		else if (i!=0 && !mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && !mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000") )   //Son de emparejamientos distintos
 			espacio=35;
 		else if (i!=0 && mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000")) //La carta a poner no esta emparejada, pero la anterior si lo esta
@@ -298,34 +297,52 @@ public class GameScreen implements Screen{
 	
 	@Override
 	public void show() {
-		
-		mazo.repartir(mesa);
-		mazo.repartir(mesa);
-		mazo.repartir(mesa);
-		
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
-		
 		//Creando los botones para mostrar los lotes de cartas
 		botonesMoverMesa();
-		
-		if(new Random(2).nextInt() == 0)
+		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
+		btnSalir.getBtn().setPosition(100, 100);
+		btnSalir.getBtn().setSize(100,100);
+		btnSalir.getBtn().addListener(new ClickListener() {
+			public void touchUp(InputEvent e, float x, float y, int point, int button) {
+				Dialog dialog = new Dialog("Salir",new Skin(Gdx.files.internal(Config.pathSkin))){
+					protected void result(Object object) {
+						if((Boolean)object)
+							Gdx.app.exit();
+					}
+				};
+				dialog.text("Seguro quiere salir?");
+				dialog.button("Si",true);
+				dialog.button("No",false);
+				dialog.scaleBy(0.5f);
+				dialog.layout();
+				dialog.show(stage);
+			}
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+		});
+		stage.addActor(btnSalir.getBtn());
+		if(new Random(2).nextInt() == 0) {
 			this.turno = true;
-		else
+			Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
+		}
+		else {
 			this.turno = false;
+			Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
+		}
 		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
 		if(nuevaPartida)//Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
-		
 		updateGameState();
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
-		
 	}
 
 	@Override
@@ -354,8 +371,10 @@ public class GameScreen implements Screen{
 		
 		
 		if(!turno) {
-			//movimientos computadora
-			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			clearActors();
+			computadora.decidirMovimiento(mesa,jugador);
+			updateGameState();
+			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			turno = true;
 		}
 		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
@@ -383,12 +402,11 @@ public class GameScreen implements Screen{
 			} else {
 				mensaje = "Hubo un empate";
 			}
-			Casino.ventana.setScreen(new EndScreen(mensaje));
+			Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 		}
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();
-		
 		Render.batch.begin();
 		if(mostrarRecogidas) {
 			contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
