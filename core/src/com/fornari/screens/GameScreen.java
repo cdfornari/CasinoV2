@@ -115,9 +115,14 @@ public class GameScreen implements Screen{
 		}
 	}
 	public void updateGameState() {
+		int espacio=0, ancho=140;
+		
 		seleccionadas.clear();
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
+		
+		Jugador.ordenarEmparejamientos(mesa); //Ordena el mazo para que las cartas emparejadas queden de forma adyacente en la lista
+		
 		for(int i = 0; i < mesa.size(); i++) {
 			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
@@ -136,9 +141,24 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-			mesa.get(i).getImagen().getBtn().setPosition(600 + i * 175, 415);
-			mesa.get(i).getImagen().getBtn().setSize(140, 190);
-			stage.addActor(mesa.get(i).getImagen().getBtn());
+	
+			
+			//Funcion para imprimir emparejadas en la mesa
+			if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
+				espacio=35;
+		else if (i!=0 && !mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && !mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000") )   //Son de emparejamientos distintos
+			espacio=35;
+		else if (i!=0 && mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000")) //La carta a poner no esta emparejada, pero la anterior si lo esta
+			espacio=35;
+		else
+			espacio=0;
+		if(i!=0)
+			mesa.get(i).getImagen().getBtn().setPosition(mesa.get(i-1).getImagen().getBtn().getX()+ancho+espacio, 415); //Obtengo la posicion de la carta anterior. Si es emparejada le agrego un espacio
+		else
+			mesa.get(i).getImagen().getBtn().setPosition(600 + i *(ancho+espacio), 415);
+		mesa.get(i).getImagen().getBtn().setSize(140, 190);
+		stage.addActor(mesa.get(i).getImagen().getBtn());	
+			
 		}
 		for(int i = 0; i < jugador.getCartas().size(); i++) {
 			final int index = i;

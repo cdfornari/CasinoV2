@@ -1,6 +1,8 @@
 package com.fornari.casino;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+
 public class Jugador {
 	private ArrayList<Carta> cartas;
 	private ArrayList<Carta> cartasRecogidas;
@@ -268,15 +270,15 @@ public class Jugador {
 			carta.setSumaEmparejadas(suma);
 		String id = "000";
 		for (Carta carta: cartasAEmparejar) {
-			if(carta.getIdEmparejamiento() != "000") {
+			if(!carta.getIdEmparejamiento().equals("000")) {
 				id = carta.getIdEmparejamiento();
 				break;
 			}
 		}
-		if(id == "000")
+		if(id.equals("000")) 
 			id = cartaJugador.generarIdEmparejamiento();
 		this.idEmparejamiento = id;
-		if(id != "000" && id == computadora.getIdEmparejamiento())
+		if(!id.equals("000") && id.equals(computadora.getIdEmparejamiento()))
 			computadora.setIdEmparejamiento("000");
 		cartaJugador.setIdEmparejamiento(id);
 		mesa.add(cartaJugador);
@@ -315,6 +317,49 @@ public class Jugador {
 				carta.toggleDoblada();
 		}
 		this.cartas.remove(cartaJugador);
+	}
+	
+	//Obtener id emparejamiento (obtener uno o el del computador)
+	public static String obtenerId(ArrayList<Carta> mesa, int numeroEmparejamiento) {
+		String id1="000",id2="000";
+		for(int i=0; i<mesa.size(); i++) {
+			if(!mesa.get(i).getIdEmparejamiento().equals("000"))
+				if(id1.equals("000")) {
+					id1=mesa.get(i).getIdEmparejamiento();
+					if(numeroEmparejamiento==1)
+						return id1;
+				}
+				else if(id2.equals("000") && !id1.equals(mesa.get(i).getIdEmparejamiento()))
+					return mesa.get(i).getIdEmparejamiento();
+		}
+		return id2; //Si no lo encuentra, devuelve el id por defecto 000
+	}
+	
+	//Ordenar emparejadas para que queden adyacentes
+	public static void ordenarPorId(ArrayList<Carta> mesa, String id) {
+		int x=0;
+		Carta carta = new Carta();
+		for(int i=0; i<mesa.size(); i++) {
+			if(mesa.get(i).getIdEmparejamiento().equals(id)) {    
+				id=mesa.get(i).getIdEmparejamiento();
+				while(!mesa.get(x).getIdEmparejamiento().equals("000"))
+					++x;
+				carta=mesa.get(x);
+				mesa.set(x,mesa.get(i));
+				mesa.set(i, carta);
+				++x;
+			}
+		}
+	}
+	
+	//Ordenar ambos emparejamientos
+	public static void ordenarEmparejamientos(ArrayList<Carta> mesa) {
+		String id1=obtenerId(mesa, 1), id2=obtenerId(mesa, 2);
+		
+		if(!id1.equals("000"))
+			ordenarPorId(mesa, id1);
+		if(!id2.equals("000"))
+			ordenarPorId(mesa, id2);
 	}
 
 	public void setCartas(ArrayList<Carta> cartas) {
