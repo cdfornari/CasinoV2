@@ -245,9 +245,9 @@ public class Jugador {
 				break;
 			}
 		}
-		if(id != "000" && id == this.idEmparejamiento)
+		if(!id.equals("000") && id.equals(this.idEmparejamiento))
 			this.idEmparejamiento = "000";
-		if(id != "000" && id == computadora.getIdEmparejamiento())
+		if(!id.equals("000") && id.equals(computadora.getIdEmparejamiento()))
 			computadora.setIdEmparejamiento("000");
 		this.cartas.remove(cartaJugador);
 		mesa.removeAll(cartasRecogerMesa);
@@ -298,14 +298,14 @@ public class Jugador {
 			carta.setSumaEmparejadas(maximo);
 		String id = "000";
 		for (Carta carta: cartasADoblar) {
-			if(carta.getIdEmparejamiento() != "000") {
+			if(!carta.getIdEmparejamiento().equals("000")) {
 				id = carta.getIdEmparejamiento();
 				break;
 			}
 		}
-		if(id == "000")
+		if(id.equals("000"))
 			id = cartaJugador.generarIdEmparejamiento();
-		if(id != "000" && id == computadora.getIdEmparejamiento())
+		if(!id.equals("000") && id.equals(computadora.getIdEmparejamiento()))
 			computadora.setIdEmparejamiento("000");
 		this.idEmparejamiento = id;
 		mesa.add(cartaJugador);
@@ -334,18 +334,44 @@ public class Jugador {
 	}
 	
 	//Ordenar emparejadas para que queden adyacentes
-	public static void ordenarPorId(ArrayList<Carta> mesa, String id) {
-		int x=0;
+	public static void ordenar(ArrayList<Carta> mesa, String id) {
+		int saltarEmparejamiento=0, nuevoInicio=0;
 		Carta carta = new Carta();
-		for(int i=0; i<mesa.size(); i++) {
+		while(!mesa.get(saltarEmparejamiento).getIdEmparejamiento().equals("000"))
+			++saltarEmparejamiento;
+		nuevoInicio=saltarEmparejamiento;
+		for(int i=nuevoInicio; i<mesa.size(); i++) {
 			if(mesa.get(i).getIdEmparejamiento().equals(id)) {    
-				id=mesa.get(i).getIdEmparejamiento();
-				while(!mesa.get(x).getIdEmparejamiento().equals("000"))
-					++x;
-				carta=mesa.get(x);
-				mesa.set(x,mesa.get(i));
+				carta=mesa.get(nuevoInicio);
+				mesa.set(nuevoInicio,mesa.get(i));
 				mesa.set(i, carta);
-				++x;
+				++nuevoInicio;
+			}
+		}
+	}
+	
+	public static int primeraPosicionDeId(ArrayList<Carta> mesa, String id) {
+		int posicion=0;
+		for(int i=0; i<mesa.size(); i++)
+			if(mesa.get(i).getIdEmparejamiento().equals(id)) {
+				posicion=i;
+				break;
+			}
+		return posicion;
+	}
+	
+	public static void agregar(ArrayList<Carta> mesa, String id) { //Agregar en la lista los emparejamientos de forma ordenada
+		int ultimaPosicion=primeraPosicionDeId(mesa, id); //Comienzo en la primera posicion para obtener la ultima
+		Carta carta=new Carta();
+		while(!mesa.get(ultimaPosicion).getIdEmparejamiento().equals(id))
+			++ultimaPosicion;
+		
+		for(int i=ultimaPosicion; i<mesa.size(); i++) {
+			if(mesa.get(i).getIdEmparejamiento().equals(id)) {
+				carta=mesa.get(i);
+				mesa.remove(carta);
+				mesa.add(ultimaPosicion, carta);
+				++ultimaPosicion;
 			}
 		}
 	}
@@ -354,10 +380,15 @@ public class Jugador {
 	public static void ordenarEmparejamientos(ArrayList<Carta> mesa) {
 		String id1=obtenerId(mesa, 1), id2=obtenerId(mesa, 2);
 		
-		if(!id1.equals("000"))
-			ordenarPorId(mesa, id1);
-		if(!id2.equals("000"))
-			ordenarPorId(mesa, id2);
+		if(!id1.equals("000")) {
+			ordenar(mesa, id1);
+			agregar(mesa, id1);
+		}
+		if(!id2.equals("000")) {
+			ordenar(mesa, id2);
+			agregar(mesa, id2);
+		}
+			
 	}
 
 	public void setCartas(ArrayList<Carta> cartas) {
