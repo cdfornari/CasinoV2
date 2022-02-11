@@ -105,15 +105,6 @@ public class GameScreen implements Screen{
             actor.removeListener(listener);
     }
 	
-	private void clearSeleccionada() {
-		contadorCartasMostrar=0;
-		for(int i = 0; i < mesa.size(); i++) {
-				seleccionada.dibujar("", mesa.get(i).getImagen().getBtn().getX()+50, mesa.get(i).getImagen().getBtn().getY()+220);
-				if(contadorCartasMostrar==maxCartas) break;
-				++contadorCartasMostrar;
-		}
-	}
-	
 	private void clearActors(boolean eliminarIsSelected) {
 		jugador.unselectAll();
 		for(int i = 0; i < mesa.size(); i++) {
@@ -281,7 +272,6 @@ public class GameScreen implements Screen{
 				if(loteCartas-maxCartas-1>=0)
 					loteCartas=loteCartas-maxCartas-1;
 				clearActors(false);
-				clearSeleccionada();
 				updateGameState();
 			}
 			@Override
@@ -295,7 +285,6 @@ public class GameScreen implements Screen{
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
 				if(loteCartas+maxCartas+1<mesa.size())
 					loteCartas+=maxCartas+1;
-				clearSeleccionada();
 				clearActors(false);
 				updateGameState();
 			}
