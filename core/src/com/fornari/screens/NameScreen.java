@@ -56,7 +56,6 @@ public class NameScreen implements Screen{
 					Config.setNombre(userInput.getText());
 					Casino.ventana.setScreen(new MenuScreen());
 					archivo.vaciarArchivo(new Mazo(), new ArrayList<Carta>(), new Jugador(), new Jugador(), new ArrayList<Carta>());
-					
 				}
 				else
 					Render.mostrarMensaje(stage,"Error","Ingresa un nombre valido","Ok");

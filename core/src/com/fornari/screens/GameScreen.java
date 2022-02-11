@@ -254,17 +254,20 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir.getBtn());
-		if(new Random(2).nextInt() == 0)
+		if(new Random(2).nextInt() == 0) {
 			this.turno = true;
-		else
+			Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
+		}
+		else {
 			this.turno = false;
+			Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
+		}
 		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
 		if(nuevaPartida)//Solo se reparte a la mesa cuando no se haya jugado antes
 			mazo.repartir(mesa);
-		
 		updateGameState();
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
@@ -294,6 +297,8 @@ public class GameScreen implements Screen{
 		}
 		if(!turno) {
 			//movimientos computadora
+			//clearActors();
+			//updateGameState();
 			//archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			turno = true;
 		}
@@ -322,12 +327,11 @@ public class GameScreen implements Screen{
 			} else {
 				mensaje = "Hubo un empate";
 			}
-			Casino.ventana.setScreen(new EndScreen(mensaje));
+			Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 		}
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();
-		
 		Render.batch.begin();
 		if(mostrarRecogidas) {
 			contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
