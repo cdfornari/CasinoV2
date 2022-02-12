@@ -5,17 +5,29 @@ import java.util.ArrayList;
 import com.fornari.casino.Carta;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
+import com.fornari.casino.TipoJugador;
 public class NodoArchivo {
 	private int clave; 
 	private String texto;
 	private ArrayList<Carta> listaCarta;
 	private Mazo mazo=null;
 	private Jugador jugador;
+	private boolean turno, reparte;
+	private TipoJugador ultimoRecoger, ultimoJugar;
 	private NodoArchivo hijoIzquierdo=null;
 	private NodoArchivo hijoDerecho=null;
 	
 	public NodoArchivo() {
 		
+	}
+	
+	public NodoArchivo(boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar, String texto, int clave) {
+		this.turno=turno;
+		this.reparte=reparte;
+		this.ultimoRecoger=ultimoRecoger;
+		this.ultimoJugar=ultimoJugar;
+		this.texto=texto;
+		this.clave=clave;
 	}
 	
 	public NodoArchivo(Mazo mazo, String texto, int clave) {
@@ -195,6 +207,39 @@ public class NodoArchivo {
 	public void setMazo(Mazo mazo) {
 		this.mazo = mazo;
 	}
+
+	public boolean isTurno() {
+		return turno;
+	}
+
+	public void setTurno(boolean turno) {
+		this.turno = turno;
+	}
+
+	public boolean isReparte() {
+		return reparte;
+	}
+
+	public void setReparte(boolean reparte) {
+		this.reparte = reparte;
+	}
+
+	public TipoJugador getUltimoRecoger() {
+		return ultimoRecoger;
+	}
+
+	public void setUltimoRecoger(TipoJugador ultimoRecoger) {
+		this.ultimoRecoger = ultimoRecoger;
+	}
+
+	public TipoJugador getUltimoJugar() {
+		return ultimoJugar;
+	}
+
+	public void setUltimoJugar(TipoJugador ultimoJugar) {
+		this.ultimoJugar = ultimoJugar;
+	}
+
 
 	
 }
