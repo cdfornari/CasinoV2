@@ -57,7 +57,7 @@ public class GameScreen implements Screen{
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
 		ventanaRecogidas.getBtn().setPosition(x, y);
-		ventanaRecogidas.getBtn().setSize(140, 190);
+		ventanaRecogidas.getBtn().setSize(140, 190); 
 		stage.addActor(ventanaRecogidas.getBtn());
 		ventanaRecogidas.getBtn().addListener(new ClickListener() {
 			@Override
@@ -103,6 +103,13 @@ public class GameScreen implements Screen{
 			ultimoJugar=archivo.getArbol().buscarNodoEnArbol("UPDATE").getUltimoJugar();
 		}
 	}
+
+	public void mostarCartasComputadora() {
+		System.out.print("COMPUTADORA:");
+		for(int i = 0; i<computadora.getCartas().size(); i++)
+			System.out.print("  "+computadora.getCartas().get(i).getValor()+" "+computadora.getCartas().get(i).getFigura());
+		System.out.println("");
+	}
 	
 	public static void removeAllListeners(Actor actor) {
         Array<EventListener> listeners = new Array<>(actor.getListeners());
@@ -127,6 +134,9 @@ public class GameScreen implements Screen{
 	}
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
+		
+		mostarCartasComputadora();
+		
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
 			computadora.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
@@ -352,6 +362,17 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir.getBtn());
+		
+		
+		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
+			mazo.repartir(this.jugador.getCartas());
+			mazo.repartir(this.computadora.getCartas());
+		}
+		if(nuevaPartida)
+		mazo.repartir(mesa);
+		
+		updateGameState();
+		
 		if(nuevaPartida) { //Solo se reparte a la mesa cuando no se haya jugado antes
 			if((int)Math.floor(Math.random()*(2-1+1)+1)== 1) {
 				this.turno = true;
@@ -360,14 +381,8 @@ public class GameScreen implements Screen{
 				this.turno = false;
 				Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
 			}
-			mazo.repartir(mesa);
 		}
 		
-		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
-			mazo.repartir(this.jugador.getCartas());
-			mazo.repartir(this.computadora.getCartas());
-		}
-		updateGameState();
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,75, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
@@ -382,10 +397,19 @@ public class GameScreen implements Screen{
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
 
+		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
+			updateGameState();
+			mazo.repartir(this.jugador.getCartas());
+			mazo.repartir(this.computadora.getCartas());
+			updateGameState();
+		}
+		
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 750);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 800);
 
 		spriteBasura.dibujar(" ", 0, 0); 
+		
+		
 
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
@@ -395,11 +419,13 @@ public class GameScreen implements Screen{
 			++contadorCartasMostrar;
 		}
 		if(!turno) {
+			mostarCartasComputadora();
 			clearActors(true);
 			computadora.decidirMovimiento(mesa,jugador);
 			updateGameState();
-			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
+			mostarCartasComputadora();
 			turno = true;
+			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		}
 		stage.act(delta);
 		stage.draw();

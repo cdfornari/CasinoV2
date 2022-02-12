@@ -158,6 +158,11 @@ public class Carta {
 	public void setImagen(Imagen imagen) {
 		this.imagen = imagen;
 	}
+	
+	public Imagen obtenerSprite() {
+		Imagen imagen=new Imagen("Cards/cardBack_red5.png","img");
+		return imagen;
+	}
 
 	public boolean isSelected() {
 		return selected;
