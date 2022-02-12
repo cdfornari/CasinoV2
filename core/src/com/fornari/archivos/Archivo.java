@@ -15,6 +15,7 @@ import com.fornari.casino.Carta;
 import com.fornari.casino.Figuras;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
+import com.fornari.casino.TipoJugador;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 
@@ -53,19 +54,19 @@ public class Archivo {
 			System.out.println("NO BORRADO");
 	}
 
-	public void vaciarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) {
+	public void vaciarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas, boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar) {
 			try {
-				vaciarInformacion(mazo, mesa, jugador, computadora, seleccionadas);
+				vaciarInformacion(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoRecoger, ultimoJugar);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 			//getArbol().imprimirArbol();
 	}
 	
-	public void cargarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) {
+	public void cargarArchivo(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas, boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar) {
 		if(existeArchivo())
 			try {
-				cargarInformacion(mazo, mesa, jugador, computadora, seleccionadas);
+				cargarInformacion(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoRecoger, ultimoJugar);
 				
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -96,7 +97,7 @@ public class Archivo {
 		return linea;
 	}
 	
-	public void vaciarInformacion(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) throws IOException {
+	public void vaciarInformacion(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas, boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar) throws IOException {
 		if(getArbol()==null) { //Creo los nodos y los inserto en el arbol
 			setArbol(new Arbol());
 			getArbol().insertarArbol(new NodoArchivo(mazo, "MAZO", 1));
@@ -104,15 +105,17 @@ public class Archivo {
 			getArbol().insertarArbol(new NodoArchivo(jugador, "JUGADOR", 3));
 			getArbol().insertarArbol(new NodoArchivo(computadora, "COMPUTADORA", 4));
 			getArbol().insertarArbol(new NodoArchivo(seleccionadas, "SELECCIONADAS", 5));
+			getArbol().insertarArbol(new NodoArchivo(turno, reparte, ultimoRecoger, ultimoJugar, "UPDATE", 6));
 		} else {//Modifico ya los nodos dentro del arbol
 			modificarMazo(mazo,mesa,seleccionadas);
 			modificarJugador(jugador, "JUGADOR");
 			modificarJugador(computadora, "COMPUTADORA");
+			modificarUpdate(turno, reparte, ultimoRecoger, ultimoJugar, "UPDATE");
 		}
 		escribirArchivo(); 
 	}
 	
-	public void cargarInformacion(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) throws IOException {
+	public void cargarInformacion(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas, boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar) throws IOException {
 		BufferedReader reader=new BufferedReader(new FileReader(Config.pathArchivo));
 		setArbol(new Arbol());
 		getArbol().insertarArbol(new NodoArchivo(transformarMazo(cargarMazo(reader)), "MAZO", 1) );
@@ -120,6 +123,7 @@ public class Archivo {
 		getArbol().insertarArbol(new NodoArchivo(cargarJugador(reader), "JUGADOR", 3) );
 		getArbol().insertarArbol(new NodoArchivo(cargarJugador(reader), "COMPUTADORA", 4) );
 		getArbol().insertarArbol(new NodoArchivo(cargarMazo(reader), "SELECCIONADAS", 5));
+		getArbol().insertarArbol(new NodoArchivo(cargarBool(reader),cargarBool(reader),cargarTipoJugador(reader),cargarTipoJugador(reader), "UPDATE", 6));
 		reader.readLine();
 		Config.setNombre(reader.readLine());
 	}
@@ -129,6 +133,13 @@ public class Archivo {
 		getArbol().buscarNodoEnArbol("MAZO").setMazo(mazo);
 		getArbol().buscarNodoEnArbol("MESA").setListaCarta(mesa);
 		getArbol().buscarNodoEnArbol("SELECCIONADAS").setListaCarta(seleccionadas);
+	}
+	
+	public void modificarUpdate(boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar, String texto) {
+		getArbol().getRaiz().buscarNodo(texto).setTurno(turno);
+		getArbol().getRaiz().buscarNodo(texto).setReparte(reparte);
+		getArbol().getRaiz().buscarNodo(texto).setUltimoRecoger(ultimoRecoger);
+		getArbol().getRaiz().buscarNodo(texto).setUltimoJugar(ultimoJugar);
 	}
 		
 	public void modificarJugador(Jugador jugador, String texto) {
@@ -182,6 +193,26 @@ public class Archivo {
 		writer.write(jugador.getIdEmparejamiento()+"\n");
 		writer.write("//"+"\n");
 	}
+	
+	public int booleanAInt(boolean boleano) {
+		int unInt= boleano ? 1 : 0;
+		return unInt;
+	}
+	
+	public boolean intABool(String numero) {
+		boolean bool=(numero.equals("1")) ? true : false;
+		return bool;
+	}
+	
+	public void vaciarBool(boolean boleano, BufferedWriter writer) throws IOException {
+		writer.write(booleanAInt(boleano)+"\n");
+		writer.write("//"+"\n");
+	}
+	
+	public void vaciarTipoJugador(TipoJugador tipoJugador, BufferedWriter writer) throws IOException {
+		writer.write(tipoJugador+"\n");
+		writer.write("//"+"\n");
+	}
 		
 	public void escribirArchivo() throws IOException {
 		this.writer=new BufferedWriter(new FileWriter("ARCHIVO.txt"));
@@ -197,6 +228,10 @@ public class Archivo {
 			 else
 				 vaciarJugador(nodo.getJugador(),writer);
 		}
+		vaciarBool(getArbol().buscarNodoEnArbol("UPDATE").isTurno(), writer);
+		vaciarBool(getArbol().buscarNodoEnArbol("UPDATE").isReparte(), writer);
+		vaciarTipoJugador(getArbol().buscarNodoEnArbol("UPDATE").getUltimoRecoger(), writer);
+		vaciarTipoJugador(getArbol().buscarNodoEnArbol("UPDATE").getUltimoJugar(), writer);
 		writer.write("///"+"\n");
 		writer.write(Config.userName);
 		writer.close();
@@ -225,6 +260,32 @@ public class Archivo {
 			break;
 		}
 		return carta;
+	}
+	
+	public TipoJugador convertirTipoJugador(String texto) {
+		if(texto.equals("jugador"))
+			return TipoJugador.jugador;
+		if(texto.equals("computadora"))
+			return TipoJugador.computadora;
+		return TipoJugador.none;
+	}
+	
+	public TipoJugador cargarTipoJugador(BufferedReader reader) throws IOException {
+		TipoJugador tipo;	
+		String linea="";
+		linea=reader.readLine();
+		tipo=convertirTipoJugador(linea);
+		reader.readLine();
+		return tipo;
+	}
+	
+	public boolean cargarBool(BufferedReader reader) throws IOException {
+		boolean bool=true;
+		String linea="";
+		linea=reader.readLine();
+		bool=intABool(linea);
+		reader.readLine();
+		return bool;
 	}
 	
 	public ArrayList<Carta> cargarMazo(BufferedReader reader) throws IOException {

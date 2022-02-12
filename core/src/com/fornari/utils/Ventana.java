@@ -32,7 +32,7 @@ public class Ventana {
 			}
 			if(i<=11) ++x;
 		}
-		this.dialog.setPosition(Config.anchoPantalla/2/2, Config.altoPantalla/2);
+		this.dialog.setPosition(500, 400); //Ubicar en la pantalla
 		this.dialog.getContentTable().setSize(160*x, 210*y);
 		this.dialog.setSize(160*x, 210*y);
 	}
