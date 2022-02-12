@@ -125,7 +125,6 @@ public class Jugador {
 				   return false;
 			    else {
 			    	sumaEsperada=cartaConId.getsumaEmparejadas();
-			    	System.out.println("SUMA ESPERADA: "+sumaEsperada);
 					if(doblada) sumaEsperada=sumaEsperada*2;
 			    	if(sumaEsperada!=sumaEmparejadas) //Deben estar seleccionadas todas las cartas del emparejamiento
 			    		return false;

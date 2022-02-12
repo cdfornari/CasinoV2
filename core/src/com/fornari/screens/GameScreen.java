@@ -121,7 +121,7 @@ public class GameScreen implements Screen{
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
-			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
+			computadora.getCartas().get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
 		for(int i = 0; i < mesa.size(); i++)
 			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
 		Jugador.ordenarEmparejamientos(mesa); //Ordena el mazo para que las cartas emparejadas queden de forma adyacente en la lista
@@ -375,7 +375,7 @@ public class GameScreen implements Screen{
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
 		int xCartas = 600;
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
-			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
+			computadora.getCartas().get(i).obtenerSprite().dibujar(xCartas, 750);
 			xCartas += 175;
 		}
 		contadorCartasMostrar=0;
