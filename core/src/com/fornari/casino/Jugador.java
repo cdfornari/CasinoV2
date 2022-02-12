@@ -1,6 +1,8 @@
 package com.fornari.casino;
 import java.util.ArrayList;
 
+import com.fornari.utils.Imagen;
+
 public class Jugador {
 	private ArrayList<Carta> cartas;
 	private ArrayList<Carta> cartasRecogidas;
@@ -237,6 +239,7 @@ public class Jugador {
 	public void recogerCarta(ArrayList<Carta> mesa,
 			ArrayList<Carta> cartasRecogerMesa, Carta cartaJugador, Jugador computadora) 
 	{ //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
+		cartaJugador.setImagen(new Imagen(cartaJugador.buildPath(),"btn"));
 		String id = "000";
 		for (Carta carta: cartasRecogerMesa) {
 			if(carta.getIdEmparejamiento() != "000") {
@@ -364,7 +367,6 @@ public class Jugador {
 		Carta carta=new Carta();
 		while(!mesa.get(ultimaPosicion).getIdEmparejamiento().equals(id))
 			++ultimaPosicion;
-		
 		for(int i=ultimaPosicion; i<mesa.size(); i++) {
 			if(mesa.get(i).getIdEmparejamiento().equals(id)) {
 				carta=mesa.get(i);
@@ -378,7 +380,6 @@ public class Jugador {
 	//Ordenar ambos emparejamientos
 	public static void ordenarEmparejamientos(ArrayList<Carta> mesa) {
 		String id1=obtenerId(mesa, 1), id2=obtenerId(mesa, 2);
-		
 		if(!id1.equals("000")) {
 			ordenar(mesa, id1);
 			agregar(mesa, id1);
@@ -386,8 +387,7 @@ public class Jugador {
 		if(!id2.equals("000")) {
 			ordenar(mesa, id2);
 			agregar(mesa, id2);
-		}
-			
+		}	
 	}
 
 	public void setCartas(ArrayList<Carta> cartas) {

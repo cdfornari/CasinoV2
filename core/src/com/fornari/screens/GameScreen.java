@@ -1,7 +1,6 @@
 package com.fornari.screens;
 
 import java.util.ArrayList;
-import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -32,30 +31,33 @@ public class GameScreen implements Screen{
 	private Imagen fondo = new Imagen("Fondos/fondomesa.jpg","img");
 	private Texto contadorMazo = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Imagen imagenMazo = new Imagen("Cards/cardBack_red5.png","img");
+	private Texto recogidasJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
+	private Texto recogidasComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto contadorRecogidasJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen recogidasJugador = new Imagen("Cards/cardBack_red5.png","img");
 	private Texto contadorRecogidasComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen recogidasComputadora = new Imagen("Cards/cardBack_red5.png","img");
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
-	private boolean turno, nuevaPartida,mostrarRecogidas=true;
+	private boolean nuevaPartida,mostrarRecogidas=true;
 	private Archivo archivo=new Archivo();
 	private Texto puntajeJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto puntajeComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
-	private boolean ultimoEnRecoger;
 	private Imagen btnSalir = new Imagen("btn-salir.png","btn");
 	private int loteCartas=0, maxCartas=3, contadorCartasMostrar=0;
 	private Imagen flechaDerecha= new Imagen("Fondos/fled.png","btn");
 	private Imagen flechaIzquierda= new Imagen("Fondos/flecha.png","btn");
+	//Para el archivo
+	private boolean turno, reparte;
+	private TipoJugador ultimoEnRecoger=TipoJugador.none, ultimoJugar=TipoJugador.none;
+	private Texto spriteBasura=new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
 		ventanaRecogidas.getBtn().setPosition(x, y);
-		ventanaRecogidas.getBtn().setSize(140, 190);
+		ventanaRecogidas.getBtn().setSize(140, 190); 
 		stage.addActor(ventanaRecogidas.getBtn());
 		ventanaRecogidas.getBtn().addListener(new ClickListener() {
 			@Override
@@ -89,13 +91,25 @@ public class GameScreen implements Screen{
 	public GameScreen(boolean nuevaPartida) {
 		this.nuevaPartida=nuevaPartida;
 		if(Archivo.existeArchivo() && !nuevaPartida) {
-			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 			mazo=archivo.getArbol().buscarNodoEnArbol("MAZO").getMazo();
 			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
 			jugador=archivo.getArbol().buscarNodoEnArbol("JUGADOR").getJugador();
 			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
 			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();
+			turno=archivo.getArbol().buscarNodoEnArbol("UPDATE").isTurno();
+			reparte=archivo.getArbol().buscarNodoEnArbol("UPDATE").isReparte();
+			ultimoEnRecoger=archivo.getArbol().buscarNodoEnArbol("UPDATE").getUltimoRecoger();
+			ultimoJugar=archivo.getArbol().buscarNodoEnArbol("UPDATE").getUltimoJugar();
 		}
+	}
+
+	public void mostarCartasComputadora() {
+		System.out.print("COMPUTADORA:");
+		for(int i = 0; i<computadora.getCartas().size(); i++)
+			if(computadora.getCartas()!=null || computadora.getCartas().get(i)!=null)
+				System.out.print("  "+computadora.getCartas().get(i).getValor()+" "+computadora.getCartas().get(i).getFigura());
+		System.out.println("");
 	}
 	
 	public static void removeAllListeners(Actor actor) {
@@ -116,16 +130,21 @@ public class GameScreen implements Screen{
 			removeAllListeners(jugador.getCartas().get(i).getImagen().getBtn());
 			jugador.getCartas().get(i).getImagen().getBtn().remove();
 		}
+		for(int i = 0; i < computadora.getCartas().size(); i++) 
+			computadora.getCartas().get(i).getImagen().getBtn().remove();
 	}
-	
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
-		for(int i = 0; i < computadora.getCartas().size(); i++) 
-			computadora.getCartas().get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
-		for(int i = 0; i < mesa.size(); i++)
-			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
+		mostarCartasComputadora();
+		for(int i = 0; i < computadora.getCartas().size(); i++) {
+			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
+			computadora.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
+			computadora.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 750);
+			stage.addActor(computadora.getCartas().get(i).getImagen().getBtn());
+		}
 		Jugador.ordenarEmparejamientos(mesa); //Ordena el mazo para que las cartas emparejadas queden de forma adyacente en la lista
 		for(int i = loteCartas; i < mesa.size(); i++) {
+			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
 			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
 				@Override
@@ -176,7 +195,7 @@ public class GameScreen implements Screen{
 										if(jugador.getIdEmparejamiento() == "000") {
 											clearActors(true);
 											jugador.lanzarCarta(mesa, index);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
 										}else
@@ -195,10 +214,10 @@ public class GameScreen implements Screen{
 										if(jugador.validarCartasRecoger(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
-											ultimoEnRecoger = true;
+											ultimoEnRecoger = TipoJugador.jugador;
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede recoger", "Ok");
 									}
@@ -209,7 +228,7 @@ public class GameScreen implements Screen{
 										if(jugador.validarCartasEmparejar(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
 										}else 
@@ -222,7 +241,7 @@ public class GameScreen implements Screen{
 										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
 										}else 
@@ -237,7 +256,7 @@ public class GameScreen implements Screen{
 									}
 									if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 										if(mesa.size() > 0) {
-											if(ultimoEnRecoger)
+											if(ultimoEnRecoger==TipoJugador.jugador)
 												jugador.asignarCartasSobrantes(mesa);
 											else
 												computadora.asignarCartasSobrantes(mesa);
@@ -273,7 +292,7 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-			jugador.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 100);
+			jugador.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 75);
 			jugador.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
 			stage.addActor(jugador.getCartas().get(i).getImagen().getBtn());
 		}
@@ -281,9 +300,9 @@ public class GameScreen implements Screen{
 	
 	public void botonesMoverMesa() {
 		flechaDerecha.getBtn().setSize(120, 120);
-		flechaDerecha.getBtn().setPosition(940, 300);
+		flechaDerecha.getBtn().setPosition(1300, 450);
 		flechaIzquierda.getBtn().setSize(120, 120);
-		flechaIzquierda.getBtn().setPosition(810, 300);
+		flechaIzquierda.getBtn().setPosition(450, 450);
 		stage.addActor(flechaDerecha.getBtn());
 		stage.addActor(flechaIzquierda.getBtn());
 		flechaIzquierda.getBtn().addListener(new ClickListener() {
@@ -320,7 +339,7 @@ public class GameScreen implements Screen{
 		//Creando los botones para mostrar los lotes de cartas
 		botonesMoverMesa();
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
-		btnSalir.getBtn().setPosition(100, 100);
+		btnSalir.getBtn().setPosition(100, 75);
 		btnSalir.getBtn().setSize(100,100);
 		btnSalir.getBtn().addListener(new ClickListener() {
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
@@ -342,24 +361,31 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir.getBtn());
-		if(new Random(100).nextInt() > 50) {
-			this.turno = true;
-			Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
-		}else {
-			this.turno = false;
-			Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
-		}
+		
+		
 		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
-		if(nuevaPartida)//Solo se reparte a la mesa cuando no se haya jugado antes
-			mazo.repartir(mesa);
+		if(nuevaPartida)
+		mazo.repartir(mesa);
+		
 		updateGameState();
+		
+		if(nuevaPartida) { //Solo se reparte a la mesa cuando no se haya jugado antes
+			if((int)Math.floor(Math.random()*(2-1+1)+1)== 1) {
+				this.turno = true;
+				Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
+			}else {
+				this.turno = false;
+				Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
+			}
+		}
+		
 		//Creando las ventanas emergentes recogidas
-		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
+		crearVentanasRecogidas(ventanaRecogidasJugador,1450,75, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
-		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -373,11 +399,8 @@ public class GameScreen implements Screen{
 		recogidasComputadora.dibujar(1450,750);
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
-		int xCartas = 600;
-		for(int i = 0; i < computadora.getCartas().size(); i++) {
-			computadora.getCartas().get(i).obtenerSprite().dibujar(xCartas, 750);
-			xCartas += 175;
-		}
+		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 750);
+		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 800);
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 
@@ -386,18 +409,20 @@ public class GameScreen implements Screen{
 			++contadorCartasMostrar;
 		}
 		if(!turno) {
+			mostarCartasComputadora();
 			clearActors(true);
 			computadora.decidirMovimiento(mesa,jugador);
 			updateGameState();
-			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			mostarCartasComputadora();
 			turno = true;
+			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		}
 		stage.act(delta);
 		stage.draw();
 		Render.batch.end();
 		Render.batch.begin();
 		if(mostrarRecogidas) {
-			contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
+			contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 75+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 			contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		}
 		Render.batch.end();
