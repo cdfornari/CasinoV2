@@ -26,11 +26,11 @@ public class Ventana {
 		for(int i=1; i<=listaCartas.size(); i++) {
 			GameScreen.removeAllListeners(listaCartas.get(i-1).getImagen().getBtn());
 			this.dialog.getContentTable().add(listaCartas.get(i-1).getImagen().getBtn()).width(ancho).height(alto).space(espacio);
-			if(i % 11 == 0) {
+			if(i % 10 == 0) {
 				this.dialog.getContentTable().row();
 				++y;
 			}
-			if(i<=11) ++x;
+			if(i<=10) ++x;
 		}
 		this.dialog.setPosition(500, 400); //Ubicar en la pantalla
 		this.dialog.getContentTable().setSize(160*x, 210*y);
