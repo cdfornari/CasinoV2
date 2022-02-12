@@ -52,6 +52,7 @@ public class GameScreen implements Screen{
 	//Para el archivo
 	private boolean turno=false, reparte=false;
 	private TipoJugador ultimoEnRecoger=TipoJugador.none, ultimoJugar=TipoJugador.none;
+	private Texto spriteBasura=new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
@@ -382,6 +383,7 @@ public class GameScreen implements Screen{
 		recogidasComputadora.dibujar(1450,750);
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
+		spriteBasura.dibujar(" ", 0, 0); 
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 
