@@ -62,6 +62,7 @@ public class Jugador {
 	}
 	
 	public void lanzarCarta(ArrayList<Carta> mesa, int i) {
+		cartas.get(i).setImagen(new Imagen(cartas.get(i).buildPath(),"btn"));
 		mesa.add(cartas.get(i));
 		cartas.remove(cartas.get(i));
 	}
@@ -262,6 +263,7 @@ public class Jugador {
 	public void emparejarCarta(ArrayList<Carta> mesa, 
 			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador computadora) 
 	{
+		cartaJugador.setImagen(new Imagen(cartaJugador.buildPath(),"btn"));
 		int suma = cartaJugador.getValor();
 		for (Carta carta: cartasAEmparejar)
 			suma += carta.getValor();
@@ -290,6 +292,7 @@ public class Jugador {
 	public void doblarCarta(ArrayList<Carta> mesa, 
 			ArrayList<Carta> cartasADoblar, Carta cartaJugador, Jugador computadora) 
 	{
+		cartaJugador.setImagen(new Imagen(cartaJugador.buildPath(),"btn"));
 		int maximo = 0;
 		for (Carta carta: cartasADoblar) {
 			if(carta.getValor() > maximo) 
