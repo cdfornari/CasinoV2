@@ -69,6 +69,14 @@ public class EndScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir);
+		for(int i = 0; i < jugador.getCartasRecogidas().size(); i++) {
+			jugador.getCartasRecogidas().get(i).setImagen(new Imagen(jugador.getCartasRecogidas().get(i).buildPath(),"img"));
+			jugador.getCartasRecogidas().get(i).getImagen().setSize(100, 73);
+		}
+		for(int i = 0; i < computadora.getCartasRecogidas().size(); i++) {
+			computadora.getCartasRecogidas().get(i).setImagen(new Imagen(computadora.getCartasRecogidas().get(i).buildPath(),"img"));
+			computadora.getCartasRecogidas().get(i).getImagen().setSize(100, 73);
+		}
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -82,8 +90,6 @@ public class EndScreen implements Screen{
 		int xCartas = 200;
 		int yCartas = 650;
 		for(int i = 0; i < jugador.getCartasRecogidas().size(); i++) {
-			jugador.getCartasRecogidas().get(i).setImagen(new Imagen(jugador.getCartasRecogidas().get(i).buildPath(),"img"));
-			jugador.getCartasRecogidas().get(i).getImagen().setSize(100, 73);
 			jugador.getCartasRecogidas().get(i).getImagen().dibujar(xCartas,yCartas);
 			xCartas += 100;
 			if(xCartas > Config.anchoPantalla - 100) {
@@ -94,8 +100,6 @@ public class EndScreen implements Screen{
 		xCartas = 200;
 		yCartas = 350;
 		for(int i = 0; i < computadora.getCartasRecogidas().size(); i++) {
-			computadora.getCartasRecogidas().get(i).setImagen(new Imagen(computadora.getCartasRecogidas().get(i).buildPath(),"img"));
-			computadora.getCartasRecogidas().get(i).getImagen().setSize(100, 73);
 			computadora.getCartasRecogidas().get(i).getImagen().dibujar(xCartas,yCartas);
 			xCartas += 100;
 			if(xCartas > Config.anchoPantalla - 100) {

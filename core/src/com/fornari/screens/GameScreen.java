@@ -1,7 +1,6 @@
 package com.fornari.screens;
 
 import java.util.ArrayList;
-import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -116,16 +115,20 @@ public class GameScreen implements Screen{
 			removeAllListeners(jugador.getCartas().get(i).getImagen().getBtn());
 			jugador.getCartas().get(i).getImagen().getBtn().remove();
 		}
+		for(int i = 0; i < computadora.getCartas().size(); i++) 
+			computadora.getCartas().get(i).getImagen().getBtn().remove();
 	}
-	
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
-		for(int i = 0; i < computadora.getCartas().size(); i++) 
-			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
-		for(int i = 0; i < mesa.size(); i++)
-			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
+		for(int i = 0; i < computadora.getCartas().size(); i++) {
+			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
+			computadora.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
+			computadora.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 750);
+			stage.addActor(computadora.getCartas().get(i).getImagen().getBtn());
+		}
 		Jugador.ordenarEmparejamientos(mesa); //Ordena el mazo para que las cartas emparejadas queden de forma adyacente en la lista
 		for(int i = loteCartas; i < mesa.size(); i++) {
+			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
 			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
 				@Override
@@ -342,7 +345,7 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir.getBtn());
-		if(new Random(100).nextInt() > 50) {
+		if((int)Math.floor(Math.random()*(2-1+1)+1)== 1) {
 			this.turno = true;
 			Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
 		}else {
@@ -373,11 +376,6 @@ public class GameScreen implements Screen{
 		recogidasComputadora.dibujar(1450,750);
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
-		int xCartas = 600;
-		for(int i = 0; i < computadora.getCartas().size(); i++) {
-			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
-			xCartas += 175;
-		}
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 
