@@ -31,8 +31,6 @@ public class GameScreen implements Screen{
 	private Imagen fondo = new Imagen("Fondos/fondomesa.jpg","img");
 	private Texto contadorMazo = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Imagen imagenMazo = new Imagen("Cards/cardBack_red5.png","img");
-	private Texto recogidasJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Texto recogidasComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto contadorRecogidasJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto contadorRecogidasComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Stage stage = new Stage();
@@ -52,7 +50,6 @@ public class GameScreen implements Screen{
 	//Para el archivo
 	private boolean turno, reparte;
 	private TipoJugador ultimoEnRecoger=TipoJugador.none, ultimoJugar=TipoJugador.none;
-	private Texto spriteBasura=new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
@@ -361,19 +358,15 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir.getBtn());
-		
-		
 		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
 			mazo.repartir(this.jugador.getCartas());
 			mazo.repartir(this.computadora.getCartas());
 		}
 		if(nuevaPartida)
-		mazo.repartir(mesa);
-		
+			mazo.repartir(mesa);
 		updateGameState();
-		
-		if(nuevaPartida) { //Solo se reparte a la mesa cuando no se haya jugado antes
-			if((int)Math.floor(Math.random()*(2-1+1)+1)== 1) {
+		if(nuevaPartida) { //Solo se reparte a la mesa cuando no se haya jugado antes\
+			if(Math.random() < 0.50) {
 				this.turno = true;
 				Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
 			}else {
@@ -381,7 +374,6 @@ public class GameScreen implements Screen{
 				Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
 			}
 		}
-		
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,75, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
@@ -395,10 +387,6 @@ public class GameScreen implements Screen{
 		fondo.dibujar();
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
-		recogidasJugador.dibujar(1450,100);
-		recogidasComputadora.dibujar(1450,750);
-		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
-		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 750);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 800);
 		contadorCartasMostrar=0;
@@ -412,6 +400,33 @@ public class GameScreen implements Screen{
 			mostarCartasComputadora();
 			clearActors(true);
 			computadora.decidirMovimiento(mesa,jugador);
+			if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
+				mazo.repartir(jugador.getCartas());
+				mazo.repartir(computadora.getCartas());
+			}
+			if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
+				if(mesa.size() > 0) {
+					if(ultimoEnRecoger==TipoJugador.jugador)
+						jugador.asignarCartasSobrantes(mesa);
+					else
+						computadora.asignarCartasSobrantes(mesa);
+				}
+				PuntajeJugador puntJugador = jugador.contarPuntaje();
+				PuntajeJugador puntCompu = computadora.contarPuntaje();
+				if (puntJugador.tiene26() && puntCompu.tiene26()) {
+					PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
+					elegido.sumarPuntaje(3);
+				}
+				String mensaje = "";
+				if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
+					mensaje = puntJugador.getMensajeGanador(false);
+				} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
+					mensaje = puntCompu.getMensajeGanador(true);
+				} else {
+					mensaje = "Hubo un empate";
+				}
+				Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
+			}
 			updateGameState();
 			mostarCartasComputadora();
 			turno = true;
