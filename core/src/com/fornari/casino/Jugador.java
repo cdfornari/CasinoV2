@@ -368,6 +368,9 @@ public class Jugador {
 			if(carta.getValor() > maximo) 
 				maximo = carta.getValor();
 		}
+		if(cartaJugador.getValor() > maximo)
+			maximo=cartaJugador.getValor();
+		
 		cartaJugador.setSumaEmparejadas(maximo);
 		for (Carta carta: cartasADoblar)
 			carta.setSumaEmparejadas(maximo);
@@ -384,6 +387,7 @@ public class Jugador {
 			computadora.setIdEmparejamiento("000");
 		this.idEmparejamiento = id;
 		cartaJugador.setIdEmparejamiento(id);
+		cartaJugador.toggleDoblada();
 		mesa.add(cartaJugador);
 		for(Carta carta: cartasADoblar) {
 			carta.setIdEmparejamiento(id);
