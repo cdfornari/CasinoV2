@@ -38,18 +38,20 @@ public class GameScreen implements Screen{
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
-	private boolean turno, nuevaPartida,mostrarRecogidas=true;
+	private boolean nuevaPartida,mostrarRecogidas=true;
 	private Archivo archivo=new Archivo();
 	private Texto puntajeJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Texto puntajeComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Ventana ventana;
 	private Imagen ventanaRecogidasJugador = new Imagen("Cards/cardBack_red5.png","btn");
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
-	private boolean ultimoEnRecoger;
 	private Imagen btnSalir = new Imagen("btn-salir.png","btn");
 	private int loteCartas=0, maxCartas=3, contadorCartasMostrar=0;
 	private Imagen flechaDerecha= new Imagen("Fondos/fled.png","btn");
 	private Imagen flechaIzquierda= new Imagen("Fondos/flecha.png","btn");
+	//Para el archivo
+	private boolean turno=false, reparte=false;
+	private TipoJugador ultimoEnRecoger=TipoJugador.none, ultimoJugar=TipoJugador.none;
 	
 	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
@@ -88,12 +90,16 @@ public class GameScreen implements Screen{
 	public GameScreen(boolean nuevaPartida) {
 		this.nuevaPartida=nuevaPartida;
 		if(Archivo.existeArchivo() && !nuevaPartida) {
-			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			archivo.cargarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 			mazo=archivo.getArbol().buscarNodoEnArbol("MAZO").getMazo();
 			mesa=archivo.getArbol().buscarNodoEnArbol("MESA").getListaCarta();
 			jugador=archivo.getArbol().buscarNodoEnArbol("JUGADOR").getJugador();
 			computadora=archivo.getArbol().buscarNodoEnArbol("COMPUTADORA").getJugador();
 			seleccionadas=archivo.getArbol().buscarNodoEnArbol("SELECCIONADAS").getListaCarta();
+			turno=archivo.getArbol().buscarNodoEnArbol("UPDATE").isTurno();
+			reparte=archivo.getArbol().buscarNodoEnArbol("UPDATE").isReparte();
+			ultimoEnRecoger=archivo.getArbol().buscarNodoEnArbol("UPDATE").getUltimoRecoger();
+			ultimoJugar=archivo.getArbol().buscarNodoEnArbol("UPDATE").getUltimoJugar();
 		}
 	}
 	
@@ -179,7 +185,7 @@ public class GameScreen implements Screen{
 										if(jugador.getIdEmparejamiento() == "000") {
 											clearActors(true);
 											jugador.lanzarCarta(mesa, index);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
 										}else
@@ -198,10 +204,10 @@ public class GameScreen implements Screen{
 										if(jugador.validarCartasRecoger(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.recogerCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
-											ultimoEnRecoger = true;
+											ultimoEnRecoger = TipoJugador.jugador;
 										}else 
 											Render.mostrarMensaje(stage, "Error", "No puede recoger", "Ok");
 									}
@@ -212,7 +218,7 @@ public class GameScreen implements Screen{
 										if(jugador.validarCartasEmparejar(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.emparejarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
 										}else 
@@ -225,7 +231,7 @@ public class GameScreen implements Screen{
 										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
-											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 											updateGameState();
 											turno = false;
 										}else 
@@ -240,7 +246,7 @@ public class GameScreen implements Screen{
 									}
 									if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
 										if(mesa.size() > 0) {
-											if(ultimoEnRecoger)
+											if(ultimoEnRecoger==TipoJugador.jugador)
 												jugador.asignarCartasSobrantes(mesa);
 											else
 												computadora.asignarCartasSobrantes(mesa);
@@ -362,7 +368,7 @@ public class GameScreen implements Screen{
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
-		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -387,7 +393,7 @@ public class GameScreen implements Screen{
 			clearActors(true);
 			computadora.decidirMovimiento(mesa,jugador);
 			updateGameState();
-			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
+			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 			turno = true;
 		}
 		stage.act(delta);

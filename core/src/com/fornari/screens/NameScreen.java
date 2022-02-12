@@ -17,6 +17,7 @@ import com.fornari.casino.Carta;
 import com.fornari.casino.Casino;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
+import com.fornari.casino.TipoJugador;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Texto;
@@ -55,7 +56,7 @@ public class NameScreen implements Screen{
 				if(userInput.getText().length() > 0) {
 					Config.setNombre(userInput.getText());
 					Casino.ventana.setScreen(new MenuScreen());
-					archivo.vaciarArchivo(new Mazo(), new ArrayList<Carta>(), new Jugador(), new Jugador(), new ArrayList<Carta>());
+					archivo.vaciarArchivo(new Mazo(), new ArrayList<Carta>(), new Jugador(), new Jugador(), new ArrayList<Carta>(), false,false,TipoJugador.none,TipoJugador.none);
 				}
 				else
 					Render.mostrarMensaje(stage,"Error","Ingresa un nombre valido","Ok");
