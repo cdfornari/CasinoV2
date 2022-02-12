@@ -2,7 +2,6 @@ package com.fornari.screens;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -49,7 +48,6 @@ public class GameScreen implements Screen{
 	private Imagen ventanaRecogidasComputadora = new Imagen("Cards/cardBack_red5.png","btn");
 	private boolean ultimoEnRecoger;
 	private Imagen btnSalir = new Imagen("btn-salir.png","btn");
-	
 	private int loteCartas=0, maxCartas=3, contadorCartasMostrar=0;
 	private Imagen flechaDerecha= new Imagen("Fondos/fled.png","btn");
 	private Imagen flechaIzquierda= new Imagen("Fondos/flecha.png","btn");
@@ -119,14 +117,14 @@ public class GameScreen implements Screen{
 			jugador.getCartas().get(i).getImagen().getBtn().remove();
 		}
 	}
+	
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
-		
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","img"));
-		
+		for(int i = 0; i < mesa.size(); i++)
+			mesa.get(i).setImagen(new Imagen(mesa.get(i).buildPath(),"btn"));
 		Jugador.ordenarEmparejamientos(mesa); //Ordena el mazo para que las cartas emparejadas queden de forma adyacente en la lista
-		
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			final int index = i;
 			mesa.get(i).getImagen().getBtn().addListener(new ClickListener() {
@@ -145,25 +143,23 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-		//Funcion para imprimir emparejadas en la mesa
-		if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
-			espacio=35;
-		else if (i!=0 && !mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && !mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000") )   //Son de emparejamientos distintos
-			espacio=35;
-		else if (i!=0 && mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000")) //La carta a poner no esta emparejada, pero la anterior si lo esta
-			espacio=35;
-		else
-			espacio=0;
-		if(i!=0 && (contadorCartasMostrar!=0) ) 
-			mesa.get(i).getImagen().getBtn().setPosition(mesa.get(i-1).getImagen().getBtn().getX()+ancho+espacio, 415);
-		else
-			mesa.get(i).getImagen().getBtn().setPosition(600 + 0 *(ancho+espacio), 415); //Cambiar 0 por i
-		mesa.get(i).getImagen().getBtn().setSize(140, 190);
-		stage.addActor(mesa.get(i).getImagen().getBtn());	
-		
-		if(contadorCartasMostrar==maxCartas) break;
-		++contadorCartasMostrar;
-			
+			//Funcion para imprimir emparejadas en la mesa
+			if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
+				espacio=35;
+			else if (i!=0 && !mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && !mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000") )   //Son de emparejamientos distintos
+				espacio=35;
+			else if (i!=0 && mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000")) //La carta a poner no esta emparejada, pero la anterior si lo esta
+				espacio=35;
+			else
+				espacio=0;
+			if(i!=0 && (contadorCartasMostrar!=0) ) 
+				mesa.get(i).getImagen().getBtn().setPosition(mesa.get(i-1).getImagen().getBtn().getX()+ancho+espacio, 415);
+			else
+				mesa.get(i).getImagen().getBtn().setPosition(600 + 0 *(ancho+espacio), 415); //Cambiar 0 por i
+			mesa.get(i).getImagen().getBtn().setSize(140, 190);
+			stage.addActor(mesa.get(i).getImagen().getBtn());	
+			if(contadorCartasMostrar==maxCartas) break;
+			++contadorCartasMostrar;
 		}
 		for(int i = 0; i < jugador.getCartas().size(); i++) {
 			final int index = i;
@@ -191,7 +187,6 @@ public class GameScreen implements Screen{
 										Render.mostrarMensaje(stage, "Error", "Tiene un emparejamiento activo", "Ok");	
 										else if(seleccionadas.size()!=0)
 											Render.mostrarMensaje(stage, "Error", "Tiene cartas en mesa seleccionadas", "Ok");	
-
 									}
 								}else if(select.getMovimiento() == "recoger") {
 									if(seleccionadas.size() == 0) 
@@ -234,8 +229,36 @@ public class GameScreen implements Screen{
 											Render.mostrarMensaje(stage, "Error", "No puede doblar", "Ok");
 									}
 								}
-								if(turno==false)
+								if(turno==false) {
 									seleccionadas.clear();
+									if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
+										mazo.repartir(jugador.getCartas());
+										mazo.repartir(computadora.getCartas());
+									}
+									if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
+										if(mesa.size() > 0) {
+											if(ultimoEnRecoger)
+												jugador.asignarCartasSobrantes(mesa);
+											else
+												computadora.asignarCartasSobrantes(mesa);
+										}
+										PuntajeJugador puntJugador = jugador.contarPuntaje();
+										PuntajeJugador puntCompu = computadora.contarPuntaje();
+										if (puntJugador.tiene26() && puntCompu.tiene26()) {
+											PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
+											elegido.sumarPuntaje(3);
+										}
+										String mensaje = "";
+										if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
+											mensaje = puntJugador.getMensajeGanador(false);
+										} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
+											mensaje = puntCompu.getMensajeGanador(true);
+										} else {
+											mensaje = "Hubo un empate";
+										}
+										Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
+									}
+								}
 							}
 							@Override
 							public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -261,10 +284,8 @@ public class GameScreen implements Screen{
 		flechaDerecha.getBtn().setPosition(940, 300);
 		flechaIzquierda.getBtn().setSize(120, 120);
 		flechaIzquierda.getBtn().setPosition(810, 300);
-		
 		stage.addActor(flechaDerecha.getBtn());
 		stage.addActor(flechaIzquierda.getBtn());
-		
 		flechaIzquierda.getBtn().addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) { //NOTA: El clear actors limpia los isSelected
@@ -278,7 +299,6 @@ public class GameScreen implements Screen{
 				return true;
 			}
 		});
-		
 		flechaDerecha.getBtn().addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
@@ -292,7 +312,6 @@ public class GameScreen implements Screen{
 				return true;
 			}
 		});
-		
 	}
 	
 	@Override
@@ -323,11 +342,10 @@ public class GameScreen implements Screen{
 			}
 		});
 		stage.addActor(btnSalir.getBtn());
-		if(new Random(2).nextInt() == 0) {
+		if(new Random(100).nextInt() > 50) {
 			this.turno = true;
 			Render.mostrarMensaje(stage, "Informacion", "Reparte la computadora", "Ok");
-		}
-		else {
+		}else {
 			this.turno = false;
 			Render.mostrarMensaje(stage, "Informacion", "Reparte el jugador", "Ok");
 		}
@@ -360,7 +378,6 @@ public class GameScreen implements Screen{
 			computadora.getCartas().get(i).getImagen().dibujar(xCartas, 750);
 			xCartas += 175;
 		}
-		
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 
@@ -368,41 +385,12 @@ public class GameScreen implements Screen{
 			if(contadorCartasMostrar==maxCartas) break;
 			++contadorCartasMostrar;
 		}
-		
-		
 		if(!turno) {
-			clearActors();
+			clearActors(true);
 			computadora.decidirMovimiento(mesa,jugador);
 			updateGameState();
 			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 			turno = true;
-		}
-		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
-			mazo.repartir(this.jugador.getCartas());
-			mazo.repartir(this.computadora.getCartas());
-		}
-		if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() == 0) {
-			if(mesa.size() > 0) {
-				if(ultimoEnRecoger)
-					jugador.asignarCartasSobrantes(mesa);
-				else
-					computadora.asignarCartasSobrantes(mesa);
-			}
-			PuntajeJugador puntJugador = jugador.contarPuntaje();
-			PuntajeJugador puntCompu = computadora.contarPuntaje();
-			if (puntJugador.tiene26() && puntCompu.tiene26()) {
-				PuntajeJugador elegido = puntJugador.getCantEspadas() > 6 ? puntJugador : puntCompu;
-				elegido.sumarPuntaje(3);
-			}
-			String mensaje = "";
-			if (puntJugador.getPuntaje() > puntCompu.getPuntaje()) {
-				mensaje = puntJugador.getMensajeGanador(false);
-			} else if (puntJugador.getPuntaje() < puntCompu.getPuntaje()) {
-				mensaje = puntCompu.getMensajeGanador(true);
-			} else {
-				mensaje = "Hubo un empate";
-			}
-			Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 		}
 		stage.act(delta);
 		stage.draw();
