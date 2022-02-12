@@ -107,7 +107,8 @@ public class GameScreen implements Screen{
 	public void mostarCartasComputadora() {
 		System.out.print("COMPUTADORA:");
 		for(int i = 0; i<computadora.getCartas().size(); i++)
-			System.out.print("  "+computadora.getCartas().get(i).getValor()+" "+computadora.getCartas().get(i).getFigura());
+			if(computadora.getCartas()!=null || computadora.getCartas().get(i)!=null)
+				System.out.print("  "+computadora.getCartas().get(i).getValor()+" "+computadora.getCartas().get(i).getFigura());
 		System.out.println("");
 	}
 	
