@@ -106,10 +106,7 @@ public class Jugador {
 							id1=carta.getIdEmparejamiento();
 						else if(id2.equals("000") && !id1.equals(carta.getIdEmparejamiento()))
 							id2=carta.getIdEmparejamiento();
-						if(cartasARecoger.size()!=1)
 							sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
-						else
-							sumaEmparejadas=carta.getsumaEmparejadas();
 						cartaConId=carta; //Obtengo una carta que tenga el id para conseguir sumaEmparejadas
 						if(carta.isDoblada()) //Veo si esta doblado el emparejamiento
 							doblada=true;
