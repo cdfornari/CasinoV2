@@ -47,7 +47,7 @@ public class NameScreen implements Screen{
 		textFieldStyle.font.getData().scale(1.1f);
 		//boton
 		btnContinuar = new TextButton("Continuar",skin);
-		btnContinuar.setPosition(780, 370);
+		btnContinuar.setPosition(765, 370);
 		btnContinuar.setSize(250,50);
 		btnContinuar.addListener(new ClickListener() {
 			@Override

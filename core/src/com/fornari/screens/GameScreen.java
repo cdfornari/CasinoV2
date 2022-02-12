@@ -32,9 +32,7 @@ public class GameScreen implements Screen{
 	private Texto contadorMazo = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	private Imagen imagenMazo = new Imagen("Cards/cardBack_red5.png","img");
 	private Texto contadorRecogidasJugador = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen recogidasJugador = new Imagen("Cards/cardBack_red5.png","img");
 	private Texto contadorRecogidasComputadora = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
-	private Imagen recogidasComputadora = new Imagen("Cards/cardBack_red5.png","img");
 	private Stage stage = new Stage();
 	private Texto seleccionada = new Texto(Config.pathFuenteTitulo,82,Color.BLACK);
 	private ArrayList<Carta> seleccionadas = new ArrayList<Carta>();
@@ -276,7 +274,7 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-			jugador.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 100);
+			jugador.getCartas().get(i).getImagen().getBtn().setPosition(600 + i * 175, 75);
 			jugador.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
 			stage.addActor(jugador.getCartas().get(i).getImagen().getBtn());
 		}
@@ -284,9 +282,9 @@ public class GameScreen implements Screen{
 	
 	public void botonesMoverMesa() {
 		flechaDerecha.getBtn().setSize(120, 120);
-		flechaDerecha.getBtn().setPosition(940, 300);
+		flechaDerecha.getBtn().setPosition(1300, 450);
 		flechaIzquierda.getBtn().setSize(120, 120);
-		flechaIzquierda.getBtn().setPosition(810, 300);
+		flechaIzquierda.getBtn().setPosition(450, 450);
 		stage.addActor(flechaDerecha.getBtn());
 		stage.addActor(flechaIzquierda.getBtn());
 		flechaIzquierda.getBtn().addListener(new ClickListener() {
@@ -323,7 +321,7 @@ public class GameScreen implements Screen{
 		//Creando los botones para mostrar los lotes de cartas
 		botonesMoverMesa();
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
-		btnSalir.getBtn().setPosition(100, 100);
+		btnSalir.getBtn().setPosition(100, 75);
 		btnSalir.getBtn().setSize(100,100);
 		btnSalir.getBtn().addListener(new ClickListener() {
 			public void touchUp(InputEvent e, float x, float y, int point, int button) {
@@ -360,7 +358,7 @@ public class GameScreen implements Screen{
 			mazo.repartir(mesa);
 		updateGameState();
 		//Creando las ventanas emergentes recogidas
-		crearVentanasRecogidas(ventanaRecogidasJugador,1450,100, jugador.getCartasRecogidas(), "Jugador");
+		crearVentanasRecogidas(ventanaRecogidasJugador,1450,75, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas);
 		Gdx.input.setInputProcessor(stage);
@@ -372,10 +370,8 @@ public class GameScreen implements Screen{
 		fondo.dibujar();
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
-		recogidasJugador.dibujar(1450,100);
-		recogidasComputadora.dibujar(1450,750);
-		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
-		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
+		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 750);
+		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 800);
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 
@@ -395,7 +391,7 @@ public class GameScreen implements Screen{
 		Render.batch.end();
 		Render.batch.begin();
 		if(mostrarRecogidas) {
-			contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 100+(190/2)+(contadorRecogidasJugador.getAlto()/2));
+			contadorRecogidasJugador.dibujar(""+jugador.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 75+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 			contadorRecogidasComputadora.dibujar(""+computadora.getCartasRecogidas().size(), 1450+(140/2)-(contadorRecogidasJugador.getAncho()/2), 750+(190/2)+(contadorRecogidasJugador.getAlto()/2));
 		}
 		Render.batch.end();

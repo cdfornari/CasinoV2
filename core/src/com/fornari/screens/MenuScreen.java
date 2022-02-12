@@ -44,14 +44,14 @@ public class MenuScreen implements Screen{
 	public void render(float delta) {
 		Render.batch.begin();
 		fondo.dibujar();
-		usuario.dibujar("Bienvenido, " + Config.userName,(Config.anchoPantalla/2.25f)-(usuario.getAncho()/2), 900);
+		usuario.dibujar("Bienvenido, " + Config.userName,(Config.anchoPantalla/2)-(usuario.getAncho()/2), 900);
 		if(existeArchivo) 
 			alto = 600;
 		else 
 			alto = 500;
 		for(int i = 0; i < opciones.length; i++) {
 			if(i != 1 || existeArchivo) {
-				opciones[i].dibujar(textos[i],(Config.anchoPantalla/2.25f)-(opciones[i].getAncho()/2),alto);
+				opciones[i].dibujar(textos[i],(Config.anchoPantalla/2)-(opciones[i].getAncho()/2),alto);
 				alto = alto - espacio;
 			}
 		}
@@ -81,7 +81,7 @@ public class MenuScreen implements Screen{
 		for(int i = 0; i < opciones.length; i++) {
 			if(i != 1 || existeArchivo)
 				if(ClickMouse.getPosicionX()>=opciones[i].getX() && ClickMouse.getPosicionX()<= opciones[i].getX() + opciones[i].getAncho()) 
-					if(ClickMouse.getPosicionY() >= opciones[i].getY() + opciones[i].getAlto() && ClickMouse.getPosicionY() <= opciones[i].getY() + 2.5 * opciones[i].getAlto()) {
+					if(ClickMouse.getPosicionY() >= opciones[i].getY() - opciones[i].getAlto() && ClickMouse.getPosicionY() <= opciones[i].getY() + opciones[i].getAlto()) {
 						opciones[i].setColor(Color.RED);
 						opcion = i + 1;
 					}
