@@ -47,6 +47,7 @@ public class GameScreen implements Screen{
 	private int loteCartas=0, maxCartas=3, contadorCartasMostrar=0;
 	private Imagen flechaDerecha= new Imagen("Fondos/fled.png","btn");
 	private Imagen flechaIzquierda= new Imagen("Fondos/flecha.png","btn");
+	private Texto spriteBasura = new Texto(Config.pathFuenteTexto,42,Color.WHITE);
 	//Para el archivo
 	private boolean turno, reparte;
 	private TipoJugador ultimoEnRecoger=TipoJugador.none, ultimoJugar=TipoJugador.none;
@@ -389,6 +390,7 @@ public class GameScreen implements Screen{
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 750);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 800);
+		spriteBasura.dibujar(" ", 0, 0);
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 

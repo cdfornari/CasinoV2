@@ -107,10 +107,7 @@ public class Jugador {
 							id1=carta.getIdEmparejamiento();
 						else if(id2.equals("000") && !id1.equals(carta.getIdEmparejamiento()))
 							id2=carta.getIdEmparejamiento();
-						if(cartasARecoger.size()!=1)
 							sumaEmparejadas+=carta.getValor(); //Sumo todas las emparejadas
-						else
-							sumaEmparejadas=carta.getsumaEmparejadas();
 						cartaConId=carta; //Obtengo una carta que tenga el id para conseguir sumaEmparejadas
 						if(carta.isDoblada()) //Veo si esta doblado el emparejamiento
 							doblada=true;
@@ -340,17 +337,20 @@ public class Jugador {
 	
 	//Ordenar emparejadas para que queden adyacentes
 	public static void ordenar(ArrayList<Carta> mesa, String id) {
-		int saltarEmparejamiento=0, nuevoInicio=0;
+		int saltarEmparejamiento=0, nuevoInicio=0, posicionCarta=0;
 		Carta carta = new Carta();
-		while(!mesa.get(saltarEmparejamiento).getIdEmparejamiento().equals("000"))
-			++saltarEmparejamiento;
+		if(mesa.size()!=0) {
+			while(!mesa.get(saltarEmparejamiento).getIdEmparejamiento().equals("000"))
+				++saltarEmparejamiento;
+		}
 		nuevoInicio=saltarEmparejamiento;
+		posicionCarta=nuevoInicio;
 		for(int i=nuevoInicio; i<mesa.size(); i++) {
 			if(mesa.get(i).getIdEmparejamiento().equals(id)) {    
-				carta=mesa.get(nuevoInicio);
-				mesa.set(nuevoInicio,mesa.get(i));
+				carta=mesa.get(posicionCarta);
+				mesa.set(posicionCarta,mesa.get(i));
 				mesa.set(i, carta);
-				++nuevoInicio;
+				++posicionCarta;
 			}
 		}
 	}
@@ -368,8 +368,10 @@ public class Jugador {
 	public static void agregar(ArrayList<Carta> mesa, String id) { //Agregar en la lista los emparejamientos de forma ordenada
 		int ultimaPosicion=primeraPosicionDeId(mesa, id); //Comienzo en la primera posicion para obtener la ultima
 		Carta carta=new Carta();
-		while(!mesa.get(ultimaPosicion).getIdEmparejamiento().equals(id))
-			++ultimaPosicion;
+		if(mesa.size()!=0) {
+			while(!mesa.get(ultimaPosicion).getIdEmparejamiento().equals(id))
+				++ultimaPosicion;
+		}
 		for(int i=ultimaPosicion; i<mesa.size(); i++) {
 			if(mesa.get(i).getIdEmparejamiento().equals(id)) {
 				carta=mesa.get(i);
