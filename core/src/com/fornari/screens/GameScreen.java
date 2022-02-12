@@ -135,9 +135,7 @@ public class GameScreen implements Screen{
 	}
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
-		
 		mostarCartasComputadora();
-		
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
 			computadora.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
@@ -397,21 +395,12 @@ public class GameScreen implements Screen{
 		fondo.dibujar();
 		imagenMazo.dibujar(300, 415);
 		contadorMazo.dibujar(""+mazo.getSize(), 300+(140/2)-(contadorMazo.getAncho()/2), 415+(190/2)+(contadorMazo.getAlto()/2));
-
-		if((jugador.getCartas().size()==0 && computadora.getCartas().size()==0)) { //Reparte solo cuando ambos se queden sin cartas
-			updateGameState();
-			mazo.repartir(this.jugador.getCartas());
-			mazo.repartir(this.computadora.getCartas());
-			updateGameState();
-		}
-		
+		recogidasJugador.dibujar(1450,100);
+		recogidasComputadora.dibujar(1450,750);
+		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 825);
+		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 875);
 		puntajeJugador.dibujar(Config.userName + ": " + jugador.contarPuntaje().getPuntaje(), 100, 750);
 		puntajeComputadora.dibujar("Computadora: " + computadora.contarPuntaje().getPuntaje(), 100, 800);
-
-		spriteBasura.dibujar(" ", 0, 0); 
-		
-		
-
 		contadorCartasMostrar=0;
 		for(int i = loteCartas; i < mesa.size(); i++) {
 			if(mesa.get(i).isSelected()) 
