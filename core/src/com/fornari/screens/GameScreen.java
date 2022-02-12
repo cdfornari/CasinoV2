@@ -236,7 +236,7 @@ public class GameScreen implements Screen{
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
-										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
+										if(jugador.validarDoblar(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
