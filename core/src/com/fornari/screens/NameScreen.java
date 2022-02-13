@@ -21,7 +21,11 @@ import com.fornari.casino.TipoJugador;
 import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Texto;
-
+/**
+ * Pantalla donde se ingresa el nombre del jugador
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class NameScreen implements Screen{
 	
 	private Imagen fondo;
@@ -32,7 +36,9 @@ public class NameScreen implements Screen{
 	private Stage stage;
 	private TextButton btnContinuar;
 	private Archivo archivo=new Archivo();
-
+	/**
+	 * Se ejecuta cuando se muestra la pantalla
+	 */
 	@Override
 	public void show() {
 		fondo = new Imagen("Fondos/fondo_menu.jpg","img");
@@ -72,7 +78,9 @@ public class NameScreen implements Screen{
 		stage.addActor(userInput);
 		Gdx.input.setInputProcessor(stage);
 	}
-
+	/**
+     * Se ejecuta en cada frame
+     */
 	@Override
 	public void render(float delta) {
 		Render.batch.begin();
@@ -107,7 +115,9 @@ public class NameScreen implements Screen{
 		
 		
 	}
-
+	/**
+     * Limpia toda la pantalla
+     */
 	@Override
 	public void dispose() {
 		stage.dispose();

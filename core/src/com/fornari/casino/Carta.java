@@ -1,11 +1,20 @@
 package com.fornari.casino;
+
 import java.util.UUID;
 
 import com.fornari.utils.Imagen;
 
 import java.util.Random;
 
+/**
+ * Esta clase permite definir todas las carateristicas de
+ * las 52 cartas del juego
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class Carta {
+	
+	//Atributos de la clase
 	private int valor;
 	private Figuras figura;
 	private char representacion;
@@ -17,6 +26,10 @@ public class Carta {
 	private Imagen imagen;
 	private boolean selected;
 	
+    /**
+     * Creacion de un constructor que le asigna a los atributos de la 
+     * carta sus valores
+     */
 	public Carta() {
 		this.selected = false;
 		this.valor = new Random().nextInt(13) + 1;
@@ -50,6 +63,10 @@ public class Carta {
 		this.setImagen(new Imagen(this.buildPath(),"btn"));
 	}
 	
+	/**
+	 * 
+	 * @return  
+	 */
 	public String buildPath() {
 		String path = "Cards/card";
 		switch(this.figura) {
@@ -76,23 +93,38 @@ public class Carta {
 		path += ".png";
 		return path;
 	}
-	
+	/**
+	 * Funcion que devuelve el valor de la carta
+	 * @return un valor de tipo entero
+	 */
 	public int getValor(){
 		return this.valor;
 	}
-	
+	/**
+	 * Funcion que devuelve la figura de la carta
+	 * @return retorna el enum figura de la carta
+	 */
 	public Figuras getFigura() {
 		return this.figura;
 	}
-	
+	/**
+	 * 
+	 * @return Devuelve la representacion
+	 */
 	public char getRepresentacion() {
 		return this.representacion;
 	}
-	
+	/**
+	 * 
+	 * @return Retorna el puntaje
+	 */
 	public int getPuntaje() {
 		return this.puntaje;
 	}
-	
+	/**
+	 * 
+	 * @return Devuelve emparejamiento
+	 */
 	public String getIdEmparejamiento(){
 		return this.idEmparejamiento;
 	}
@@ -100,7 +132,10 @@ public class Carta {
 	public void setIdEmparejamiento(String id) {
 		this.idEmparejamiento = id;
 	}
-	
+	/**
+	 * 
+	 * @return Retorna doblar carta
+	 */
 	public boolean isDoblada() {
 		return this.doblada;
 	}
@@ -128,7 +163,11 @@ public class Carta {
 	public String generarIdEmparejamiento() {
 		return UUID.randomUUID().toString();
 	}
-	
+	//funcion que genera las diversas figuras del juego
+	/**
+	 * Funcion que genera las figuras de las cartas del juego
+	 * @return retorna las figuras de las cartas
+	 */
 	private Figuras generarFigura(){
 		Figuras figura;
 		int valor = new Random().nextInt(4) + 1;

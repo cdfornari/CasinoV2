@@ -1,9 +1,18 @@
 package com.fornari.casino;
+
 import java.util.ArrayList;
 
 import com.fornari.utils.Imagen;
-
+/**
+ * Esta clase contiene todos los movimientos que realizan los jugadores
+ * asi como las validaciones de estos 
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class Jugador {
+	/**
+	 * Atributos privados de la clase
+	 */
 	private ArrayList<Carta> cartas;
 	private ArrayList<Carta> cartasRecogidas;
 	private int clarezas;
@@ -46,7 +55,10 @@ public class Jugador {
 				cartas.get(i).toggleSelected();
 		}
 	}
-	
+	/**
+	 * LLama a contar puntaje para llevar los puntos de la partidq
+	 * @return Retorna el puntaje del jugador
+	 */
 	public PuntajeJugador contarPuntaje() {
 		PuntajeJugador puntaje = new PuntajeJugador(cartasRecogidas.size(), clarezas);
 		for(Carta c : cartasRecogidas) {
@@ -60,7 +72,11 @@ public class Jugador {
 	public void asignarCartasSobrantes(ArrayList<Carta> mesa) {
 		
 	}
-	
+	/**
+	 * Lanza una carta a la mesa
+	 * @param mesa
+	 * @param i
+	 */
 	public void lanzarCarta(ArrayList<Carta> mesa, int i) {
 		cartas.get(i).setImagen(new Imagen(cartas.get(i).buildPath(),"btn"));
 		mesa.add(cartas.get(i));
@@ -78,7 +94,12 @@ public class Jugador {
 		}
 		return x;
 	}
-	
+	/**
+	 * Valida que se pueda recoger una carta
+	 * @param cartasARecoger
+	 * @param cartaJugador
+	 * @return retorna verdadero si se puede recoger
+	 */
 	public boolean validarCartasRecoger(ArrayList<Carta> cartasARecoger, Carta cartaJugador) {
 		boolean figuraSeleccionada=true, doblada=false;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0, sumaEsperada;
@@ -143,7 +164,12 @@ public class Jugador {
 		}
 		return true;
 	}
-	
+	/**
+	 * Valida que se puedan emparejar cartas
+	 * @param cartasAEmparejar
+	 * @param cartaJugador
+	 * @return Devuelve verdadero si se puieden emparejar
+	 */
 	public boolean validarCartasEmparejar(ArrayList<Carta> cartasAEmparejar, Carta cartaJugador) {
 		boolean figuraSeleccionada=true;
 		int contarFiguras=0, sumaNoEmparejadas=0, sumaEmparejadas=0, sumaTotal=0;
@@ -210,7 +236,12 @@ public class Jugador {
 		
 		return true;
 	}
-	
+	/**
+	 * Valida si se puede Doblar o no una carta
+	 * @param cartasADoblar
+	 * @param cartaJugador
+	 * @return Devuelve verdadero si se puede doblar
+	 */
 	public boolean validarCartaDoblarse(ArrayList<Carta> cartasADoblar, Carta cartaJugador) {
 		int suma = 0;
 		for(Carta carta: cartasADoblar)
@@ -233,7 +264,13 @@ public class Jugador {
 		}
 		return false;
 	}
-	
+	/**
+	 * Funcion para recoger carta de la mesa
+	 * @param mesa
+	 * @param cartasRecogerMesa
+	 * @param cartaJugador
+	 * @param computadora
+	 */
 	public void recogerCarta(ArrayList<Carta> mesa,
 			ArrayList<Carta> cartasRecogerMesa, Carta cartaJugador, Jugador computadora) 
 	{ //Recoger sumas //Carta igual //Emparejamiento //Emparejamiento + suma
@@ -256,7 +293,13 @@ public class Jugador {
 		if(mesa.size() == 0)
 			this.clarezas++;
 	}
-	
+	/**
+	 * Funcion para emparejar con carta de la mesa
+	 * @param mesa
+	 * @param cartasAEmparejar
+	 * @param cartaJugador
+	 * @param computadora
+	 */
 	public void emparejarCarta(ArrayList<Carta> mesa, 
 			ArrayList<Carta> cartasAEmparejar, Carta cartaJugador, Jugador computadora) 
 	{
@@ -285,7 +328,13 @@ public class Jugador {
 			carta.setIdEmparejamiento(id);
 		this.cartas.remove(cartaJugador);
 	}
-	
+	/**
+	 * Funcion para doblar Carta 
+	 * @param mesa
+	 * @param cartasADoblar
+	 * @param cartaJugador
+	 * @param computadora
+	 */
 	public void doblarCarta(ArrayList<Carta> mesa, 
 			ArrayList<Carta> cartasADoblar, Carta cartaJugador, Jugador computadora) 
 	{
@@ -318,8 +367,13 @@ public class Jugador {
 		}
 		this.cartas.remove(cartaJugador);
 	}
+	/**
+	 * Funcion para Obtener id emparejamiento (obtener uno o el del computador)
+	 * @param mesa
+	 * @param numeroEmparejamiento
+	 * @return Si no lo encuentra, devuelve el id por defecto 000
+	 */
 	
-	//Obtener id emparejamiento (obtener uno o el del computador)
 	public static String obtenerId(ArrayList<Carta> mesa, int numeroEmparejamiento) {
 		String id1="000",id2="000";
 		for(int i=0; i<mesa.size(); i++) {
@@ -332,10 +386,14 @@ public class Jugador {
 				else if(id2.equals("000") && !id1.equals(mesa.get(i).getIdEmparejamiento()))
 					return mesa.get(i).getIdEmparejamiento();
 		}
-		return id2; //Si no lo encuentra, devuelve el id por defecto 000
+		return id2; 
 	}
 	
-	//Ordenar emparejadas para que queden adyacentes
+	/**
+	 * Ordenar emparejadas para que queden adyacentes
+	 * @param mesa
+	 * @param id
+	 */
 	public static void ordenar(ArrayList<Carta> mesa, String id) {
 		int saltarEmparejamiento=0, nuevoInicio=0, posicionCarta=0;
 		Carta carta = new Carta();
@@ -364,8 +422,12 @@ public class Jugador {
 			}
 		return posicion;
 	}
-	
-	public static void agregar(ArrayList<Carta> mesa, String id) { //Agregar en la lista los emparejamientos de forma ordenada
+	/**
+	 * Agregar en la lista los emparejamientos de forma ordenada
+	 * @param mesa
+	 * @param id
+	 */
+	public static void agregar(ArrayList<Carta> mesa, String id) { 
 		int ultimaPosicion=primeraPosicionDeId(mesa, id); //Comienzo en la primera posicion para obtener la ultima
 		Carta carta=new Carta();
 		if(mesa.size()!=0) {
@@ -381,8 +443,12 @@ public class Jugador {
 			}
 		}
 	}
+	/**
+	 * Ordenar ambos emparejamientos
+	 * @param mesa
+	 */
 	
-	//Ordenar ambos emparejamientos
+	
 	public static void ordenarEmparejamientos(ArrayList<Carta> mesa) {
 		String id1=obtenerId(mesa, 1), id2=obtenerId(mesa, 2);
 		if(!id1.equals("000")) {
@@ -407,6 +473,12 @@ public class Jugador {
 		this.clarezas = clarezas;
 	}
 	
+	/**
+	 * Funcion para decidir el mejor movimiento ( 10 de diamantes
+	 * y espadas)
+	 * @param mesa
+	 * @param jugador
+	 */
 	public void decidirMovimiento(ArrayList<Carta> mesa, Jugador jugador) {
 		ArrayList<Carta> cartasSeleccionadas = new ArrayList<Carta>();
 		//buscar 10 de diamantes
