@@ -122,7 +122,8 @@ public class GameScreen implements Screen{
 		System.out.print("COMPUTADORA:");
 		for(int i = 0; i<computadora.getCartas().size(); i++)
 			if(computadora.getCartas()!=null || computadora.getCartas().get(i)!=null)
-				System.out.print("  "+computadora.getCartas().get(i).getValor()+" "+computadora.getCartas().get(i).getFigura());
+				System.out.print("  "+computadora.getCartas().get(i).toString());
+		System.out.println("");
 		System.out.println("");
 	}
 	/**
@@ -153,12 +154,12 @@ public class GameScreen implements Screen{
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).getImagen().getBtn().remove();
 	}
+
 	/**
 	 * Actualiza graficamente el estado del juego
 	 */
 	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
-		mostarCartasComputadora();
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
 			computadora.getCartas().get(i).getImagen().getBtn().setSize(140, 190);
@@ -261,7 +262,7 @@ public class GameScreen implements Screen{
 									if(seleccionadas.size() == 0) 
 										Render.mostrarMensaje(stage,"Error","Primero selecciona cartas para hacer un movimiento","Ok");
 									else {
-										if(jugador.validarCartaDoblarse(seleccionadas, jugador.getCartas().get(index))) {
+										if(jugador.validarDoblar(seleccionadas, jugador.getCartas().get(index))) {
 											clearActors(true);
 											jugador.doblarCarta(mesa, seleccionadas, jugador.getCartas().get(index),computadora);
 											archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
@@ -300,6 +301,7 @@ public class GameScreen implements Screen{
 										}
 										Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 									}
+									mostarCartasComputadora();
 								}
 							}
 							@Override
@@ -395,6 +397,7 @@ public class GameScreen implements Screen{
 		if(nuevaPartida)
 			mazo.repartir(mesa);
 		updateGameState();
+		//mostarCartasComputadora();
 		if(nuevaPartida) { //Solo se reparte a la mesa cuando no se haya jugado antes\
 			if(Math.random() < 0.50) {
 				this.turno = true;
@@ -407,6 +410,7 @@ public class GameScreen implements Screen{
 		//Creando las ventanas emergentes recogidas
 		crearVentanasRecogidas(ventanaRecogidasJugador,1450,75, jugador.getCartasRecogidas(), "Jugador");
 		crearVentanasRecogidas(ventanaRecogidasComputadora,1450,750, computadora.getCartasRecogidas(), "Computadora");
+		mostarCartasComputadora();
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -429,10 +433,10 @@ public class GameScreen implements Screen{
 			if(contadorCartasMostrar==maxCartas) break;
 			++contadorCartasMostrar;
 		}
+		
 		if(!turno) {
-			mostarCartasComputadora();
 			clearActors(true);
-			computadora.decidirMovimiento(mesa,jugador);
+			computadora.decidirMovimiento(mesa,jugador,stage);
 			if(jugador.getCartas().size() == 0 && computadora.getCartas().size() == 0 && mazo.getSize() > 0) {
 				mazo.repartir(jugador.getCartas());
 				mazo.repartir(computadora.getCartas());
@@ -460,8 +464,11 @@ public class GameScreen implements Screen{
 				}
 				Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 			}
-			updateGameState();
-			mostarCartasComputadora();
+			updateGameState();			
+			Actor actor= new Actor();
+			actor=stage.getRoot().findActor("mensaje");
+			if(actor!=null)
+			actor.toFront();
 			turno = true;
 			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		}
