@@ -23,7 +23,6 @@
 8) En Working Directory, selecciona Other y selecciona el directorio de la carpeta assets del projecto con la siguiente ruta: 
     ##### Casino/core/assets
     #
-    #
     ![Image text](https://libgdx.com/assets/images/dev/eclipse/1.png)
     
 9) Guarda la configuracion y ya puedes correr el juego con el icono Run de Eclipse.
