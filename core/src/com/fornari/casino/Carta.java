@@ -200,5 +200,16 @@ public class Carta {
 		this.valor = valor;
 	}
 
+	public String toString() {
+		String carta = "";
+		if(this.valor == 1)
+			carta += "as";
+		else if(this.valor <= 10)
+			carta += this.valor;
+		else
+			carta += this.representacion;
+		carta += " de " + this.figura;
+		return carta;
+	}
 	
 }
