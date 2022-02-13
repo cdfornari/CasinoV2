@@ -10,7 +10,11 @@ import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Render;
 import com.fornari.utils.Texto;
-
+/**
+ * Pantalla que muestra el menu principal del juego
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class MenuScreen implements Screen{
 	private Imagen fondo;
 	private Texto usuario;
@@ -22,7 +26,9 @@ public class MenuScreen implements Screen{
 	private int opcion = 1;
 	private float tiempo = 0;
 	private boolean existeArchivo = existeArchivo();
-
+	/**
+	 * Se ejecuta cuando se muestra la pantalla
+	 */
 	@Override
 	public void show() {
 		fondo = new Imagen("Fondos/fondo9.jpg","img");
@@ -39,7 +45,9 @@ public class MenuScreen implements Screen{
 		else 
 			espacio = 100;
 	}
-
+	 /**
+     * Se ejecuta en cada frame
+     */
 	@Override
 	public void render(float delta) {
 		Render.batch.begin();
@@ -135,12 +143,17 @@ public class MenuScreen implements Screen{
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+     * Limpia toda la pantalla
+     */
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
 	}
-
+    /**
+     * 
+     * @return Retorna el atributo tiempo
+     */
 	public float getTiempo() {
 		return tiempo;
 	}

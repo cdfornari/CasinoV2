@@ -22,7 +22,11 @@ import com.fornari.utils.Render;
 import com.fornari.utils.SelectMovimiento;
 import com.fornari.utils.Texto;
 import com.fornari.utils.Ventana;
-
+/**
+ * Pantalla General del juego
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class GameScreen implements Screen{
 	private Mazo mazo = new Mazo();
 	private Jugador jugador= new Jugador();
@@ -51,8 +55,15 @@ public class GameScreen implements Screen{
 	//Para el archivo
 	private boolean turno, reparte;
 	private TipoJugador ultimoEnRecoger=TipoJugador.none, ultimoJugar=TipoJugador.none;
+	/**
+	 * Funcion para crear la ventana emergente de recogidas
+	 * @param ventanaRecogidas
+	 * @param x
+	 * @param y
+	 * @param recogidas
+	 * @param tipoJugador
+	 */
 	
-	//Funcion para crear la ventana emergente de recogidas
 	public void crearVentanasRecogidas(Imagen ventanaRecogidas, int x, int y, final ArrayList<Carta> recogidas, final String tipoJugador) {
 		ventanaRecogidas.getBtn().setPosition(x, y);
 		ventanaRecogidas.getBtn().setSize(140, 190); 
@@ -85,7 +96,10 @@ public class GameScreen implements Screen{
 			}
 		});
 	}
-
+    /**
+     * Constructor de la clase
+     * @param nuevaPartida
+     */
 	public GameScreen(boolean nuevaPartida) {
 		this.nuevaPartida=nuevaPartida;
 		if(Archivo.existeArchivo() && !nuevaPartida) {
@@ -101,7 +115,9 @@ public class GameScreen implements Screen{
 			ultimoJugar=archivo.getArbol().buscarNodoEnArbol("UPDATE").getUltimoJugar();
 		}
 	}
-
+    /**
+     * Imprime el mazo de la computadora en consola
+     */
 	public void mostarCartasComputadora() {
 		System.out.print("COMPUTADORA:");
 		for(int i = 0; i<computadora.getCartas().size(); i++)
@@ -110,13 +126,19 @@ public class GameScreen implements Screen{
 		System.out.println("");
 		System.out.println("");
 	}
-	
+	/**
+	 * Elimina el Listener a todos los actores de la pantalla
+	 * @param actor
+	 */
 	public static void removeAllListeners(Actor actor) {
         Array<EventListener> listeners = new Array<>(actor.getListeners());
         for (EventListener listener : listeners)
             actor.removeListener(listener);
     }
-	
+	/**
+	 * Elimina todos los actores del Stage
+	 * @param eliminarIsSelected
+	 */
 	private void clearActors(boolean eliminarIsSelected) {
 		jugador.unselectAll();
 		for(int i = 0; i < mesa.size(); i++) {
@@ -132,7 +154,11 @@ public class GameScreen implements Screen{
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).getImagen().getBtn().remove();
 	}
-	public void  updateGameState() {
+
+	/**
+	 * Actualiza graficamente el estado del juego
+	 */
+	public void updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
@@ -160,7 +186,7 @@ public class GameScreen implements Screen{
 					return true;
 				}
 			});
-			//Funcion para imprimir emparejadas en la mesa
+			
 			if(i!=0 && (mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && mesa.get(i).getIdEmparejamiento().equals("000") ) ) //Si son cartas con mismo id, y no emparejadas
 				espacio=35;
 			else if (i!=0 && !mesa.get(i).getIdEmparejamiento().equals(mesa.get(i-1).getIdEmparejamiento()) && !mesa.get(i).getIdEmparejamiento().equals("000") && !mesa.get(i-1).getIdEmparejamiento().equals("000") )   //Son de emparejamientos distintos
@@ -296,7 +322,9 @@ public class GameScreen implements Screen{
 			stage.addActor(jugador.getCartas().get(i).getImagen().getBtn());
 		}
 	}
-	
+	/**
+	 * Dibuja las flechas para la paginacion de las cartas de la mesa
+	 */
 	public void botonesMoverMesa() {
 		flechaDerecha.getBtn().setSize(120, 120);
 		flechaDerecha.getBtn().setPosition(1300, 450);
@@ -331,7 +359,9 @@ public class GameScreen implements Screen{
 			}
 		});
 	}
-	
+	/**
+	 * Se ejecuta cuando se muestra la pantalla
+	 */
 	@Override
 	public void show() {
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);	
@@ -384,7 +414,9 @@ public class GameScreen implements Screen{
 		archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		Gdx.input.setInputProcessor(stage);
 	}
-
+    /**
+     * Se ejecuta en cada frame
+     */
 	@Override
 	public void render(float delta) {
 		Render.batch.begin();
@@ -474,7 +506,9 @@ public class GameScreen implements Screen{
 		// TODO Auto-generated method stub
 		
 	}
-
+    /**
+     * Limpia toda la pantalla
+     */
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub

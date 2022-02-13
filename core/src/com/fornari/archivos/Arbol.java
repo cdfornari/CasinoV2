@@ -5,21 +5,34 @@ import java.util.ArrayList;
 import com.fornari.casino.Carta;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
-
+/**
+ * Clase Arbol donde se guarda informacion del juego
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class Arbol {
 	private NodoArchivo raiz;
 	
 	public Arbol() {
 		this.raiz=null;
 	}
-	
+	/**
+	 * Inserta un nodo con informacion del juego segun
+	 * corresponda
+	 * @param nodo con la informacion
+	 */
 	public void insertarArbol(NodoArchivo nodo) {
 		if(raiz==null) 
 			raiz=nodo;
 		else
 			raiz.insertarNodo(nodo);
 	}
-	
+	/**
+	 * Actualiza en el arbol la informacion de todos los masos del juego
+	 * @param mazo
+	 * @param mesa
+	 * @param seleccionadas
+	 */
 	public void modificarMazo(Mazo mazo,ArrayList<Carta> mesa, ArrayList<Carta> seleccionadas ) {
 		ArrayList<Carta> lista=new ArrayList<Carta>();
 		NodoArchivo.transformarAListaArray(mazo, lista);
@@ -27,7 +40,11 @@ public class Arbol {
 		buscarNodoEnArbol("MESA").setListaCarta(mesa);
 		buscarNodoEnArbol("SELECCIONADAS").setListaCarta(seleccionadas);
 	}
-		
+	/**
+	 * Inserta la informacion de los jugadores en el arbol
+	 * @param jugador
+	 * @param texto
+	 */
 	public void modificarJugador(Jugador jugador, String texto) {
 		Jugador jugadorAuxiliar=new Jugador();
 		jugador=buscarNodoEnArbol(texto).getJugador();
@@ -35,7 +52,14 @@ public class Arbol {
 		jugadorAuxiliar.setIdEmparejamiento(jugador.getIdEmparejamiento());
 	}
 	
-	
+	/**
+	 * Genera el Arbol con la informacion del juego
+	 * @param mazo
+	 * @param mesa
+	 * @param jugador
+	 * @param computadora
+	 * @param seleccionadas
+	 */
 	public void agregarArbol(Mazo mazo,ArrayList<Carta> mesa,Jugador jugador, Jugador computadora, ArrayList<Carta> seleccionadas) {
 		if(raiz==null) { //Creo los nodos y los inserto en el arbol
 			insertarArbol(new NodoArchivo(mazo, "MAZO", 1));
@@ -49,7 +73,11 @@ public class Arbol {
 			modificarJugador(computadora, "COMPUTADORA");
 		}
 	}
-	
+	/**
+	 * Funcion para buscar un noso en el arbol
+	 * @param textoBuscar
+	 * @return Devuelve el nodo requerido
+	 */
 	public NodoArchivo buscarNodoEnArbol(String textoBuscar) {
 		NodoArchivo nodoBuscar=null;
 		if(raiz!=null) {
@@ -60,23 +88,34 @@ public class Arbol {
 		}
 		return nodoBuscar;
 	}
-	
+	/**
+	 * Funcion para pasar la informacion del arbol al archivo
+	 */
 	public void imprimirArbol() {
 		if(raiz!=null)
 			raiz.escribirEnArchivo();
 	}
-	
+	/**
+	 * Funcion para contar la cantidad de nodos del arbol
+	 * @return Devuelve el numeo de nodos del arbol
+	 */
 	public int contarArbol() {
 		if(this.raiz!=null)
 			return raiz.contarNodos();
 		else
 			return 0;
 	}
-	
+	/**
+	 * 
+	 * @return Devuelve la raiz del arbol
+	 */
 	public NodoArchivo getRaiz() {
 		return raiz;
 	}
-
+    /**
+     * 
+     * @param raiz
+     */
 	public void setRaiz(NodoArchivo raiz) {
 		this.raiz = raiz;
 	}

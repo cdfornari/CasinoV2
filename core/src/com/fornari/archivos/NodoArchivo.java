@@ -1,12 +1,18 @@
 package com.fornari.archivos;
 
 import java.util.ArrayList;
-
 import com.fornari.casino.Carta;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
 import com.fornari.casino.TipoJugador;
+/**
+ * Clase para el manejo de archivos
+ * nodo con informacion del juego
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class NodoArchivo {
+	//Atributos privados de la clase
 	private int clave; 
 	private String texto;
 	private ArrayList<Carta> listaCarta;
@@ -17,10 +23,21 @@ public class NodoArchivo {
 	private NodoArchivo hijoIzquierdo=null;
 	private NodoArchivo hijoDerecho=null;
 	
+	/**
+	 * Constructor de la clase
+	 */
 	public NodoArchivo() {
 		
 	}
-	
+	/**
+	 * Recibe la informacion que se va a guardar en el nodo
+	 * @param turno
+	 * @param reparte
+	 * @param ultimoRecoger
+	 * @param ultimoJugar
+	 * @param texto
+	 * @param clave
+	 */
 	public NodoArchivo(boolean turno, boolean reparte, TipoJugador ultimoRecoger, TipoJugador ultimoJugar, String texto, int clave) {
 		this.turno=turno;
 		this.reparte=reparte;
@@ -29,28 +46,47 @@ public class NodoArchivo {
 		this.texto=texto;
 		this.clave=clave;
 	}
-	
+	/**
+	 * Recibe la informacion que se va a guardar en el nodo
+	 * @param mazo
+	 * @param texto
+	 * @param clave
+	 */
 	public NodoArchivo(Mazo mazo, String texto, int clave) {
 		this.mazo=mazo;
 		this.texto=texto;
 		this.clave=clave;
 		jugador=null;
 	}
-	
+	/**
+	 * Recibe la informacion que se va a guardar en el nodo
+	 * @param listaCarta
+	 * @param texto
+	 * @param clave
+	 */
 	public NodoArchivo(ArrayList<Carta> listaCarta, String texto,int clave) {
 		this.clave=clave;
 		this.texto=texto;
 		this.listaCarta=listaCarta;
 		jugador=null;
 	}
-
+    /**
+     * Recibe la informacion que se va a guardar en el nodo
+     * @param jugador
+     * @param texto
+     * @param clave
+     */
 	public NodoArchivo(Jugador jugador, String texto, int clave) {
 		this.clave=clave;
 		this.texto=texto;
 		this.listaCarta=null;
 		this.jugador=jugador;
 	}
-	
+	/**
+	 * 
+	 * @param mazo
+	 * @param listaCarta
+	 */
 	public static void transformar(Mazo mazo, ArrayList<Carta> listaCarta) {
 		Carta carta=null;
 		if(!mazo.estaVacio()) {
@@ -67,7 +103,10 @@ public class NodoArchivo {
 		return lista;
 	}
 	
-	
+	/**
+	 * Inserta 
+	 * @param nodo
+	 */
 	public void insertarNodo(NodoArchivo nodo) { //Crear una clase especial que recoja clave, texto, etc.
 		if(clave>nodo.getClave()) {
 			if(hijoIzquierdo!=null)

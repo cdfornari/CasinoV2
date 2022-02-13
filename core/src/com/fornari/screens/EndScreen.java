@@ -14,7 +14,11 @@ import com.fornari.utils.Config;
 import com.fornari.utils.Imagen;
 import com.fornari.utils.Render;
 import com.fornari.utils.Texto;
-
+/**
+ * Pantalla de Fin del juego
+ * @author Carlos Fornari, Sandro Portanova, Maria Porras
+ *
+ */
 public class EndScreen implements Screen{
 	private Imagen fondo = new Imagen("Fondos/fondomesa.jpg","img");
 	private Jugador jugador;
@@ -37,7 +41,9 @@ public class EndScreen implements Screen{
 		this.puntajeJugador = puntajeJugador;
 		this.puntajeComputadora = puntajeComputadora;
 	}
-
+	/**
+	 * Se ejecuta cuando se muestra la pantalla
+	 */
 	@Override
 	public void show() {
 		fondo.setSize(Config.anchoPantalla, Config.altoPantalla);
@@ -79,7 +85,9 @@ public class EndScreen implements Screen{
 		}
 		Gdx.input.setInputProcessor(stage);
 	}
-
+	/**
+     * Se ejecuta en cada frame
+     */
 	@Override
 	public void render(float delta) {
 		Render.batch.begin();
@@ -135,7 +143,9 @@ public class EndScreen implements Screen{
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+     * Limpia toda la pantalla
+     */
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
