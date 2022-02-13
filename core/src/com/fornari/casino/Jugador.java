@@ -17,7 +17,9 @@ public class Jugador {
 	private ArrayList<Carta> cartasRecogidas;
 	private int clarezas;
 	private String idEmparejamiento;
-	
+	/**
+	 * Constructor de la clase
+	 */
 	public Jugador() {
 		this.cartas = new ArrayList<Carta>();
 		this.cartasRecogidas = new ArrayList<Carta>();
@@ -412,7 +414,12 @@ public class Jugador {
 			}
 		}
 	}
-	
+	/**
+	 * Obtiene la ubicacion de la primera carta de un emparejamiento dentro de un arreglo
+	 * @param mesa
+	 * @param id
+	 * @return Devuelve la primera posicion de una carta de un emparejamiento
+	 */
 	public static int primeraPosicionDeId(ArrayList<Carta> mesa, String id) {
 		int posicion=0;
 		for(int i=0; i<mesa.size(); i++)
@@ -447,8 +454,6 @@ public class Jugador {
 	 * Ordenar ambos emparejamientos
 	 * @param mesa
 	 */
-	
-	
 	public static void ordenarEmparejamientos(ArrayList<Carta> mesa) {
 		String id1=obtenerId(mesa, 1), id2=obtenerId(mesa, 2);
 		if(!id1.equals("000")) {

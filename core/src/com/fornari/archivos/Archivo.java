@@ -34,9 +34,15 @@ public class Archivo {
 		public Archivo(){
 			setArbol(null);
 		}
+		
+	 //Metodos publicos
+		
 	 /**
-	  * Funcion booleana para comprobar que el archivo exista	
-	  * @return Devuelve verdadero si el archivo existe
+	  * Comprueba que el archivo de texto exista	
+	  * @return <ul>
+      *  <li>true: el archivo existe</li>
+      *  <li>false: el archivo no existe</li>
+      *  </ul>
 	  */
 	public static boolean existeArchivo() {
 		if(Paths.get(Config.pathArchivo).toFile().exists())
@@ -45,7 +51,7 @@ public class Archivo {
 			return false;
 	}
 	 /**
-	  * Funcion para borrar el archivo
+	  * Borra el archivo de texto
 	  */
 	public static void borrar() {
 		try {
@@ -55,20 +61,8 @@ public class Archivo {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * Funcion para borrar el archivo
-	 */
-	public static void borrarArchivo() {
-		File file=new File(Config.pathArchivo);
-		
-		if(file.delete())
-			System.out.println("BORRADO");
-		else
-			System.out.println("NO BORRADO");
-	}
     /**
-     * Funcion para leer el archivo 
+     * Vacia en el archivo toda la informacion de la partida
      * @param mazo
      * @param mesa
      * @param jugador
@@ -88,7 +82,7 @@ public class Archivo {
 			//getArbol().imprimirArbol();
 	}
 	/**
-	 * Funcion para llenar el archivo con la informacion del juego
+	 * Llena el archivo con la informacion del juego
 	 * @param mazo
 	 * @param mesa
 	 * @param jugador
@@ -107,9 +101,6 @@ public class Archivo {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-
-		//System.out.println("PARTIDA CARGADA: ");
-		//getArbol().imprimirArbol();
 	}
 	/**
 	 * Escribe el nombre de jugador en el archivo
@@ -228,16 +219,7 @@ public class Archivo {
 		jugadorAuxiliar.setIdEmparejamiento(jugador.getIdEmparejamiento());
 	}
 	/**
-	 * 
-	 * @param boleano
-	 * @return
-	 */
-	public int escribirBoolean(boolean boleano) {
-		if(boleano) return 1;
-		else return 0;
-	}
-	/**
-	 * 
+	 * Vacia todo el contenido de las cartas de un mazo en el archivo
 	 * @param mazo
 	 * @param writer
 	 * @throws IOException
@@ -252,15 +234,15 @@ public class Archivo {
 			writer.write(carta.getPuntaje()+"\n");
 			writer.write(carta.getIdEmparejamiento()+"\n");
 			writer.write(carta.getsumaEmparejadas()+"\n");
-			writer.write(escribirBoolean(carta.isDoblada())+"\n");
-			writer.write(escribirBoolean(carta.isSelected())+"\n");
+			writer.write(booleanAInt(carta.isDoblada())+"\n");
+			writer.write(booleanAInt(carta.isSelected())+"\n");
 			vaciarTipoMazo(mazo, writer);
 			mazo.setTope(carta);
 		} else
 		writer.write('/'+"\n");
 	}
 	/**
-	 * 
+	 * Vacia todo el contenido de las cartas de un mazo en el archivo
 	 * @param listaCartas
 	 * @param writer
 	 * @throws IOException
@@ -273,13 +255,13 @@ public class Archivo {
 			writer.write(carta.getPuntaje()+"\n");
 			writer.write(carta.getIdEmparejamiento()+"\n");
 			writer.write(carta.getsumaEmparejadas()+"\n");
-			writer.write(escribirBoolean(carta.isDoblada())+"\n");
-			writer.write(escribirBoolean(carta.isSelected())+"\n");
+			writer.write(booleanAInt(carta.isDoblada())+"\n");
+			writer.write(booleanAInt(carta.isSelected())+"\n");
 		}
 		writer.write('/'+"\n");
 	}
 	/**
-	 * 
+	 * Vacia todo el contenido de un jugador en el archivo
 	 * @param jugador
 	 * @param writer
 	 * @throws IOException
@@ -291,27 +273,46 @@ public class Archivo {
 		writer.write(jugador.getIdEmparejamiento()+"\n");
 		writer.write("//"+"\n");
 	}
-	
+	/**
+	 * Convierte un boolean a un entero
+	 * @param boleano
+	 * @return Devuelve un entero
+	 */
 	public int booleanAInt(boolean boleano) {
 		int unInt= boleano ? 1 : 0;
 		return unInt;
 	}
-	
+	/**
+	 * Convierte variable tipo string a un boolean
+	 * @param numero
+	 * @return Devuelve un boolean
+	 */
 	public boolean intABool(String numero) {
 		boolean bool=(numero.equals("1")) ? true : false;
 		return bool;
 	}
-	
+	/**
+	 * Vacia un boolean en el archivo de texto
+	 * @param boleano
+	 * @param writer
+	 */
 	public void vaciarBool(boolean boleano, BufferedWriter writer) throws IOException {
 		writer.write(booleanAInt(boleano)+"\n");
 		writer.write("//"+"\n");
 	}
-	
+	/**
+	 * Vacia una variable de TipoJugador en el arhivo de texto
+	 * @param tipoJugador 
+	 * @param writer
+	 */
 	public void vaciarTipoJugador(TipoJugador tipoJugador, BufferedWriter writer) throws IOException {
 		writer.write(tipoJugador+"\n");
 		writer.write("//"+"\n");
 	}
-		
+	/**
+	 * Vacia cada cada uno de los nodos del arbol en el archivo de texto
+	 * 
+	 */
 	public void escribirArchivo() throws IOException {
 		this.writer=new BufferedWriter(new FileWriter("ARCHIVO.txt"));
 		NodoArchivo nodo=new NodoArchivo();
@@ -334,7 +335,13 @@ public class Archivo {
 		writer.write(Config.userName);
 		writer.close();
 	}
-
+	/**
+	 * Crea una carta a medida que lee una linea del archivo de texto
+	 * @param linea
+	 * @param contador
+	 * @param carta 
+	 * @return 
+	 */
 	public Carta crearCarta(String linea, int contador,Carta carta) {
 		boolean boleano;
 		switch(contador) {
@@ -359,7 +366,11 @@ public class Archivo {
 		}
 		return carta;
 	}
-	
+	/**
+	 * Convierte dado un texto un string a un TipoJugador
+	 * @param texto
+	 * @return Devuelve un TipoJugador
+	 */
 	public TipoJugador convertirTipoJugador(String texto) {
 		if(texto.equals("jugador"))
 			return TipoJugador.jugador;
@@ -367,7 +378,11 @@ public class Archivo {
 			return TipoJugador.computadora;
 		return TipoJugador.none;
 	}
-	
+	/**
+	 * Carga del archivo la informacion de un TipoJugador 
+	 * @param  reader
+	 * @return Devuelve un TipoJugador 
+	 */
 	public TipoJugador cargarTipoJugador(BufferedReader reader) throws IOException {
 		TipoJugador tipo;	
 		String linea="";
@@ -376,7 +391,11 @@ public class Archivo {
 		reader.readLine();
 		return tipo;
 	}
-	
+	/**
+	 * Carga del archivo la informacion de un boolean
+	 * @param reader
+	 * @return Devuelve un boolean
+	 */
 	public boolean cargarBool(BufferedReader reader) throws IOException {
 		boolean bool=true;
 		String linea="";
@@ -385,7 +404,11 @@ public class Archivo {
 		reader.readLine();
 		return bool;
 	}
-	
+	/**
+	 * Carga del archivo la informacion de una lista de cartas
+	 * @param reader
+	 * @return Devuelve una lista de cartas
+	 */
 	public ArrayList<Carta> cargarMazo(BufferedReader reader) throws IOException {
 		ArrayList<Carta> listaCarta = new ArrayList<Carta>();
 		String linea;
@@ -403,7 +426,11 @@ public class Archivo {
 		}
 		return listaCarta;
 	}
-	
+	/**
+	 * Carga del archivo la informacion de un solo jugador
+	 * @param reader
+	 * @return Devuelve un Jugador
+	 */
 	public Jugador cargarJugador(BufferedReader reader) throws IOException {
 		Jugador jugador=new Jugador();
 		jugador.setCartas(cargarMazo(reader));
@@ -413,15 +440,22 @@ public class Archivo {
 		reader.readLine();
 		return jugador;
 	}
-	
+	/**
+	 * Convierte una variable tipo ArrayList a Mazo
+	 * @param listaCartas
+	 * @return Devuelve un Mazo
+	 */
 	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
 		Mazo mazo=new Mazo(true);
 		for(Carta carta: listaCartas) 
 			mazo.setTope(carta);
 		return mazo;
 	}
-	
-
+	/**
+	 * Convierte dado un texto a un tipo Figuras
+	 * @param texto
+	 * @return Devuelve una Figuras
+	 */
 	public Figuras retornaFigura(String texto) {
 		if(texto.equals("espada"))
 			return Figuras.espada;
@@ -433,11 +467,17 @@ public class Archivo {
 			return Figuras.diamante;
 		return Figuras.none;
 	}
-
+	/**
+	 * Devuelve el nodo del arbol
+	 * @return Devuelve el arbol
+	 */
 	public Arbol getArbol() {
 		return arbol;
 	}
-
+	/**
+	 * 
+	 * @param arbol
+	 */
 	public void setArbol(Arbol arbol) {
 		this.arbol = arbol;
 	}
