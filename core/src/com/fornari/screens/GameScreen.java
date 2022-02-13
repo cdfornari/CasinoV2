@@ -433,7 +433,10 @@ public class GameScreen implements Screen{
 				Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 			}
 			updateGameState();			
-			stage.getRoot().findActor("mensaje").toFront();
+			Actor actor= new Actor();
+			actor=stage.getRoot().findActor("mensaje");
+			if(actor!=null)
+			actor.toFront();
 			turno = true;
 			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		}
