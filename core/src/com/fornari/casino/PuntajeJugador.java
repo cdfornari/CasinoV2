@@ -44,7 +44,7 @@ public class PuntajeJugador {
 	 */
 	public void addEspada() {
 		cantEspadas++;
-		if (cantEspadas >= 7) {
+		if (cantEspadas == 7) {
 			sumarPuntaje(1);
 		}
 	}
