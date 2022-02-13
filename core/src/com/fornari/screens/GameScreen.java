@@ -132,7 +132,7 @@ public class GameScreen implements Screen{
 		for(int i = 0; i < computadora.getCartas().size(); i++) 
 			computadora.getCartas().get(i).getImagen().getBtn().remove();
 	}
-	public void updateGameState() {
+	public void  updateGameState() {
 		int espacio=0, ancho=140, contadorCartasMostrar=0; //Muestra 8 cartas. 
 		for(int i = 0; i < computadora.getCartas().size(); i++) {
 			computadora.getCartas().get(i).setImagen(new Imagen("Cards/cardBack_red5.png","btn"));
@@ -401,6 +401,7 @@ public class GameScreen implements Screen{
 			if(contadorCartasMostrar==maxCartas) break;
 			++contadorCartasMostrar;
 		}
+		
 		if(!turno) {
 			clearActors(true);
 			computadora.decidirMovimiento(mesa,jugador,stage);
@@ -431,7 +432,8 @@ public class GameScreen implements Screen{
 				}
 				Casino.ventana.setScreen(new EndScreen(mensaje,jugador,computadora,puntJugador.getPuntaje(),puntCompu.getPuntaje()));
 			}
-			updateGameState();
+			updateGameState();			
+			stage.getRoot().findActor("mensaje").toFront();
 			turno = true;
 			archivo.vaciarArchivo(mazo, mesa, jugador, computadora, seleccionadas, turno, reparte, ultimoEnRecoger, ultimoJugar);
 		}

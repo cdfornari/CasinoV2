@@ -843,7 +843,7 @@ public class Jugador {
 		}
 		cartasSeleccionadas.clear();
 		//lanzar
-		this.lanzarCarta(mesa, 0);
 		Render.mostrarMensaje(stage,"Informacion", "La computadora lanzo la carta " +  this.cartas.get(0).getValor() + " de " + this.cartas.get(0).getFigura(), "Ok");
+		this.lanzarCarta(mesa, 0);
 	}
 }
