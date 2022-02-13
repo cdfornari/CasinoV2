@@ -64,7 +64,7 @@ public class Carta {
 	}
 	
 	/**
-	 * 
+	 * Construye el nombre de una imagen tipo png
 	 * @return  
 	 */
 	public String buildPath() {

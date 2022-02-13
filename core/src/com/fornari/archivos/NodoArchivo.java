@@ -83,7 +83,7 @@ public class NodoArchivo {
 		this.jugador=jugador;
 	}
 	/**
-	 * 
+	 * Traslada las cartas de tipo Mazo a un ArrayList de Carta
 	 * @param mazo
 	 * @param listaCarta
 	 */
@@ -96,7 +96,12 @@ public class NodoArchivo {
 			mazo.setTope(carta);
 		}
 	}
-	
+	/**
+	 * Convierte un Mazo a uno de ArrayList de Carta
+	 * @param mazo
+	 * @param listaCarta
+	 * @return Devuelve un ArrayList de Carta
+	 */
 	public static ArrayList<Carta> transformarAListaArray(Mazo mazo, ArrayList<Carta> listaCarta) {
 		ArrayList<Carta> lista=new ArrayList<>();
 		transformar(mazo, lista);
@@ -104,7 +109,7 @@ public class NodoArchivo {
 	}
 	
 	/**
-	 * Inserta 
+	 * Inserta un nodo a algunos de sus nodos descendientes
 	 * @param nodo
 	 */
 	public void insertarNodo(NodoArchivo nodo) { //Crear una clase especial que recoja clave, texto, etc.
@@ -120,7 +125,11 @@ public class NodoArchivo {
 				hijoDerecho=nodo;
 		}
 	}
-	
+	/**
+	 * Busca en los nodos descendientes el nodo requerido dado un texto
+	 * @param textoBuscar
+	 * @return Devuelve el nodo requerido
+	 */
 	public NodoArchivo buscarNodo(String textoBuscar) {
 		NodoArchivo nodoBuscar=null;
 		if(this!=null) {
@@ -136,13 +145,10 @@ public class NodoArchivo {
 		return nodoBuscar;
 
 	}
-
-	public int contarNodos() { //Cuenta las nodos que hay actualmente en el arbol
-		int x=0;
-		return x;
-	}
-	
-	
+	/**
+	 * Elimina cada uno de los nodos hijos
+	 * 
+	 */
 	public void eliminarNodos() { //Elimina todo el arbol
 		if(this!=null) {
 			hijoIzquierdo.eliminarNodos();
@@ -151,7 +157,10 @@ public class NodoArchivo {
 			hijoDerecho=null;
 		}
 	}
-	
+	/**
+	 * Imprime toda la informacion de un nodo
+	 * 
+	 */
 	public void imprimirNodo() {
 		if(jugador==null) {
 			System.out.println("NODO: "+texto);
@@ -171,14 +180,21 @@ public class NodoArchivo {
 			System.out.println("\n\n");
 		}
 	}
-	
+	/**
+	 * Transforma dado un ArrayList de Carta a uno de tipo Mazo
+	 * @param listaCartas
+	 * @return Devuelve un Mazo
+	 */
 	public Mazo transformarMazo(ArrayList<Carta> listaCartas) {
 		Mazo mazo=new Mazo(true);
 		for(Carta carta: listaCartas) 
 			mazo.setTope(carta);
 		return mazo;
 	}
-	
+	/**
+	 * Imprime la informacion del nodo actual y de sus descendientes
+	 * 
+	 */
 	public void escribirEnArchivo() {
 		if(this!=null) {
 			imprimirNodo();

@@ -6,20 +6,25 @@ import com.fornari.casino.Carta;
 import com.fornari.casino.Jugador;
 import com.fornari.casino.Mazo;
 /**
- * Clase Arbol donde se guarda informacion del juego
+ * Clase Arbol donde se guarda informacion de la partida dentro de un arbol ABB
  * @author Carlos Fornari, Sandro Portanova, Maria Porras
  *
  */
 public class Arbol {
 	private NodoArchivo raiz;
-	
+
+	/**
+	 * Constructor de la clase
+	 */
 	public Arbol() {
 		this.raiz=null;
 	}
+	
+	//Metodos publicos
+	
 	/**
-	 * Inserta un nodo con informacion del juego segun
-	 * corresponda
-	 * @param nodo con la informacion
+	 * Inserta un nodo con informacion del juego en el arbol segun corresponda
+	 * @param nodo con la informacion a insertar
 	 */
 	public void insertarArbol(NodoArchivo nodo) {
 		if(raiz==null) 
@@ -28,7 +33,7 @@ public class Arbol {
 			raiz.insertarNodo(nodo);
 	}
 	/**
-	 * Actualiza en el arbol la informacion de todos los masos del juego
+	 * Actualiza en el arbol la informacion de todos los mazos del juego
 	 * @param mazo
 	 * @param mesa
 	 * @param seleccionadas
@@ -74,7 +79,7 @@ public class Arbol {
 		}
 	}
 	/**
-	 * Funcion para buscar un noso en el arbol
+	 * Busca un nodo determinado en el arbol
 	 * @param textoBuscar
 	 * @return Devuelve el nodo requerido
 	 */
@@ -89,25 +94,15 @@ public class Arbol {
 		return nodoBuscar;
 	}
 	/**
-	 * Funcion para pasar la informacion del arbol al archivo
+	 * Imprime toda la informacion contenida en cada nodo del arbol
 	 */
 	public void imprimirArbol() {
 		if(raiz!=null)
 			raiz.escribirEnArchivo();
 	}
 	/**
-	 * Funcion para contar la cantidad de nodos del arbol
-	 * @return Devuelve el numeo de nodos del arbol
-	 */
-	public int contarArbol() {
-		if(this.raiz!=null)
-			return raiz.contarNodos();
-		else
-			return 0;
-	}
-	/**
 	 * 
-	 * @return Devuelve la raiz del arbol
+	 * @return Devuelve el nodo raiz del arbol
 	 */
 	public NodoArchivo getRaiz() {
 		return raiz;
