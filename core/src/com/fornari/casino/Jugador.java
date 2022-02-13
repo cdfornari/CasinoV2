@@ -585,7 +585,7 @@ public class Jugador {
 						cartasSeleccionadas.add(cartaMesa);
 						if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
 							this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
-							Render.mostrarMensaje(stage,"Informacion","La computadora recogio " + cartaMesa.getValor() + " de espadas con " + carta.getValor() + " de " + carta.getFigura(),"Ok");
+							Render.mostrarMensaje(stage,"Informacion","La computadora recogio " + cartaMesa.getValor() + " de espadas con " + carta.toString(),"Ok");
 							return;
 						}
 					}
@@ -615,8 +615,8 @@ public class Jugador {
 						this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
 						String mensaje = "La computadora recogio su emparejamiento de ";
 						for(Carta cartaEmparejamiento: cartasSeleccionadas)
-							mensaje += cartaEmparejamiento.getValor() + " de " + cartaEmparejamiento.getFigura() + ", ";
-						mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+							mensaje += cartaEmparejamiento.toString() + ", ";
+						mensaje += "con " + carta.toString();
 						Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 						return;
 					}
@@ -630,7 +630,7 @@ public class Jugador {
 					cartasSeleccionadas.add(cartaMesa);
 					if(this.validarCartasRecoger(cartasSeleccionadas,carta)) {
 						this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
-						Render.mostrarMensaje(stage, "Informacion", "La computadora recogio " + cartaMesa.getValor() + " de " + cartaMesa.getFigura() + " con " + carta.getValor() + " de " + carta.getFigura(), "Ok");
+						Render.mostrarMensaje(stage, "Informacion", "La computadora recogio " + cartaMesa.toString() + " con " + carta.toString(), "Ok");
 						return;
 					}else
 						cartasSeleccionadas.clear();
@@ -651,8 +651,8 @@ public class Jugador {
 								this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
 								String mensaje = "La computadora recogio las cartas ";
 								for(Carta cartaRecoger: cartasSeleccionadas)
-									mensaje += cartaRecoger.getValor() + " de " + cartaRecoger.getFigura() + ", ";
-								mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+									mensaje += cartaRecoger.toString() + ", ";
+								mensaje += "con " + carta.toString();
 								Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 								return;
 							}else
@@ -679,8 +679,8 @@ public class Jugador {
 									this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
 									String mensaje = "La computadora recogio las cartas ";
 									for(Carta cartaRecoger: cartasSeleccionadas)
-										mensaje += cartaRecoger.getValor() + " de " + cartaRecoger.getFigura() + ", ";
-									mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+										mensaje += cartaRecoger.toString() + ", ";
+									mensaje += "con " + carta.toString();
 									Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 									return;
 								}else
@@ -714,8 +714,8 @@ public class Jugador {
 						this.recogerCarta(mesa, cartasSeleccionadas, carta, jugador);
 						String mensaje = "La computadora robo el emparejamiento del jugador de ";
 						for(Carta cartaEmparejamiento: cartasSeleccionadas)
-							mensaje += cartaEmparejamiento.getValor() + " de " + cartaEmparejamiento.getFigura() + ", ";
-						mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+							mensaje += cartaEmparejamiento.toString() + ", ";
+						mensaje += "con " + carta.toString();
 						Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 						return;
 					}
@@ -740,8 +740,8 @@ public class Jugador {
 						this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
 						String mensaje = "La computadora sumo al emparejamiento del jugador de ";
 						for(Carta cartaEmparejamiento: cartasSeleccionadas)
-							mensaje += cartaEmparejamiento.getValor() + " de " + cartaEmparejamiento.getFigura() + ", ";
-						mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+							mensaje += cartaEmparejamiento.toString() + ", ";
+						mensaje += "con " + carta.toString();
 						Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 						return;
 					}
@@ -755,7 +755,7 @@ public class Jugador {
 				cartasSeleccionadas.add(cartaMesa);
 				if(this.validarCartasEmparejar(cartasSeleccionadas, carta)) {
 					this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
-					Render.mostrarMensaje(stage, "Informacion", "La computadora emparejo " + cartaMesa.getValor() + " de " + cartaMesa.getFigura() + " con " + carta.getValor() + " de " + carta.getFigura(), "Ok");
+					Render.mostrarMensaje(stage, "Informacion", "La computadora emparejo " + cartaMesa.toString() + " con " + carta.toString(), "Ok");
 					return;
 				}
 				else
@@ -774,8 +774,8 @@ public class Jugador {
 							this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
 							String mensaje = "La computadora emparejo las cartas ";
 							for(Carta cartaRecoger: cartasSeleccionadas)
-								mensaje += cartaRecoger.getValor() + " de " + cartaRecoger.getFigura() + ", ";
-							mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+								mensaje += cartaRecoger.toString() + ", ";
+							mensaje += "con " + carta.toString();
 							Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 							return;
 						}
@@ -799,8 +799,8 @@ public class Jugador {
 								this.emparejarCarta(mesa, cartasSeleccionadas, carta, jugador);
 								String mensaje = "La computadora emparejo las cartas ";
 								for(Carta cartaRecoger: cartasSeleccionadas)
-									mensaje += cartaRecoger.getValor() + " de " + cartaRecoger.getFigura() + ", ";
-								mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+									mensaje += cartaRecoger.toString() + ", ";
+								mensaje += "con " + carta.toString();
 								Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 								return;
 							}
@@ -832,8 +832,8 @@ public class Jugador {
 							this.doblarCarta(mesa, cartasSeleccionadas, carta, jugador);
 							String mensaje = "La computadora doblo su emparejamiento de ";
 							for(Carta cartaEmparejamiento: cartasSeleccionadas)
-								mensaje += cartaEmparejamiento.getValor() + " de " + cartaEmparejamiento.getFigura() + ", ";
-							mensaje += "con " + carta.getValor() + " de " + carta.getFigura();
+								mensaje += cartaEmparejamiento.toString() + ", ";
+							mensaje += "con " + carta.toString();
 							Render.mostrarMensaje(stage, "Informacion", mensaje, "Ok");
 							return;
 						}
@@ -843,7 +843,7 @@ public class Jugador {
 		}
 		cartasSeleccionadas.clear();
 		//lanzar
+		Render.mostrarMensaje(stage,"Informacion", "La computadora lanzo la carta " +  this.cartas.get(0).toString(), "Ok");
 		this.lanzarCarta(mesa, 0);
-		Render.mostrarMensaje(stage,"Informacion", "La computadora lanzo la carta " +  this.cartas.get(0).getValor() + " de " + this.cartas.get(0).getFigura(), "Ok");
 	}
 }
